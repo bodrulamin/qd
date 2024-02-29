@@ -6,8 +6,94 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets/styles/gc.spread.sheets.excel2013white.css">
+  <link rel="stylesheet" type="text/css" href="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-designer/styles/gc.spread.sheets.designer.min.css">
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets/dist/gc.spread.sheets.all.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-shapes/dist/gc.spread.sheets.shapes.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-charts/dist/gc.spread.sheets.charts.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-print/dist/gc.spread.sheets.print.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-barcode/dist/gc.spread.sheets.barcode.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-pdf/dist/gc.spread.sheets.pdf.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-pivot-addon/dist/gc.spread.pivot.pivottables.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-slicers/dist/gc.spread.sheets.slicers.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-tablesheet/dist/gc.spread.sheets.tablesheet.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-formula-panel/dist/gc.spread.sheets.formulapanel.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-io/dist/gc.spread.sheets.io.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-excelio/dist/gc.spread.excelio.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-designer-resources-en/dist/gc.spread.sheets.designer.resource.en.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-designer/dist/gc.spread.sheets.designer.all.min.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/spread/source/js/license.js" type="text/javascript"></script>
+  <script src="https://developer.mescius.com/spreadjs/demos/spread/source/js/designer/license.js" type="text/javascript"></script>
+  <style>
+
+
+  </style>
+  <script>
+    let spreadNS = GC.Spread.Sheets;
+let config = GC.Spread.Sheets.Designer.DefaultConfig;
+let designer, spread;
+window.onload = function () {
+	// init
+	initRibbon();
+};
+
+function initRibbon() {
+    // clear ribbon
+	config.ribbon = [];
+    // add new ribbon tab
+	let newTab = {
+		id: 'operate',
+		text: 'Favorite',
+		buttonGroups: [],
+	};
+
+	config.ribbon.unshift(newTab);
+
+	// add new menu
+	let basicMenu = {
+		label: 'Frequently used operations',
+		thumbnailClass: 'Frequently used operations',
+		commandGroup: {
+			children: [
+				{
+					commands: ['formulaAutoSum'],
+				},
+				{
+					commands: ['insertTable'],
+				},
+				{
+					type: 'separator',
+				},
+				{
+					direction: 'vertical',
+					children: [
+						{
+							commands: ['fontFamily', 'fontSize', 'fontWeight', 'backColor', 'foreColor'],
+						},
+						{
+							commands: ['find', 'replace', 'setFilter'],
+						},
+					],
+				},
+				{
+					direction: 'vertical',
+					commands: ['showHideVGridLine', 'showHideHGridLine'],
+				},
+			],
+		},
+	};
+
+	config.ribbon[0].buttonGroups.unshift(basicMenu);
+    new spreadNS.Designer.Designer(document.getElementById('ribbonHost'), config);
+}
+  </script>
+  <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
   <app-root></app-root>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

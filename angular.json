@@ -25,9 +25,12 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/@mescius/spread-sheets/styles/gc.spread.sheets.excel2016darkGray.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/@mescius/spread-sheets-designer/dist/gc.spread.sheets.designer.all.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -94,5 +97,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "89be924f-465c-4a42-a033-badda3c5f31f"
   }
 }

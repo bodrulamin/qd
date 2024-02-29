@@ -1,0 +1,41 @@
+#ribbonHost, .spreadSheet {
+  height: 100%;
+}
+
+.description {
+  margin: 10px;
+  width: 40%;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+th {
+  background-color: #dcdcdc;
+}
+tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.ck-editor__editable_inline {
+  min-height: 300px !important;
+}
+:host ::ng-deep .ck-editor__editable_inline {
+  min-height: 300px !important;
+}
+
+/* Additional styling to make it look more like the photo */
+.card-text{
+  width: 70px;
+  height: 100px;
+  text-overflow:clip;
+  border: 1px solid;
+}

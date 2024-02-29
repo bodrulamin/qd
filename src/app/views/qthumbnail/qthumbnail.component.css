@@ -1,0 +1,16 @@
+.sidebar {
+  width: auto;
+  float: left;
+  text-align: center
+}
+
+.thumbnail {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.thumbnail-title{
+  font-size: 8pt;
+}
