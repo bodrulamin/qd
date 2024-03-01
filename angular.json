@@ -29,7 +29,6 @@
               "node_modules/@mescius/spread-sheets/styles/gc.spread.sheets.excel2016darkGray.css"
             ],
             "scripts": [
-              "node_modules/@mescius/spread-sheets-designer/dist/gc.spread.sheets.designer.all.min.js"
             ]
           },
           "configurations": {

@@ -1,26 +1,6 @@
 import {Component} from '@angular/core';
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
-const scriptUrls = [
-  'https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets/dist/gc.spread.sheets.all.min.js',
-  'https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-shapes/dist/gc.spread.sheets.shapes.min.js',
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-charts/dist/gc.spread.sheets.charts.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-print/dist/gc.spread.sheets.print.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-barcode/dist/gc.spread.sheets.barcode.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-pdf/dist/gc.spread.sheets.pdf.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-pivot-addon/dist/gc.spread.pivot.pivottables.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-slicers/dist/gc.spread.sheets.slicers.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-tablesheet/dist/gc.spread.sheets.tablesheet.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-formula-panel/dist/gc.spread.sheets.formulapanel.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-io/dist/gc.spread.sheets.io.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-excelio/dist/gc.spread.excelio.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-designer-resources-en/dist/gc.spread.sheets.designer.resource.en.min.js",
-  "https://developer.mescius.com/spreadjs/demos/en/purejs/node_modules/@mescius/spread-sheets-designer/dist/gc.spread.sheets.designer.all.min.js",
-  "https://developer.mescius.com/spreadjs/demos/spread/source/js/license.js",
-  "https://developer.mescius.com/spreadjs/demos/spread/source/js/designer/license.js",
-];
-
-
 @Component({
   selector: 'app-exam',
   templateUrl: './exam.component.html',
@@ -28,11 +8,6 @@ const scriptUrls = [
 })
 
 export class ExamComponent {
-  constructor() {
-    this.loadScriptsInParallel(scriptUrls)
-      .then(() => console.log('All scripts loaded'))
-      .catch(error => console.error('Error loading scripts:', error));
-  }
 
   title = "SJS-Angular-IO-Excel";
   questionText = `
@@ -89,26 +64,5 @@ export class ExamComponent {
       `
     }
   };
-
-  loadScript(url: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = url;
-
-      script.onload = () => {
-        resolve();
-      };
-
-      script.onerror = (error) => {
-        reject(error);
-      };
-
-      document.body.appendChild(script);
-    });
-  }
-
-  loadScriptsInParallel(urls: string[]): Promise<void[]> {
-    return Promise.all(urls.map(url => this.loadScript(url)));
-  }
 
 }
