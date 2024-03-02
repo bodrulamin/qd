@@ -13,6 +13,7 @@ export class EditQuestionComponent {
   private selectedIndex: number = -1;
   text: any = 'helloworld';
   @ViewChild("editor") editor!: Editor;
+  questionSelected = false;
 
   constructor() {
   }
@@ -33,6 +34,7 @@ export class EditQuestionComponent {
 
 
   selectQuestion(i: number) {
+    this.questionSelected = true;
     this.questions[this.selectedIndex] = this.question;
     this.selectedIndex = i;
     this.question = this.questions[this.selectedIndex];

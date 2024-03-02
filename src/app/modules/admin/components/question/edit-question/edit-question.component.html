@@ -5,7 +5,8 @@
       <ng-template pTemplate>
         <div class="col">
           <p-scrollPanel [style]="{ width: '100%', height:'440px', paddingBottom:'0px'  }">
-            <p-card *ngFor="let item of questions; index as i;" header="Title" class="m-1" (click)="selectQuestion(i)">
+            <p-card *ngFor="let item of questions; index as i;" [header]="'Question ' + (i+1)" class="m-1"
+                    (click)="selectQuestion(i)">
               <p class="m-0" [innerHTML]="item.html"></p>
             </p-card>
           </p-scrollPanel>
@@ -14,7 +15,21 @@
       </ng-template>
       <ng-template pTemplate>
         <div class="col">
-          <p-editor #editor [(ngModel)]="question.html" [style]="{ height: '400px', width:'auto'}"
+          <div class="grid formgrid mb-1">
+              <div class="col-6 mb-2 lg:mb-0 p-inputgroup">
+                <span class="p-inputgroup-addon">Marks</span>
+                <input type="text" pInputText  [(ngModel)]="question.marks" />
+              </div>
+              <div class="col-6 mb-2 lg:mb-0">
+                <p-button [style]="{float:'right'}" label = "Attach File" icon = "pi pi-plus"></p-button>
+            </div>
+
+
+          </div>
+
+
+          <p-editor #editor [(ngModel)]="question.html" placeholder="Select Question" [readonly]="!questionSelected"
+                    [style]="{ height: '400px', width:'auto'}"
                     (onTextChange)="onTextChange($event,editor)">
 
 
@@ -22,5 +37,8 @@
         </div>
       </ng-template>
     </p-splitter>
+  </div>
+  <div class="flex right-100">
+    <p-button label="Save"></p-button>
   </div>
 </div>

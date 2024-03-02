@@ -8,16 +8,17 @@ export const menues = [
           {label: 'Upload Enrolement', icon: 'far fa-file-alt', routerLink: ['/upload-enrolement'] },
         ]
       },
-      {
-        label: 'Configuration', icon: 'pi pi-fw pi-cog', items: [
-          {label: 'Exam', icon: 'pi pi-fw pi-th-large', routerLink: ['/exam-configuration'] },
-          {label: 'Subject', icon: 'pi pi-fw pi-th-large', routerLink: ['/subject-configuration'] },
-        ]
-      },
+
       {
         label: 'Question', icon: 'far fa-question-circle', items: [
           {label: 'Create Question', icon: 'pi pi-fw pi-file-edit', routerLink: ['create-question'] },
           {label: 'Approve Question', icon: 'pi pi-fw pi-verified', routerLink: ['/approve-question'] },
+        ]
+      },
+      {
+        label: 'Configuration', icon: 'pi pi-fw pi-cog', items: [
+          {label: 'Exam', icon: 'pi pi-fw pi-bars', routerLink: ['/exam-configuration'] },
+          {label: 'Subject', icon: 'pi pi-fw pi-bars', routerLink: ['/subject-configuration'] },
         ]
       },
       {
