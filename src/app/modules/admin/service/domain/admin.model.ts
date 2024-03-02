@@ -1,6 +1,5 @@
 export class AdminModel {
-  name:string;
-  id:string;
+  username:string;
   password:string;
 }
 
