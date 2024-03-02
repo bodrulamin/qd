@@ -10,27 +10,35 @@ import {DropdownModule} from "primeng/dropdown";
 import {ButtonModule} from "primeng/button";
 import {TableModule} from "primeng/table";
 import {MenuModule} from "primeng/menu";
-import {SpeedDialModule} from "primeng/speeddial";
-import {MenubarModule} from "primeng/menubar";
-import {SplitButtonModule} from "primeng/splitbutton";
+import { EditQuestionComponent } from './components/question/edit-question/edit-question.component';
+import {SplitterModule} from "primeng/splitter";
+import {EditorModule} from "primeng/editor";
+import {CommonModule} from "@angular/common";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {CardModule} from "primeng/card";
+import {ScrollPanelModule} from "primeng/scrollpanel";
 
 @NgModule({
   imports: [
     RouterModule.forChild(adminRoutes),
+    CommonModule,
     InputTextModule,
-    CheckboxModule,
-    RadioButtonModule,
     AppLayoutModule,
     DropdownModule,
     ButtonModule,
     TableModule,
     MenuModule,
-    SpeedDialModule,
-    MenubarModule,
-    SplitButtonModule
+    SplitterModule,
+    EditorModule,
+    ReactiveFormsModule,
+    FormsModule,
+    CardModule,
+    ScrollPanelModule,
+
   ],
   declarations: [
-    CreateQuestionComponent
+    CreateQuestionComponent,
+    EditQuestionComponent
   ]
 })
 export class AdminModule {

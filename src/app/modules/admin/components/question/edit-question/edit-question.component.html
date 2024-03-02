@@ -1,0 +1,26 @@
+<div class="col-12">
+  <div class="card">
+    <h5>Edit Question</h5>
+    <p-splitter [panelSizes]="[25, 75]">
+      <ng-template pTemplate>
+        <div class="col">
+          <p-scrollPanel [style]="{ width: '100%', height:'440px', paddingBottom:'0px'  }">
+            <p-card *ngFor="let item of questions; index as i;" header="Title" class="m-1" (click)="selectQuestion(i)">
+              <p class="m-0" [innerHTML]="item.html"></p>
+            </p-card>
+          </p-scrollPanel>
+
+        </div>
+      </ng-template>
+      <ng-template pTemplate>
+        <div class="col">
+          <p-editor #editor [(ngModel)]="question.html" [style]="{ height: '400px', width:'auto'}"
+                    (onTextChange)="onTextChange($event,editor)">
+
+
+          </p-editor>
+        </div>
+      </ng-template>
+    </p-splitter>
+  </div>
+</div>

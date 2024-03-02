@@ -1,5 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {SelectItem} from "primeng/api";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-create-question',
@@ -44,6 +45,7 @@ export class CreateQuestionComponent {
       label: 'Edit',
       icon: 'pi pi-file-edit',
       command: () => {
+        this.route.navigate(["../edit-question"], {relativeTo:this.activatedRoute})
       }
     },
     {
@@ -54,5 +56,7 @@ export class CreateQuestionComponent {
     },
 
   ];
+  constructor(private route:Router,private activatedRoute:ActivatedRoute) {
+  }
 
 }
