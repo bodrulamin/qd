@@ -1,10 +1,10 @@
 export class QuestionModel {
-  id:number = 1;
-  code:number = 100;
+  id:number = 0;
+  code:number = 0;
   session:string = '';
   status:string = '';
   html:string = '';
-  marks:number = 10;
+  marks:number = 0;
 }
 
 

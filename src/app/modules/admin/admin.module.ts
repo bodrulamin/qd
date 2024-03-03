@@ -17,6 +17,8 @@ import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CardModule} from "primeng/card";
 import {ScrollPanelModule} from "primeng/scrollpanel";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {ToastModule} from "primeng/toast";
 
 @NgModule({
   imports: [
@@ -34,6 +36,8 @@ import {ScrollPanelModule} from "primeng/scrollpanel";
     FormsModule,
     CardModule,
     ScrollPanelModule,
+    ConfirmDialogModule,
+    ToastModule,
 
   ],
   declarations: [
