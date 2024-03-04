@@ -3,6 +3,7 @@ import {LayoutService} from 'src/app/modules/admin/layout/service/app.layout.ser
 import {ActivatedRoute, Router} from "@angular/router";
 import {LoginModel} from "../../../student/service/domain/login.model";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
+import {AuthService} from "../../service/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -28,15 +29,23 @@ export class LoginComponent extends BaseComponent {
 
   constructor(
     public layoutService: LayoutService,
+    public authService: AuthService,
     private route: Router,
     private activatedRoute: ActivatedRoute) {
+
     super();
+
+    if (authService.isAdminLoggedIn()) {
+      this.route.navigate(['admin', 'home'],)
+    } else {
+      this.route.navigate([''], {relativeTo: this.activatedRoute})
+    }
   }
 
 
   login($event: MouseEvent) {
-    this.credential.username = "sldkf";
-    this.credential.password = "sldkf";
+    this.credential.username = this.username;
+    this.credential.password = this.password;
     this.onLoginClicked.emit(this.credential)
   }
 }

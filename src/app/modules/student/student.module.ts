@@ -12,6 +12,7 @@ import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 import {SpreadSheetsModule} from "@mescius/spread-sheets-angular";
 import {AuthModule} from "../auth/auth.module";
 import { StudentHomeComponent } from './components/home/student-home.component';
+import {ButtonModule} from "primeng/button";
 
 
 @NgModule({
@@ -24,16 +25,18 @@ import { StudentHomeComponent } from './components/home/student-home.component';
     StudentHomeComponent,
 
   ],
-    imports: [
-        [RouterModule.forChild(sudentRoutes)],
-        AngularSplitModule,
-        FormsModule,
-        CKEditorModule,
-        SpreadSheetsModule,
-        AuthModule,
-    ],
+  imports: [
+    [RouterModule.forChild(sudentRoutes)],
+    AngularSplitModule,
+    FormsModule,
+    CKEditorModule,
+    SpreadSheetsModule,
+    AuthModule,
+    ButtonModule,
+  ],
   providers: [],
   bootstrap: []
 })
 export class StudentModule {
+
 }
