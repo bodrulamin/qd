@@ -5,7 +5,7 @@ import {EditQuestionComponent} from "./components/question/edit-question/edit-qu
 
 export const adminRoutes: Routes = [
   {
-    path: "", loadChildren: () => import('./components/login/login.module').then(m => m.LoginModule),
+    path: "", loadChildren: () => import('../login/login.module').then(m => m.LoginModule),
   },
   {
     path: "home", component: AppLayoutComponent, children: [

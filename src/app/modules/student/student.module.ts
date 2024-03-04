@@ -10,6 +10,7 @@ import {AngularSplitModule} from "angular-split";
 import {FormsModule} from "@angular/forms";
 import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 import {SpreadSheetsModule} from "@mescius/spread-sheets-angular";
+import {LoginModule} from "../login/login.module";
 
 
 @NgModule({
@@ -21,13 +22,14 @@ import {SpreadSheetsModule} from "@mescius/spread-sheets-angular";
     QthumbnailComponent,
 
   ],
-  imports: [
-    [RouterModule.forChild(sudentRoutes)],
-    AngularSplitModule,
-    FormsModule,
-    CKEditorModule,
-    SpreadSheetsModule,
-  ],
+    imports: [
+        [RouterModule.forChild(sudentRoutes)],
+        AngularSplitModule,
+        FormsModule,
+        CKEditorModule,
+        SpreadSheetsModule,
+        LoginModule,
+    ],
   providers: [],
   bootstrap: []
 })

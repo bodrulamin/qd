@@ -5,5 +5,12 @@ import { Component } from '@angular/core';
   templateUrl: './student-login.component.html',
 })
 export class StudentLoginComponent {
+  loginHeader = 'Student Login';
+  constructor() {
+  }
 
+
+  onLogin($event: any) {
+    console.log($event)
+  }
 }
