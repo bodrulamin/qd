@@ -1,13 +1,13 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
-import {SelectItem} from "primeng/api";
+import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
+import {BaseComponent} from "../../../../base/components/base-component/base.component";
 
 @Component({
   selector: 'app-create-question',
   templateUrl: './create-question.component.html',
   styleUrls: ['./create-question.component.css']
 })
-export class CreateQuestionComponent {
+export class CreateQuestionComponent extends BaseComponent {
   examLevels = [{name: 'Exam Level', code: null}];
   sessions = [{name: 'Session', code: null}];
   subjects = [{name: 'Subject', code: null}];
@@ -45,7 +45,7 @@ export class CreateQuestionComponent {
       label: 'Edit',
       icon: 'pi pi-file-edit',
       command: () => {
-        this.route.navigate(["../edit-question"], {relativeTo:this.activatedRoute})
+        this.route.navigate(["../edit-question"], {relativeTo: this.activatedRoute})
       }
     },
     {
@@ -56,7 +56,9 @@ export class CreateQuestionComponent {
     },
 
   ];
-  constructor(private route:Router,private activatedRoute:ActivatedRoute) {
+
+  constructor(private route: Router, private activatedRoute: ActivatedRoute) {
+    super()
   }
 
 }

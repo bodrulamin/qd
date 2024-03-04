@@ -2,6 +2,7 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {QuestionModel} from "../../../service/domain/question.model";
 import {Editor, EditorTextChangeEvent} from "primeng/editor";
 import {ConfirmationService, ConfirmEventType, MessageService} from "primeng/api";
+import {BaseComponent} from "../../../../base/components/base-component/base.component";
 
 @Component({
   selector: 'app-edit-question',
@@ -9,7 +10,7 @@ import {ConfirmationService, ConfirmEventType, MessageService} from "primeng/api
   styleUrls: ['./edit-question.component.css'],
   providers: [ConfirmationService, MessageService]
 })
-export class EditQuestionComponent {
+export class EditQuestionComponent extends BaseComponent{
   question: QuestionModel = new QuestionModel();
   questions: QuestionModel[] = [];
   private selectedIndex: number = -1;
@@ -21,6 +22,7 @@ export class EditQuestionComponent {
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {
+    super();
   }
 
   ngOnInit() {

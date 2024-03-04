@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import {BaseComponent} from "../../../base/components/base-component/base.component";
 
 @Component({
   selector: 'app-exam',
@@ -7,7 +8,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
   styleUrls: ['./exam.component.css']
 })
 
-export class ExamComponent {
+export class ExamComponent extends BaseComponent{
 
   title = "SJS-Angular-IO-Excel";
   questionText = `
@@ -64,5 +65,9 @@ export class ExamComponent {
       `
     }
   };
+
+  constructor() {
+    super();
+  }
 
 }

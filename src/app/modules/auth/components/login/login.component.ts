@@ -1,7 +1,8 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {LayoutService} from 'src/app/modules/admin/layout/service/app.layout.service';
 import {ActivatedRoute, Router} from "@angular/router";
-import {LoginModel} from "../student/service/domain/login.model";
+import {LoginModel} from "../../../student/service/domain/login.model";
+import {BaseComponent} from "../../../base/components/base-component/base.component";
 
 @Component({
   selector: 'app-login',
@@ -15,23 +16,27 @@ import {LoginModel} from "../student/service/domain/login.model";
     }
   `]
 })
-export class LoginComponent {
+export class LoginComponent extends BaseComponent {
 
   valCheck: string[] = ['remember'];
 
   password: string = '';
-  @Output() onLoginClicked: EventEmitter<any> = new EventEmitter();
-  @Input() header: string = '';
+  @Output() onLoginClicked: EventEmitter<LoginModel> = new EventEmitter<LoginModel>();
+  @Input() header: string;
   private credential: LoginModel = new LoginModel();
   username = '';
 
-  constructor(public layoutService: LayoutService, private route: Router, private activatedRoute: ActivatedRoute) {
+  constructor(
+    public layoutService: LayoutService,
+    private route: Router,
+    private activatedRoute: ActivatedRoute) {
+    super();
   }
 
+
   login($event: MouseEvent) {
-    this.credential.username = this.username;
-    this.credential.password = this.password;
+    this.credential.username = "sldkf";
+    this.credential.password = "sldkf";
     this.onLoginClicked.emit(this.credential)
-    // this.route.navigate(['home'], {relativeTo: this.activatedRoute});
   }
 }

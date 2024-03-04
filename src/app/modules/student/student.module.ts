@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {StudentLoginComponent} from "./components/student-login/student-login.component";
+import {StudentLoginComponent} from "./components/login/student-login.component";
 import {RouterModule} from "@angular/router";
 import {sudentRoutes} from "./student.routes";
 import { ExamComponent } from './components/exam/exam.component';
@@ -10,7 +10,8 @@ import {AngularSplitModule} from "angular-split";
 import {FormsModule} from "@angular/forms";
 import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
 import {SpreadSheetsModule} from "@mescius/spread-sheets-angular";
-import {LoginModule} from "../login/login.module";
+import {AuthModule} from "../auth/auth.module";
+import { StudentHomeComponent } from './components/home/student-home.component';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import {LoginModule} from "../login/login.module";
     HeaderComponent,
     QuestionComponent,
     QthumbnailComponent,
+    StudentHomeComponent,
 
   ],
     imports: [
@@ -28,7 +30,7 @@ import {LoginModule} from "../login/login.module";
         FormsModule,
         CKEditorModule,
         SpreadSheetsModule,
-        LoginModule,
+        AuthModule,
     ],
   providers: [],
   bootstrap: []

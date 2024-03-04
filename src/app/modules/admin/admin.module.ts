@@ -2,8 +2,6 @@ import {NgModule} from '@angular/core';
 import {RouterModule} from "@angular/router";
 import {adminRoutes} from "./admin.route";
 import {InputTextModule} from "primeng/inputtext";
-import { CheckboxModule } from 'primeng/checkbox';
-import { RadioButtonModule } from 'primeng/radiobutton';
 import {AppLayoutModule} from "./layout/app.layout.module";
 import { CreateQuestionComponent } from './components/question/create-question/create-question.component';
 import {DropdownModule} from "primeng/dropdown";
@@ -19,6 +17,8 @@ import {CardModule} from "primeng/card";
 import {ScrollPanelModule} from "primeng/scrollpanel";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ToastModule} from "primeng/toast";
+import {AdminLoginComponent} from "./components/login/admin-login.component";
+import {AuthModule} from "../auth/auth.module";
 
 @NgModule({
   imports: [
@@ -38,9 +38,12 @@ import {ToastModule} from "primeng/toast";
     ScrollPanelModule,
     ConfirmDialogModule,
     ToastModule,
+    AuthModule,
+
 
   ],
   declarations: [
+    AdminLoginComponent,
     CreateQuestionComponent,
     EditQuestionComponent
   ]

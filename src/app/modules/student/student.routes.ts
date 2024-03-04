@@ -1,8 +1,14 @@
 import {Routes} from "@angular/router";
-import {ExamComponent} from "./components/exam/exam.component";
+import {StudentLoginComponent} from "./components/login/student-login.component";
+import {StudentHomeComponent} from "./components/home/student-home.component";
+import {authGuard} from "../auth/auth-guard/auth.guard";
 
 export const sudentRoutes: Routes = [
   {
-    path: "", component: ExamComponent
-  }
+    path: "", component: StudentLoginComponent
+  },
+  {
+    path: "home", component: StudentHomeComponent, canActivate: [authGuard]
+  },
+
 ]
