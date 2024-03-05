@@ -25,7 +25,7 @@ export class StudentLoginComponent extends BaseComponent {
   onLogin($event: any) {
     this.authService.studentLogin(this.credential.username, this.credential.password).subscribe(value => {
       if (value) {
-        this.messageService.add({severity: 'success', summary: 'Success', detail: 'Login Successfull!'});
+        this.messageService.add({severity: 'success', summary: 'Success', detail: 'Login Successful !'});
         this.route.navigate(['home'], {relativeTo: this.activatedRoute})
       }
     })

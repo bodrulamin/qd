@@ -1,27 +1,30 @@
-import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import {NgModule} from '@angular/core';
+import {AppComponent} from './app.component';
+import {AppRoutingModule} from './app-routing.module';
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {HttpClientModule} from "@angular/common/http";
 
 
 @NgModule({
   declarations: [
     AppComponent
   ],
-    imports: [
-        AppRoutingModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        ToastModule,
-        ConfirmDialogModule
-    ],
+  imports: [
+    AppRoutingModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    ToastModule,
+    ConfirmDialogModule,
+    HttpClientModule
+  ],
   providers: [
-    MessageService,ConfirmationService
+    MessageService, ConfirmationService
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
