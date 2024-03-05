@@ -21,12 +21,14 @@ export class CreateExamComponent extends BaseComponent {
   constructor(private formBuilder: FormBuilder) {
     super();
     this.prepareCreateExamForm();
-
     let today = new Date()
+
+    const firstDayOfNextYear = new Date(today.getFullYear() + 1, 0, 1);
+    const lastDayOfYear = new Date(firstDayOfNextYear.getTime() - 1);
     this.minDate = new Date();
     this.maxDate = new Date();
     this.minDate.setFullYear(today.getFullYear() - 5);
-    this.maxDate.setFullYear(today.getFullYear());
+    this.maxDate = lastDayOfYear;
   }
 
   private prepareCreateExamForm() {
