@@ -1,1 +1,21 @@
-<p>create-exam works!</p>
+<div class="grid">
+  <div class="col-12 md:col-12">
+    <div class="card p-fluid">
+      <h5>Create Exam</h5>
+
+      <div class="formgrid grid">
+        <div class="field col">
+          <p-dropdown [options]="examLevels" optionLabel="name"></p-dropdown>
+        </div>
+        <div class="field col">
+          <p-dropdown [options]="sessions" optionLabel="name"></p-dropdown>
+        </div>
+        <div class="field col">
+          <p-dropdown [options]="years" optionLabel="name"></p-dropdown>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
