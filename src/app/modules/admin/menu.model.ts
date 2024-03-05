@@ -17,7 +17,7 @@ export const menues = [
       },
       {
         label: 'Configuration', icon: 'pi pi-fw pi-cog', items: [
-          {label: 'Exam', icon: 'pi pi-fw pi-bars', routerLink: ['/exam-configuration'] },
+          {label: 'Exam', icon: 'pi pi-fw pi-bars', routerLink: ['/create-exam'] },
           {label: 'Subject', icon: 'pi pi-fw pi-bars', routerLink: ['/subject-configuration'] },
         ]
       },

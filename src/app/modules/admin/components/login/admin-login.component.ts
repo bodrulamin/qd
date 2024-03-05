@@ -19,6 +19,9 @@ export class AdminLoginComponent extends BaseComponent {
     private authService: AuthService
   ) {
     super();
+    if (authService.adminAuthenticated()) {
+      this.route.navigate(['home'], {relativeTo: this.activatedRoute})
+    }
   }
 
   onLogin(credential: LoginModel) {

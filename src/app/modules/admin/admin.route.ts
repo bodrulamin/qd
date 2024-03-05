@@ -8,7 +8,7 @@ import {CreateExamComponent} from "./components/create-exam/create-exam.componen
 
 export const adminRoutes: Routes = [
   {
-    path: "", component: AdminLoginComponent
+    path: "", component: AdminLoginComponent,
   },
   {
     path: "home", canActivate: [adminAuthGuard], component: AppLayoutComponent, children: [
