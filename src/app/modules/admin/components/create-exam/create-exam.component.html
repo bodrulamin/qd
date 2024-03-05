@@ -3,18 +3,40 @@
     <div class="card p-fluid">
       <h5>Create Exam</h5>
 
-      <div class="formgrid grid">
+      <div class="formgrid grid mb-2">
         <div class="field col">
-          <p-dropdown [options]="examLevels" optionLabel="name"></p-dropdown>
+          <label for="exam-level">Exam Level</label>
+          <p-dropdown id="exam-level" [options]="examLevels" optionLabel="name"></p-dropdown>
         </div>
         <div class="field col">
-          <p-dropdown [options]="sessions" optionLabel="name"></p-dropdown>
+          <label for="session">Session</label>
+          <p-dropdown id="session" [options]="sessions" optionLabel="name"></p-dropdown>
         </div>
         <div class="field col">
-          <p-dropdown [options]="years" optionLabel="name"></p-dropdown>
+          <label for="year">Year</label>
+          <p-dropdown id="year" [options]="years" optionLabel="name"></p-dropdown>
         </div>
       </div>
 
+      <div class="formgrid grid">
+        <div class="field col">
+          <label for="exam-name">Exam Name</label>
+          <input pInputText id="exam-name" type="text" >
+        </div>
+        <div class="field col">
+          <label for="exam-date">Exam Date</label>
+          <p-calendar id="exam-date" [(ngModel)]="examDate" dateFormat="dd/mm/yy"></p-calendar>
+        </div>
+
+        <div class="field col">
+          <label for="exam-pass">Exam Password</label>
+          <p-password id="exam-pass" [feedback]="false" [toggleMask]="true"></p-password>
+        </div>
+      </div>
+
+      <div class="flex justify-content-end">
+        <p-button label="Submit"></p-button>
+      </div>
 
     </div>
   </div>

@@ -20,29 +20,33 @@ import {ToastModule} from "primeng/toast";
 import {AdminLoginComponent} from "./components/login/admin-login.component";
 import {AuthModule} from "../auth/auth.module";
 import { CreateExamComponent } from './components/create-exam/create-exam.component';
+import {CalendarModule} from "primeng/calendar";
+import {PasswordModule} from "primeng/password";
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(adminRoutes),
-    CommonModule,
-    InputTextModule,
-    AppLayoutModule,
-    DropdownModule,
-    ButtonModule,
-    TableModule,
-    MenuModule,
-    SplitterModule,
-    EditorModule,
-    ReactiveFormsModule,
-    FormsModule,
-    CardModule,
-    ScrollPanelModule,
-    ConfirmDialogModule,
-    ToastModule,
-    AuthModule,
+    imports: [
+        RouterModule.forChild(adminRoutes),
+        CommonModule,
+        InputTextModule,
+        AppLayoutModule,
+        DropdownModule,
+        ButtonModule,
+        TableModule,
+        MenuModule,
+        SplitterModule,
+        EditorModule,
+        ReactiveFormsModule,
+        FormsModule,
+        CardModule,
+        ScrollPanelModule,
+        ConfirmDialogModule,
+        ToastModule,
+        AuthModule,
+        CalendarModule,
+        PasswordModule,
 
 
-  ],
+    ],
   declarations: [
     AdminLoginComponent,
     CreateQuestionComponent,
