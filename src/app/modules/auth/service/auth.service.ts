@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, of} from "rxjs";
+import {ActivatedRoute, Router} from "@angular/router";
+
 const ADMIN_LOGIN = "ADMIN_LOGIN";
 const STUDENT_LOGIN = "STUDENT_LOGIN";
 
@@ -12,37 +14,44 @@ export class AuthService {
   private isStudentLoggedInSubject = new BehaviorSubject<boolean>(false);
   isStudentLoggedIn$: Observable<boolean> = this.isStudentLoggedInSubject.asObservable();
 
-  constructor() {
+  constructor(private activatedRoute: ActivatedRoute, private route:Router) {
+    this.isAdminLoggedIn$.subscribe(isLoggedIn => {
+      let adminPath = this.route.url.startsWith('/admin');
+      if (adminPath && !isLoggedIn) {
+            this.route.navigate(["/admin"]);
+      }
+    })
   }
 
   async adminLogin(username: string, password: string): Promise<void> {
-    localStorage.setItem(ADMIN_LOGIN,'true');
+    localStorage.setItem(ADMIN_LOGIN, 'true');
     this.isAdminLoggedInSubject.next(true); // Update authentication state
   }
 
 
-  async studentLogin(username: string, password: string): Promise<void> {
-    localStorage.setItem(STUDENT_LOGIN,'true');
+  studentLogin(username: string, password: string): Observable<any> {
+    localStorage.setItem(STUDENT_LOGIN, 'true');
     this.isStudentLoggedInSubject.next(true); // Update authentication state
+    return of(true)
   }
 
   adminLogout() {
-    localStorage.setItem(ADMIN_LOGIN,'false');
+    localStorage.setItem(ADMIN_LOGIN, 'false');
     this.isAdminLoggedInSubject.next(false);
   }
 
-  isAdminLoggedIn(){
+  adminAuthenticated() {
     let loggedIn = localStorage.getItem(ADMIN_LOGIN);
     return loggedIn === 'true'
   }
 
-  isStudentLoggedIn(){
+  studentAutheticated() {
     let loggedIn = localStorage.getItem(STUDENT_LOGIN);
     return loggedIn === 'true'
   }
 
   studentLogout() {
-    localStorage.setItem(STUDENT_LOGIN,'false');
+    localStorage.setItem(STUDENT_LOGIN, 'false');
     this.isStudentLoggedInSubject.next(false);
   }
 }

@@ -17,22 +17,17 @@ export class StudentLoginComponent extends BaseComponent {
     private route: Router,
     private activatedRoute: ActivatedRoute,
     private messageService: MessageService,
-    private authService:AuthService
+    private authService: AuthService
   ) {
     super();
   }
 
-
   onLogin($event: any) {
-    this.authService.studentLogin(this.credential.username,this.credential.password);
-    this.subscribers.isAdminLoggedInSubs = this.authService.isAdminLoggedIn$.subscribe(value => {
+    this.authService.studentLogin(this.credential.username, this.credential.password).subscribe(value => {
       if (value) {
         this.messageService.add({severity: 'success', summary: 'Success', detail: 'Login Successfull!'});
         this.route.navigate(['home'], {relativeTo: this.activatedRoute})
-      } else {
-        this.messageService.add({severity: 'success', summary: 'Failed', detail: 'Login Failed!'});
       }
-
     })
   }
 }

@@ -19,6 +19,7 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ToastModule} from "primeng/toast";
 import {AdminLoginComponent} from "./components/login/admin-login.component";
 import {AuthModule} from "../auth/auth.module";
+import { CreateExamComponent } from './components/create-exam/create-exam.component';
 
 @NgModule({
   imports: [
@@ -45,7 +46,8 @@ import {AuthModule} from "../auth/auth.module";
   declarations: [
     AdminLoginComponent,
     CreateQuestionComponent,
-    EditQuestionComponent
+    EditQuestionComponent,
+    CreateExamComponent
   ]
 })
 export class AdminModule {
