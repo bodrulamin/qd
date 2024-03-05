@@ -8,7 +8,7 @@ import {BaseComponent} from "../../../../base/components/base-component/base.com
   selector: 'app-edit-question',
   templateUrl: './edit-question.component.html',
   styleUrls: ['./edit-question.component.css'],
-  providers: [ConfirmationService, MessageService]
+  providers: []
 })
 export class EditQuestionComponent extends BaseComponent{
   question: QuestionModel = new QuestionModel();

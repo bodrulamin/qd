@@ -4,8 +4,6 @@
     <p-splitter [panelSizes]="[25, 75]" [style]="{minHeight:'50vh'}">
       <ng-template pTemplate>
         <div class="col">
-          <p-toast></p-toast>
-          <p-confirmDialog [style]="{width: '30vw'}"></p-confirmDialog>
           <p-scrollPanel [style]="{width:'100%',maxHeight:'70vh', paddingBottom:'0px'  }">
             <p-card [style]="{maxHeight:'200px'}" *ngFor="let item of questions; index as i;"
                     [header]="'Question ' + (i+1)" class="m-1"

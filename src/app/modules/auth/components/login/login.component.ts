@@ -34,12 +34,6 @@ export class LoginComponent extends BaseComponent {
     private activatedRoute: ActivatedRoute) {
 
     super();
-
-    if (authService.isAdminLoggedIn()) {
-      this.route.navigate(['admin', 'home'],)
-    } else {
-      this.route.navigate([''], {relativeTo: this.activatedRoute})
-    }
   }
 
 
