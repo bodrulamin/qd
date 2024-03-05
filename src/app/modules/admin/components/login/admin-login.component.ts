@@ -6,7 +6,7 @@ import {LoginModel} from "../../../student/service/domain/login.model";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
 
 @Component({
-  selector: 'app-student-login',
+  selector: 'app-admin-login',
   templateUrl: './admin-login.component.html',
 })
 export class AdminLoginComponent extends BaseComponent {

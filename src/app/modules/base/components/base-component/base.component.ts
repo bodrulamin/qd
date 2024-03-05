@@ -1,5 +1,6 @@
 import {Component, OnDestroy} from '@angular/core';
 import {Subscriber} from "rxjs";
+import {FormArray, FormControl, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-base-component',
@@ -17,5 +18,18 @@ export class BaseComponent implements OnDestroy {
       }
     }
   }
+  protected markFormGroupAsTouched(group: FormGroup | FormArray) {
+    group.markAsTouched();
+    group.markAsDirty();
+    for (const i in group.controls) {
+      if (group.controls[i] instanceof FormControl) {
+        group.controls[i].markAsTouched();
+        group.controls[i].markAsDirty();
+      } else {
+        this.markFormGroupAsTouched(group.controls[i]);
+      }
+    }
+  }
+
 
 }

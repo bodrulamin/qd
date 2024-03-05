@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {BaseComponent} from "../../../../base/components/base-component/base.component";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-create-question',
@@ -8,57 +9,34 @@ import {BaseComponent} from "../../../../base/components/base-component/base.com
   styleUrls: ['./create-question.component.css']
 })
 export class CreateQuestionComponent extends BaseComponent {
-  examLevels = [{name: 'Exam Level', code: null}];
-  sessions = [{name: 'Session', code: null}];
-  subjects = [{name: 'Subject', code: null}];
-  years = [{name: 'Year', code: null}];
-  questions: any = [
-    {
-      code: '101',
-      session: '2021-2022',
-      status: 'DRAFT'
-    }, {
-      code: '101',
-      session: '2021-2022',
-      status: 'DRAFT'
-    }, {
-      code: '101',
-      session: '2021-2022',
-      status: 'DRAFT'
-    }, {
-      code: '101',
-      session: '2021-2022',
-      status: 'DRAFT'
-    }, {
-      code: '101',
-      session: '2021-2022',
-      status: 'DRAFT'
-    }, {
-      code: '101',
-      session: '2021-2022',
-      status: 'DRAFT'
-    },
-  ]
-  ;
-  actionMenus = [
-    {
-      label: 'Edit',
-      icon: 'pi pi-file-edit',
-      command: () => {
-        this.route.navigate(["../edit-question"], {relativeTo: this.activatedRoute})
-      }
-    },
-    {
-      label: 'Approve',
-      icon: 'pi pi-verified',
-      command: () => {
-      }
-    },
+  examLevels = [];
+  sessions = [];
+  subjects = [];
+  createQuestionForm: FormGroup;
 
-  ];
-
-  constructor(private route: Router, private activatedRoute: ActivatedRoute) {
-    super()
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private formBuilder: FormBuilder
+  ) {
+    super();
+    this.prepareCreateQuestionForm();
   }
+
+  private prepareCreateQuestionForm() {
+    this.createQuestionForm = this.formBuilder.group({
+      examLevel: ['', Validators.required],
+      session: ['', Validators.required],
+      year: ['', [Validators.required]],
+      subject: ['', Validators.required]
+    });
+  }
+
+
+  searchQuestion() {
+    this.markFormGroupAsTouched(this.createQuestionForm);
+    // this.router.navigate(["../edit-question"], {relativeTo: this.activatedRoute})
+  }
+
 
 }
