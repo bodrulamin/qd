@@ -17,8 +17,9 @@ export const menus = [
       },
       {
         label: 'Configuration', icon: 'pi pi-fw pi-cog', items: [
-          {label: 'Exam', icon: 'pi pi-fw pi-bars', routerLink: ['create-exam'] },
+          {label: 'Exam', icon: 'pi pi-fw pi-bars', routerLink: ['exam-configuration'] },
           {label: 'Subject', icon: 'pi pi-fw pi-bars', routerLink: ['subject-configuration'] },
+          {label: 'Subject', icon: 'pi pi-fw pi-bars', routerLink: ['exam-scheduling'] },
         ]
       },
       {
@@ -34,5 +35,6 @@ export const menus = [
       },
     ]
   },
+
 
 ];

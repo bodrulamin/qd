@@ -12,7 +12,7 @@ export const adminRoutes: Routes = [
   },
   {
     path: "home", canActivate: [adminAuthGuard], component: AppLayoutComponent, children: [
-      {path: "create-exam", component: CreateExamComponent},
+      {path: "exam-configuration", component: CreateExamComponent},
       {path: "create-question", component: CreateQuestionComponent},
       {path: "edit-question", component: EditQuestionComponent}
     ],

@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
+import {AdminService} from "../../service/admin.service";
 
 @Component({
   selector: 'app-create-exam',
@@ -23,13 +24,14 @@ export class CreateExamComponent extends BaseComponent {
     year: 'Year',
     examName: 'Exam Name',
     examDate: 'Date of Exam',
-    examPassword: 'Exam Password'
+    examPassword: 'Student Login Password'
   };
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder,private adminService:AdminService) {
     super();
     this.prepareCreateExamForm();
     this.generateInitialValue();
+    this.fetchConfiguration();
 
   }
 
@@ -74,5 +76,11 @@ export class CreateExamComponent extends BaseComponent {
       {name: 'Cirtificate', code: 'cirtificate'}
     ];
     this.subjects = [{name: 'Bangla', code: 'bangla'}];
+  }
+
+  private fetchConfiguration() {
+    this.adminService.fetchConfiguration().subscribe(data=>{
+
+    })
   }
 }

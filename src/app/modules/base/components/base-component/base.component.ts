@@ -13,7 +13,6 @@ export class BaseComponent implements OnDestroy {
   private msgService = inject(MessageService)
 
   constructor() {
-
   }
 
   ngOnDestroy(): void {

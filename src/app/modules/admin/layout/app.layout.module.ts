@@ -16,6 +16,7 @@ import { AppConfigModule } from './config/config.module';
 import { AppSidebarComponent } from "./app.sidebar.component";
 import { AppLayoutComponent } from "./app.layout.component";
 import {CommonModule} from "@angular/common";
+import {ToggleButtonModule} from "primeng/togglebutton";
 
 @NgModule({
     declarations: [
@@ -27,7 +28,7 @@ import {CommonModule} from "@angular/common";
         AppLayoutComponent,
     ],
     imports: [
-      CommonModule,
+        CommonModule,
         FormsModule,
         HttpClientModule,
         InputTextModule,
@@ -37,7 +38,8 @@ import {CommonModule} from "@angular/common";
         InputSwitchModule,
         RippleModule,
         RouterModule,
-        AppConfigModule
+        AppConfigModule,
+        ToggleButtonModule
     ],
     exports: [AppLayoutComponent]
 })

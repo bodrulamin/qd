@@ -1,5 +1,5 @@
 export class ApiResponse {
-  result: string;
+  result:boolean;
   data: any;
   remarks: string;
 }

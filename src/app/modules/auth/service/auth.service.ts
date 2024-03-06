@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {Router} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
 import {USER_LOGIN} from "./auth.endpoint";
 import {ApiResponse} from "../../base/service/domain/api.response";
 import {BaseService} from "../../base/service/base.service";
@@ -19,7 +18,7 @@ export class AuthService extends BaseService {
   private isStudentLoggedInSubject = new BehaviorSubject<boolean>(false);
   isStudentLoggedIn$: Observable<boolean> = this.isStudentLoggedInSubject.asObservable();
 
-  constructor(private router: Router, private http: HttpClient) {
+  constructor(private router: Router) {
 
     super();
     this.adminUnauthorizedRedirection();

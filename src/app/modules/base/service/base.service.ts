@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core';
-import {HttpParams} from "@angular/common/http";
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpParams} from "@angular/common/http";
 
 export interface PathParameters {
   [parameterName: string]: any;
@@ -10,7 +10,10 @@ export interface PathParameters {
 })
 export class BaseService {
 
+  public http: HttpClient;
+
   constructor() {
+    this.http = inject(HttpClient);
   }
 
   /**
