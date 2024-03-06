@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {LoginComponent} from './components/login/login.component';
 import {ButtonModule} from 'primeng/button';
 import {CheckboxModule} from 'primeng/checkbox';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {PasswordModule} from 'primeng/password';
 import {InputTextModule} from 'primeng/inputtext';
 import {RippleModule} from "primeng/ripple";
@@ -16,7 +16,8 @@ import {RippleModule} from "primeng/ripple";
     InputTextModule,
     FormsModule,
     PasswordModule,
-    RippleModule
+    RippleModule,
+    ReactiveFormsModule
   ],
   exports: [
     LoginComponent

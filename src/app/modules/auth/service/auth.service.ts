@@ -95,4 +95,13 @@ export class AuthService extends BaseService {
     const jsonData = localStorage.getItem(key);
     return JSON.parse(jsonData);
   }
+
+  getToken() {
+    let adminPath = /^\/admin.*$/.test(this.router.url);
+    if (adminPath) {
+      return this.getAdminToken();
+    } else {
+      this.getStudentToken();
+    }
+  }
 }

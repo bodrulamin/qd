@@ -1,9 +1,8 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {LayoutService} from 'src/app/modules/admin/layout/service/app.layout.service';
-import {ActivatedRoute, Router} from "@angular/router";
 import {LoginModel} from "../../../student/service/domain/login.model";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
-import {AuthService} from "../../service/auth.service";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-login',
@@ -19,27 +18,43 @@ import {AuthService} from "../../service/auth.service";
 })
 export class LoginComponent extends BaseComponent {
 
-  valCheck: string[] = ['remember'];
-
-  password: string = '';
+  loginForm: FormGroup;
   @Output() onLoginClicked: EventEmitter<LoginModel> = new EventEmitter<LoginModel>();
   @Input() header: string;
+  @Input() usernameTitle: string = 'User Name';
+  @Input() passwordTitle: string = 'Password';
   private credential: LoginModel = new LoginModel();
-  username = '';
+  required_field = {};
 
   constructor(
     public layoutService: LayoutService,
-    public authService: AuthService,
-    private route: Router,
-    private activatedRoute: ActivatedRoute) {
-
+    private formBuilder: FormBuilder,
+  ) {
     super();
+    this.prepareCreateQuestionForm();
+    this.required_field = {
+      username: this.usernameTitle,
+      password: this.passwordTitle
+    };
   }
 
+  private prepareCreateQuestionForm() {
+    this.loginForm = this.formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+    });
+  }
 
   login($event: MouseEvent) {
-    this.credential.username = this.username;
-    this.credential.password = this.password;
-    this.onLoginClicked.emit(this.credential)
+    if (this.formInvalid()) return;
+
+    let user = this.loginForm.value;
+    this.onLoginClicked.emit(user)
+  }
+
+  private formInvalid() {
+    this.markFormGroupAsTouched(this.loginForm)
+    this.showRequiredErrorMessage(this.loginForm, this.required_field)
+    return this.loginForm.invalid;
   }
 }
