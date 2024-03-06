@@ -21,7 +21,7 @@
         <div class="formgrid grid">
           <div class="field col">
             <label for="year">Year</label>
-            <p-calendar id="year" [showClear]="true" placeholder="Select Year" formControlName="year" view="year"
+            <p-calendar id="year" [minDate]="minDate" [maxDate]="maxDate" [showClear]="true" placeholder="Select Year" formControlName="year" view="year"
                         dateFormat="yy" inputId="yearpicker"></p-calendar>
           </div>
           <div class="field col">

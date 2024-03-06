@@ -1,15 +1,14 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, of} from "rxjs";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {USER_LOGIN} from "./auth.endpoint";
 import {ApiResponse} from "../../base/service/domain/api.response";
 import {BaseService} from "../../base/service/base.service";
 
-const ADMIN_LOGIN = "ADMIN_LOGIN";
-const TOKEN = "TOKEN";
-const USER_DATA = "USER_DATA";
-const STUDENT_LOGIN = "STUDENT_LOGIN";
+
+export const STUDENT_DATA = "STUDENT_DATA";
+export const ADMIN_DATA = "ADMIN_DATA";
 
 @Injectable({
   providedIn: 'root'
@@ -20,64 +19,80 @@ export class AuthService extends BaseService {
   private isStudentLoggedInSubject = new BehaviorSubject<boolean>(false);
   isStudentLoggedIn$: Observable<boolean> = this.isStudentLoggedInSubject.asObservable();
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router, private http: HttpClient) {
+  constructor(private router: Router, private http: HttpClient) {
 
     super();
-     this.isAdminLoggedIn$.subscribe(isLoggedIn => {
-      if (router.url == '/admin') {
-        return;
-      }
-
-      let adminPath = /^\/admin.*$/.test(this.router.url);
-      if (adminPath && !isLoggedIn) {
-        localStorage.removeItem(USER_DATA);
-        localStorage.setItem(ADMIN_LOGIN, 'false');
-        this.router.navigate(["/admin"]);
-      }
-    })
+    this.adminUnauthorizedRedirection();
   }
 
-  async adminLogin(username: string, password: string): Promise<void> {
-    // this.http.post<ApiResponse>(USER_LOGIN, {username: username, password: password}).subscribe(response => {
-    //   if (response.result) {
-    //     localStorage.setItem(USER_DATA, response.data);
-    //     localStorage.setItem(TOKEN, response.data.token);
-    //     localStorage.setItem(ADMIN_LOGIN, 'true');
-    //     this.isAdminLoggedInSubject.next(true); // Update authentication state
-    //   } else {
-    //     this.isAdminLoggedInSubject.next(false); // Update authentication state
-    //   }
-    // });
-
-    this.isAdminLoggedInSubject.next(true); // Update authentication state
-    localStorage.setItem(ADMIN_LOGIN, 'true');
-  }
-
-
-  studentLogin(username: string, password: string): Observable<any> {
-    localStorage.setItem(STUDENT_LOGIN, 'true');
-    this.isStudentLoggedInSubject.next(true); // Update authentication state
-    return of(true)
+  adminLogin(username: string, password: string): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(USER_LOGIN, {username: username, password: password});
   }
 
   adminLogout() {
-    localStorage.removeItem(USER_DATA);
-    localStorage.setItem(ADMIN_LOGIN, 'false');
+    this.clearLocalData();
     this.isAdminLoggedInSubject.next(false);
   }
 
-  adminAuthenticated() {
-    let loggedIn = localStorage.getItem(ADMIN_LOGIN);
-    return loggedIn === 'true'
-  }
-
-  studentAutheticated() {
-    let loggedIn = localStorage.getItem(STUDENT_LOGIN);
-    return loggedIn === 'true'
+  studentLogin(username: string, password: string): Observable<any> {
+    return this.http.post<ApiResponse>(USER_LOGIN, {username: username, password: password});
   }
 
   studentLogout() {
-    localStorage.setItem(STUDENT_LOGIN, 'false');
+    this.clearLocalData();
     this.isStudentLoggedInSubject.next(false);
+  }
+
+
+  private adminUnauthorizedRedirection() {
+    this.isAdminLoggedIn$.subscribe(isLoggedIn => {
+      if (this.router.url == '/admin') {
+        return;
+      }
+      let adminPath = /^\/admin.*$/.test(this.router.url);
+      if (adminPath && !isLoggedIn) {
+        localStorage.removeItem(ADMIN_DATA);
+        this.router.navigate(["/admin"]);
+      }
+    });
+  }
+
+  clearLocalData() {
+    localStorage.removeItem(STUDENT_DATA);
+    localStorage.removeItem(ADMIN_DATA);
+  }
+
+
+  adminAuthenticated() {
+    let data = this.getData(ADMIN_DATA);
+    return data && data.token;
+  }
+
+  studentAutheticated() {
+    let data = this.getData(STUDENT_DATA);
+    return data && data.token;
+  }
+
+
+  getAdminToken() {
+    let data = this.getData(ADMIN_DATA)
+    return data ? data.token : null;
+  }
+
+
+  getStudentToken() {
+    let data = this.getData(STUDENT_DATA)
+    return data ? data.token : null;
+  }
+
+
+  saveData(key: string, data: any): void {
+    const jsonData = JSON.stringify(data);
+    localStorage.setItem(key, jsonData);
+  }
+
+  getData(key: string): any {
+    const jsonData = localStorage.getItem(key);
+    return JSON.parse(jsonData);
   }
 }

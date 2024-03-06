@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
-import {AuthService} from "../../../auth/service/auth.service";
+import {ADMIN_DATA, AuthService, STUDENT_DATA} from "../../../auth/service/auth.service";
 import {LoginModel} from "../../service/domain/login.model";
 import {MessageService} from "primeng/api";
 
@@ -22,12 +22,14 @@ export class StudentLoginComponent extends BaseComponent {
     super();
   }
 
-  onLogin($event: any) {
-    this.authService.studentLogin(this.credential.username, this.credential.password).subscribe(value => {
-      if (value) {
+  onLogin(credential: LoginModel) {
+    this.authService.studentLogin(credential.username, credential.password).subscribe(apiResponse => {
+      if (apiResponse.result) {
+        this.authService.saveData(STUDENT_DATA, apiResponse.data)
         this.messageService.add({severity: 'success', summary: 'Success', detail: 'Login Successful !'});
         this.route.navigate(['home'], {relativeTo: this.activatedRoute})
       }
-    })
+    });
+
   }
 }

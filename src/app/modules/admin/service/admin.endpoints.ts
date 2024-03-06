@@ -1,1 +1,1 @@
-export const ADMIN_LOGIN = "/admin/login"
+export const ADMIN_LOGIN_ENDPOINT = "/admin/login"

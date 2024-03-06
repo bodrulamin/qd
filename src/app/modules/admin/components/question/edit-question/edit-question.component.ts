@@ -1,8 +1,9 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {QuestionModel} from "../../../service/domain/question.model";
 import {Editor, EditorTextChangeEvent} from "primeng/editor";
-import {ConfirmationService, ConfirmEventType, MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {BaseComponent} from "../../../../base/components/base-component/base.component";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-edit-question',
@@ -10,19 +11,31 @@ import {BaseComponent} from "../../../../base/components/base-component/base.com
   styleUrls: ['./edit-question.component.css'],
   providers: []
 })
-export class EditQuestionComponent extends BaseComponent{
+export class EditQuestionComponent extends BaseComponent {
   question: QuestionModel = new QuestionModel();
   questions: QuestionModel[] = [];
   private selectedIndex: number = -1;
   text: any = 'helloworld';
   @ViewChild("editor") editor!: Editor;
   questionSelected = false;
+  protected editQuestionForm: FormGroup;
 
   constructor(
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private formBuilder:FormBuilder
   ) {
     super();
+    this.prepareCreateQuestionForm();
+  }
+
+  private prepareCreateQuestionForm() {
+    this.editQuestionForm = this.formBuilder.group({
+      examLevel: ['', Validators.required],
+      session: ['', Validators.required],
+      year: ['', [Validators.required]],
+      subject: ['', Validators.required]
+    });
   }
 
   ngOnInit() {
@@ -61,7 +74,7 @@ export class EditQuestionComponent extends BaseComponent{
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.questions.splice(i,1);
+        this.questions.splice(i, 1);
         this.messageService.add({severity: 'info', summary: 'Confirmed', detail: 'Question Deleted'});
       },
       reject: (type) => {
