@@ -1,19 +1,19 @@
-<div class="grid" [formGroup]="createQuestionForm">
+<div class="grid" >
   <div class="col-12 md:col-12">
     <div class="card p-fluid">
       <h5>Create Question</h5>
 
-      <div class="p-5">
+      <form class="p-5" [formGroup]="createQuestionForm">
         <div class="formgrid grid">
           <div class="field col">
             <label for="exam-level">Exam Level</label>
-            <p-dropdown id="exam-level" formControlName="examLevel" [showClear]="true" placeholder="Select Exam Level"
-                        [options]="examLevels" optionLabel="name"></p-dropdown>
+            <p-dropdown id="exam-level" (onChange)="onExamLevelChange($event.value)" (onClear)="onExamLevelClear()" formControlName="examLevel" [showClear]="true" placeholder="Select Exam Level"
+                        [options]="examLevelOptions" optionLabel="name" optionValue="code"></p-dropdown>
           </div>
           <div class="field col">
             <label for="session">Session</label>
             <p-dropdown id="session" [showClear]="true" placeholder="Select Session" formControlName="session"
-                        [options]="sessions" optionLabel="name"></p-dropdown>
+                        [options]="sessionOptions" optionLabel="name"></p-dropdown>
           </div>
 
         </div>
@@ -21,13 +21,13 @@
         <div class="formgrid grid">
           <div class="field col">
             <label for="year">Year</label>
-            <p-calendar id="year" [minDate]="minDate" [maxDate]="maxDate" [showClear]="true" placeholder="Select Year" formControlName="year" view="year"
-                        dateFormat="yy" inputId="yearpicker"></p-calendar>
+            <p-dropdown id="year" [showClear]="true" placeholder="Select Year" formControlName="year"
+                        [options]="yearOptions" optionLabel="name"></p-dropdown>
           </div>
           <div class="field col">
             <label for="subject">Subject</label>
             <p-dropdown id="subject" [showClear]="true" placeholder="Select Subject" formControlName="subject"
-                        [options]="subjects" optionLabel="name"></p-dropdown>
+                        [options]="subjectOptions" optionLabel="name"></p-dropdown>
           </div>
 
         </div>
@@ -35,7 +35,7 @@
         <div class="flex justify-content-end">
           <p-button icon="pi pi-search" (onClick)="searchQuestion()" label="Find"></p-button>
         </div>
-      </div>
+      </form>
 
     </div>
   </div>

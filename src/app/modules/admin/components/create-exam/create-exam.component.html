@@ -1,9 +1,9 @@
-<div class="grid" [formGroup]="createExamForm">
+<div class="grid" >
   <div class="col-12 md:col-12">
     <div class="card p-fluid">
       <h5>Create Exam</h5>
 
-      <div class="p-5">
+      <form class="p-5" [formGroup]="createExamForm">
         <div class="formgrid grid">
           <div class="field col">
             <label for="exam-level">Exam Level</label>
@@ -40,10 +40,10 @@
         </div>
 
         <div class="flex justify-content-end">
-          <p-button label="Submit" (onClick)="submit()"></p-button>
+          <p-button label="{{editMode?'Update':'Add'}}" (onClick)="submit()"></p-button>
         </div>
 
-      </div>
+      </form>
 
     </div>
   </div>

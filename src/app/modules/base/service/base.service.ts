@@ -16,11 +16,6 @@ export class BaseService {
     this.http = inject(HttpClient);
   }
 
-  /**
-   *
-   * @param params
-   * @returns
-   */
   protected getHttpParams(params: Map<string, string>): HttpParams {
     let httpParams = new HttpParams();
     params.forEach((value: string, key: string) => {

@@ -2,6 +2,8 @@ import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {BaseComponent} from "../../../../base/components/base-component/base.component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AdminService} from "../../../service/admin.service";
+import {DropdownChangeEvent} from "primeng/dropdown";
 
 @Component({
   selector: 'app-create-question',
@@ -9,9 +11,11 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./create-question.component.css']
 })
 export class CreateQuestionComponent extends BaseComponent {
-  examLevels = [];
-  sessions = [];
-  subjects = [];
+  examLevelOptions = [];
+  examLevelList = [];
+  sessionOptions = [];
+  subjectOptions = [];
+  yearOptions = [];
   createQuestionForm: FormGroup;
   minDate: Date;
   maxDate: Date;
@@ -25,12 +29,13 @@ export class CreateQuestionComponent extends BaseComponent {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private adminService: AdminService,
     private formBuilder: FormBuilder
   ) {
     super();
-    this.generateInitialValue();
     this.generateMinMaxYear();
     this.prepareCreateQuestionForm();
+    this.fetchConfiguration();
   }
 
   private generateMinMaxYear() {
@@ -43,10 +48,10 @@ export class CreateQuestionComponent extends BaseComponent {
 
   private prepareCreateQuestionForm() {
     this.createQuestionForm = this.formBuilder.group({
-      examLevel: ['', Validators.required],
-      session: ['', Validators.required],
-      year: ['', [Validators.required]],
-      subject: ['', Validators.required]
+      examLevel: [null, Validators.required],
+      session: [null, Validators.required],
+      year: [null, [Validators.required]],
+      subject: [null, Validators.required]
     });
   }
 
@@ -58,23 +63,29 @@ export class CreateQuestionComponent extends BaseComponent {
 
   private formInvalid() {
     this.markFormGroupAsTouched(this.createQuestionForm)
-    this.showRequiredErrorMessage(this.createQuestionForm,this.required_field)
+    this.showRequiredErrorMessage(this.createQuestionForm, this.required_field)
     return this.createQuestionForm.invalid;
   }
 
+  private fetchConfiguration() {
+    this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
+      if (apiResponse.result) {
+        this.examLevelList = apiResponse.data.examLevelList;
+        this.examLevelOptions = apiResponse.data.examLevelList.map(l => {
+          return {name: l.name, code: l.code};
+        });
+        this.sessionOptions = apiResponse.data.examSessionList;
+        this.yearOptions = apiResponse.data.examYearList;
+      }
+    })
+  }
 
-  private generateInitialValue() {
-    let today = new Date();
-    let year = today.getFullYear();
-    for (let i = 0; i < 5; i++) {
-      let y = year + i;
-      let y2 = y + 1;
-      let session = y + '-' + y2;
-      this.sessions.push({name: session, code:session });
-    }
-    this.examLevels = [
-      {name: 'Cirtificate', code: 'cirtificate'}
-    ];
-    this.subjects = [{name: 'Bangla', code: 'bangla'}];
+
+  onExamLevelChange(examLevel: any) {
+    this.subjectOptions = examLevel ? this.examLevelList[examLevel].subList : [];
+  }
+
+  onExamLevelClear() {
+    this.subjectOptions = []
   }
 }

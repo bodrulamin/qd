@@ -26,8 +26,9 @@ export class CreateExamComponent extends BaseComponent {
     examDate: 'Date of Exam',
     examPassword: 'Student Login Password'
   };
+  editMode = false;
 
-  constructor(private formBuilder: FormBuilder,private adminService:AdminService) {
+  constructor(private formBuilder: FormBuilder, private adminService: AdminService) {
     super();
     this.prepareCreateExamForm();
     this.generateInitialValue();
@@ -37,12 +38,12 @@ export class CreateExamComponent extends BaseComponent {
 
   private prepareCreateExamForm() {
     this.createExamForm = this.formBuilder.group({
-      examLevel: ['', Validators.required],
-      session: ['', Validators.required],
-      year: ['', [Validators.required]],
-      examName: ['', Validators.required],
-      examDate: ['', Validators.required],
-      examPassword: ['', Validators.required],
+      examLevel: [null, Validators.required],
+      session: [null, Validators.required],
+      year: [null, [Validators.required]],
+      examName: [null, Validators.required],
+      examDate: [null, Validators.required],
+      examPassword: [null, Validators.required],
     });
   }
 
@@ -62,25 +63,20 @@ export class CreateExamComponent extends BaseComponent {
     const lastDayOfYear = new Date(firstDayOfNextYear.getTime() - 1);
     this.minDate = new Date();
     this.maxDate = new Date();
-    this.minDate.setFullYear(today.getFullYear() - 5);
     this.maxDate = lastDayOfYear;
 
-    let year = today.getFullYear();
-    for (let i = 0; i < 5; i++) {
-      let y = year + i;
-      let y2 = y + 1;
-      let session = y + '-' + y2;
-      this.sessions.push({name: session, code: session});
-    }
-    this.examLevels = [
-      {name: 'Cirtificate', code: 'cirtificate'}
-    ];
-    this.subjects = [{name: 'Bangla', code: 'bangla'}];
   }
 
   private fetchConfiguration() {
-    this.adminService.fetchConfiguration().subscribe(data=>{
-
+    this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
+      if (apiResponse.result){
+        // this.examLevels = [
+        //   {name: 'Cirtificate', code: 'cirtificate'}
+        // ];
+        // this.examLevels = apiResponse.data.examLevelList;
+        this.sessions = apiResponse.data.examSessionList;
+        this.years = apiResponse.data.examYearList;
+      }
     })
   }
 }

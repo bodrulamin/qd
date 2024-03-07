@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": ["quill-delta"],
             "outputPath": "dist/testspeedsheet",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -25,9 +26,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css",
-              "node_modules/@mescius/spread-sheets/styles/gc.spread.sheets.excel2016darkGray.css",
-
+              "src/styles.css"
             ],
             "scripts": [
             ]
@@ -37,7 +36,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
+                  "maximumWarning": "1mb",
                   "maximumError": "1mb"
                 },
                 {
