@@ -9,10 +9,10 @@ import {AdminService} from "../../service/admin.service";
   styleUrls: ['./create-exam.component.css']
 })
 export class CreateExamComponent extends BaseComponent {
-  examLevels = [];
-  sessions = [];
-  subjects = [];
-  years = [];
+  examLevelOptions = [];
+  sessionOptions = [];
+  subjectOptions = [];
+  yearOptions = [];
   examDate: any;
 
   createExamForm: FormGroup;
@@ -70,12 +70,9 @@ export class CreateExamComponent extends BaseComponent {
   private fetchConfiguration() {
     this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
       if (apiResponse.result){
-        // this.examLevels = [
-        //   {name: 'Cirtificate', code: 'cirtificate'}
-        // ];
-        // this.examLevels = apiResponse.data.examLevelList;
-        this.sessions = apiResponse.data.examSessionList;
-        this.years = apiResponse.data.examYearList;
+        this.examLevelOptions = apiResponse.data.examLevelList;
+        this.sessionOptions = apiResponse.data.examSessionList;
+        this.yearOptions = apiResponse.data.examYearList;
       }
     })
   }

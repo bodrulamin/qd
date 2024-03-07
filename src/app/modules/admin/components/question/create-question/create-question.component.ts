@@ -11,8 +11,7 @@ import {DropdownChangeEvent} from "primeng/dropdown";
   styleUrls: ['./create-question.component.css']
 })
 export class CreateQuestionComponent extends BaseComponent {
-  examLevelOptions = [];
-  examLevelList = [];
+  examLevelOptions:any[] = [];
   sessionOptions = [];
   subjectOptions = [];
   yearOptions = [];
@@ -70,10 +69,7 @@ export class CreateQuestionComponent extends BaseComponent {
   private fetchConfiguration() {
     this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
       if (apiResponse.result) {
-        this.examLevelList = apiResponse.data.examLevelList;
-        this.examLevelOptions = apiResponse.data.examLevelList.map(l => {
-          return {name: l.name, code: l.code};
-        });
+        this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;
         this.yearOptions = apiResponse.data.examYearList;
       }
@@ -82,10 +78,11 @@ export class CreateQuestionComponent extends BaseComponent {
 
 
   onExamLevelChange(examLevel: any) {
-    this.subjectOptions = examLevel ? this.examLevelList[examLevel].subList : [];
+    this.subjectOptions = examLevel ? this.examLevelOptions.find(l=> l.code === examLevel).subList : [];
   }
 
   onExamLevelClear() {
+    this.createQuestionForm.controls['subject'].setValue(null)
     this.subjectOptions = []
   }
 }

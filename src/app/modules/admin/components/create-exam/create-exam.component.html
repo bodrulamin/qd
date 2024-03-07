@@ -7,17 +7,17 @@
         <div class="formgrid grid">
           <div class="field col">
             <label for="exam-level">Exam Level</label>
-            <p-dropdown id="exam-level" formControlName="examLevel" [showClear]="true" [options]="examLevels"
+            <p-dropdown id="exam-level" formControlName="examLevel" [showClear]="true" [options]="examLevelOptions"
                         optionLabel="name"></p-dropdown>
           </div>
           <div class="field col">
             <label for="session">Session</label>
-            <p-dropdown id="session" formControlName="session" [showClear]="true" [options]="sessions"
+            <p-dropdown id="session" formControlName="session" [showClear]="true" [options]="sessionOptions"
                         optionLabel="name"></p-dropdown>
           </div>
           <div class="field col">
             <label for="year">Year</label>
-            <p-dropdown id="year" [showClear]="true" formControlName="year" [options]="years"
+            <p-dropdown id="year" [showClear]="true" formControlName="year" [options]="yearOptions"
                         optionLabel="name"></p-dropdown>
           </div>
         </div>
