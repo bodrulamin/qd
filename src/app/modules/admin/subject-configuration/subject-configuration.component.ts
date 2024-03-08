@@ -23,7 +23,7 @@ export class SubjectConfigurationComponent extends BaseComponent {
   };
   editMode = false;
   subjectList: any;
-  selectedExamLevel = 'Exam Level';
+  selectedExamLevel = '';
 
   constructor(
     private router: Router,

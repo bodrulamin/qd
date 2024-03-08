@@ -23,11 +23,14 @@ import {AuthInterceptor} from "./modules/base/service/http.interceptor";
     HttpClientModule
   ],
   providers: [
-    MessageService, ConfirmationService,{
+    MessageService,
+    ConfirmationService,
+    {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
+
   ],
   bootstrap: [AppComponent]
 })

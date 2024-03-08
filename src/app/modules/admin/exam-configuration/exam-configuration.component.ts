@@ -4,6 +4,7 @@ import {BaseComponent} from "../../base/components/base-component/base.component
 import {AdminService} from "../service/admin.service";
 import {TableLazyLoadEvent} from "primeng/table";
 import {ExamSearchModel} from "../service/domain/exam.model";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-create-exam',
@@ -42,6 +43,7 @@ export class ExamConfigurationComponent extends BaseComponent {
           command: () => {
             this.editMode = true;
             let e = this.examList[this.activeRowIndex];
+            e.examDate = new Date(e.examDate);
             this.createExamForm.patchValue(e);
 
           }
@@ -83,6 +85,7 @@ export class ExamConfigurationComponent extends BaseComponent {
     if (this.editMode) {
       this.adminService.addExam(this.createExamForm.value).subscribe(apiResponse => {
         if (apiResponse.result) {
+          this.fetchExamList(this.urlSearchParam);
 
         }
       })
@@ -90,6 +93,7 @@ export class ExamConfigurationComponent extends BaseComponent {
       delete this.createExamForm.value['id'];
       this.adminService.addExam(this.createExamForm.value).subscribe(apiResponse => {
         if (apiResponse.result) {
+          this.fetchExamList(this.urlSearchParam);
 
         }
       })

@@ -30,7 +30,7 @@
           <div class="field col">
             <label for="exam-date">Exam Date</label>
             <p-calendar id="exam-date" [minDate]="minDate" [maxDate]="maxDate" formControlName="examDate"
-                        dateFormat="dd/mm/yy" [showIcon]="true"></p-calendar>
+                        dateFormat="dd-M-yy" [showIcon]="true"></p-calendar>
           </div>
 
           <div class="field col">
@@ -63,7 +63,7 @@
                 <td>{{ e.session  }}</td>
                 <td>{{ e.year     }}</td>
                 <td>{{ e.examName   }}</td>
-                <td>{{ e.examDate | date:"dd/MM/yy" }}</td>
+                <td>{{ e.examDate | date:"dd-MMM-yyyy" }}</td>
                 <td class="justify-content-center">
                   <p-button  icon="pi pi-eye" [rounded]="true" [text]="true" (onClick)="showPassword(e)"></p-button>
 
