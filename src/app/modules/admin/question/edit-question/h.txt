@@ -1,0 +1,22 @@
+ <div class="flex flex-column flex-grow-1">
+              <div *ngFor="let item of questions; index as i;"
+                   class="flex flex-grow-1">
+
+                <p-card [style]="{maxHeight:'200px'}"
+                        [header]="'Question ' + (i+1)" class="m-1"
+                        (click)="selectQuestion(i)">
+                  <ng-template pTemplate="header">
+                    <p-button [style]="{float:'right'}" icon="pi pi-times" [text]="true" [rounded]="true"
+                              severity="danger"
+                              [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
+                  </ng-template>
+
+                  <ng-template pTemplate="p-card-content">
+                    <div [style]="{transform:'scale(0.5)', transformOrigin:'0 0',}">
+                      <div [style]="{height:'100px'}" [innerHTML]="item.html"></div>
+                    </div>
+                  </ng-template>
+
+                </p-card>
+              </div>
+            </div>

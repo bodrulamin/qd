@@ -3,12 +3,12 @@ import {RouterModule} from "@angular/router";
 import {adminRoutes} from "./admin.route";
 import {InputTextModule} from "primeng/inputtext";
 import {AppLayoutModule} from "./layout/app.layout.module";
-import {CreateQuestionComponent} from './components/question/create-question/create-question.component';
+import {CreateQuestionComponent} from './question/create-question/create-question.component';
 import {DropdownModule} from "primeng/dropdown";
 import {ButtonModule} from "primeng/button";
 import {TableModule} from "primeng/table";
 import {MenuModule} from "primeng/menu";
-import {EditQuestionComponent} from './components/question/edit-question/edit-question.component';
+import {EditQuestionComponent} from './question/edit-question/edit-question.component';
 import {SplitterModule} from "primeng/splitter";
 import {EditorModule} from "primeng/editor";
 import {CommonModule} from "@angular/common";
@@ -17,12 +17,13 @@ import {CardModule} from "primeng/card";
 import {ScrollPanelModule} from "primeng/scrollpanel";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ToastModule} from "primeng/toast";
-import {AdminLoginComponent} from "./components/login/admin-login.component";
+import {AdminLoginComponent} from "./login/admin-login.component";
 import {AuthModule} from "../auth/auth.module";
-import {CreateExamComponent} from './components/create-exam/create-exam.component';
+import {ExamConfigurationComponent} from './exam-configuration/exam-configuration.component';
 import {CalendarModule} from "primeng/calendar";
 import {PasswordModule} from "primeng/password";
 import {DialogModule} from "primeng/dialog";
+import {SubjectConfigurationComponent} from "./subject-configuration/subject-configuration.component";
 
 @NgModule({
     imports: [
@@ -51,7 +52,8 @@ import {DialogModule} from "primeng/dialog";
     AdminLoginComponent,
     CreateQuestionComponent,
     EditQuestionComponent,
-    CreateExamComponent
+    ExamConfigurationComponent,
+    SubjectConfigurationComponent
   ]
 })
 export class AdminModule {

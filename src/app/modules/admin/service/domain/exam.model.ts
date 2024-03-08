@@ -8,7 +8,11 @@ export class ExamModel {
   examPassword:string;
 }
 
-
+export class ExamSearchModel{
+  examLevel: string;
+  session: string;
+  year: string
+}
 
 
 

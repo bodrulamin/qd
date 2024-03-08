@@ -52,6 +52,7 @@ export class LayoutService {
   configUpdate$ = this.configUpdate.asObservable();
 
   overlayOpen$ = this.overlayOpen.asObservable();
+  fullScreen = false;
 
   constructor(private authService: AuthService,
               private route: Router, private activatedRoute: ActivatedRoute) {
@@ -72,7 +73,10 @@ export class LayoutService {
       config.colorScheme !== this._config.colorScheme
     );
   }
-
+  fullScreenToggle(){
+    this.fullScreen = !this.fullScreen;
+      this.state.staticMenuDesktopInactive = this.fullScreen;
+  }
   onMenuToggle() {
     if (this.isOverlay()) {
       this.state.overlayMenuActive = !this.state.overlayMenuActive;

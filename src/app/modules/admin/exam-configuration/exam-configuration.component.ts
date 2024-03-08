@@ -1,0 +1,161 @@
+import {Component} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {BaseComponent} from "../../base/components/base-component/base.component";
+import {AdminService} from "../service/admin.service";
+import {TableLazyLoadEvent} from "primeng/table";
+import {ExamSearchModel} from "../service/domain/exam.model";
+
+@Component({
+  selector: 'app-create-exam',
+  templateUrl: './exam-configuration.component.html',
+  styleUrls: ['./exam-configuration.component.css']
+})
+export class ExamConfigurationComponent extends BaseComponent {
+  examLevelOptions = [];
+  sessionOptions = [];
+  subjectOptions = [];
+  yearOptions = [];
+  examDate: any;
+
+  urlSearchParam = new Map();
+  createExamForm: FormGroup;
+  minDate: Date;
+  maxDate: Date;
+  required_field = {
+    examLevel: 'Exam Level',
+    session: 'Session',
+    year: 'Year',
+    examName: 'Exam Name',
+    examDate: 'Date of Exam',
+    password: 'Student Login Password'
+  };
+  editMode = false;
+  examList = [];
+  passwordDialogVisible = false;
+  actionMenu = [
+    {
+      label: '',
+      items: [
+        {
+          label: 'Edit',
+          icon: 'pi pi-pencil',
+          command: () => {
+            this.editMode = true;
+            let e = this.examList[this.activeRowIndex];
+            this.createExamForm.patchValue(e);
+
+          }
+        },
+        {
+          label: 'Delete',
+          icon: 'pi pi-times',
+          command: () => {
+            this.examList.splice(this.activeRowIndex, 1);
+          }
+        }
+      ]
+    },
+  ];
+  selectedPassword = '';
+  activeRowIndex: any;
+
+  constructor(private formBuilder: FormBuilder, private adminService: AdminService) {
+    super();
+    this.prepareCreateExamForm();
+    this.generateInitialValue();
+    this.fetchConfiguration();
+  }
+
+  private prepareCreateExamForm() {
+    this.createExamForm = this.formBuilder.group({
+      id: [0, Validators.required],
+      examLevel: [null, Validators.required],
+      session: [null, Validators.required],
+      year: [null, [Validators.required]],
+      examName: [null, Validators.required],
+      examDate: [null, Validators.required],
+      password: [null, Validators.required],
+    });
+  }
+
+  submit() {
+    if (this.formInvalid()) return;
+    if (this.editMode) {
+      this.adminService.addExam(this.createExamForm.value).subscribe(apiResponse => {
+        if (apiResponse.result) {
+
+        }
+      })
+    } else {
+      delete this.createExamForm.value['id'];
+      this.adminService.addExam(this.createExamForm.value).subscribe(apiResponse => {
+        if (apiResponse.result) {
+
+        }
+      })
+      // this.examList.push(this.createExamForm.value);
+    }
+    this.editMode = false;
+    this.prepareCreateExamForm();
+
+  }
+
+  private formInvalid() {
+    this.markFormGroupAsTouched(this.createExamForm);
+    this.showRequiredErrorMessage(this.createExamForm, this.required_field)
+    return this.createExamForm.invalid;
+  }
+
+  private generateInitialValue() {
+    let today = new Date()
+    const firstDayOfNextYear = new Date(today.getFullYear() + 1, 0, 1);
+    const lastDayOfYear = new Date(firstDayOfNextYear.getTime() - 1);
+    this.minDate = new Date();
+    this.maxDate = new Date();
+    this.maxDate = lastDayOfYear;
+
+  }
+
+  private fetchConfiguration() {
+    this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
+      if (apiResponse.result) {
+        this.examLevelOptions = apiResponse.data.examLevelList;
+        this.sessionOptions = apiResponse.data.examSessionList;
+        this.yearOptions = apiResponse.data.examYearList;
+      }
+    })
+  }
+
+  showPassword(e: any) {
+    this.selectedPassword = e.password;
+    this.passwordDialogVisible = true;
+  }
+
+
+  loadExamListLazily($event: TableLazyLoadEvent) {
+    this.urlSearchParam.set('paged', true)
+    this.urlSearchParam.set('page', $event.first)
+    this.fetchExamList(this.urlSearchParam);
+  }
+
+  private fetchExamList(urlSearchParam: any) {
+    let searchModel = new ExamSearchModel();
+    searchModel.examLevel = this.createExamForm.get('examLevel').value;
+    searchModel.session = this.createExamForm.get('session').value;
+    searchModel.year = this.createExamForm.get('year').value;
+
+    if (!searchModel.examLevel) return;
+    if (!searchModel.session) return;
+    if (!searchModel.year) return;
+
+    this.adminService.fetchExamList(urlSearchParam, searchModel).subscribe(data => {
+      if (data.result) {
+        this.examList = data.data.dataList;
+      }
+    })
+  }
+
+  onSearchRequiredFieldChange() {
+    this.fetchExamList(this.urlSearchParam)
+  }
+}

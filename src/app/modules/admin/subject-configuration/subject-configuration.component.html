@@ -1,0 +1,68 @@
+<div class="grid">
+  <div class="col-12 md:col-12">
+    <div class="card p-fluid">
+      <h5>Subject Configuration</h5>
+
+      <form class="p-5" [formGroup]="createSubjectForm">
+        <div class="formgrid grid">
+          <div class="field col">
+            <label for="exam-level">Exam Level</label>
+            <p-dropdown id="exam-level" (onChange)="onExamLevelChange($event.value)" (onClear)="onExamLevelClear()"
+                        formControlName="examLevelCode" [showClear]="true" placeholder="Select Exam Level"
+                        [options]="examLevelOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+
+          <div class="field col">
+            <label for="sub-name">Subject Name</label>
+            <input pInputText id="sub-name" formControlName="subjectName" type="text">
+          </div>
+          <div class="field col">
+            <label for="sub-code">Subject Code</label>
+            <input pInputText id="sub-code" formControlName="subjectCode" type="text">
+          </div>
+
+
+        </div>
+
+
+        <div class="flex justify-content-end">
+          <p-button icon="pi pi-save" (onClick)="createSubject()" label="Add Subject"></p-button>
+        </div>
+
+
+        <div class="card mt-5">
+          <div class="flex align-items-center justify-content-between">
+            <h5>Exam Level : {{selectedExamLevel}}</h5>
+          </div>
+          <p-table [value]="subjectList" [tableStyle]="{ 'min-width': '50rem' }">
+
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Subject Name</th>
+                <th>Subject Code</th>
+                <th class="justify-content-center">Edit</th>
+                <th class="justify-content-center">Delete</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
+              <tr>
+                <td>{{  e.name  }}</td>
+                <td>{{ e.code  }}</td>
+                <td>
+                  <p-button type="button" [text]="true"
+                            icon="pi pi-pencil"></p-button>
+                </td>
+                <td>
+                  <p-button type="button" [text]="true"
+                            icon="pi pi-times"></p-button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>

@@ -45,7 +45,7 @@ export class LoginComponent extends BaseComponent {
     });
   }
 
-  login($event: MouseEvent) {
+  login() {
     if (this.formInvalid()) return;
 
     let user = this.loginForm.value;
