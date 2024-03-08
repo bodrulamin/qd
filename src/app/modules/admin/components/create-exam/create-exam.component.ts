@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
 import {AdminService} from "../../service/admin.service";
+import {ExamModel} from "../../service/domain/exam.model";
 
 @Component({
   selector: 'app-create-exam',
@@ -27,6 +28,30 @@ export class CreateExamComponent extends BaseComponent {
     examPassword: 'Student Login Password'
   };
   editMode = false;
+  examList = [];
+  passwordDialogVisible = false;
+  actionMenu = [
+    {
+      label: '',
+      items: [
+        {
+          label: 'Edit',
+          icon: 'pi pi-pencil',
+          command: () => {
+            this.editMode = true;
+            this.prepareCreateExamForm();
+          }
+        },
+        {
+          label: 'Delete',
+          icon: 'pi pi-times',
+          command: () => {
+          }
+        }
+      ]
+    },
+  ];
+  selectedExamPassword = '';
 
   constructor(private formBuilder: FormBuilder, private adminService: AdminService) {
     super();
@@ -49,6 +74,10 @@ export class CreateExamComponent extends BaseComponent {
 
   submit() {
     if (this.formInvalid()) return;
+
+    let e = new ExamModel()
+    e = this.createExamForm.value;
+    this.examList.push(e);
   }
 
   private formInvalid() {
@@ -69,11 +98,16 @@ export class CreateExamComponent extends BaseComponent {
 
   private fetchConfiguration() {
     this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
-      if (apiResponse.result){
+      if (apiResponse.result) {
         this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;
         this.yearOptions = apiResponse.data.examYearList;
       }
     })
+  }
+
+  showPassword(e: any) {
+    this.selectedExamPassword = e.examPassword;
+    this.passwordDialogVisible = true;
   }
 }

@@ -78,6 +78,7 @@ export class CreateQuestionComponent extends BaseComponent {
 
 
   onExamLevelChange(examLevel: any) {
+    this.createQuestionForm.controls['subject'].setValue(null)
     this.subjectOptions = examLevel ? this.examLevelOptions.find(l=> l.code === examLevel).subList : [];
   }
 
