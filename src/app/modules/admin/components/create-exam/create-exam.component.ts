@@ -39,19 +39,24 @@ export class CreateExamComponent extends BaseComponent {
           icon: 'pi pi-pencil',
           command: () => {
             this.editMode = true;
-            this.prepareCreateExamForm();
+            console.log(this.activeRowIndex)
+            let e = this.examList[this.activeRowIndex];
+            this.createExamForm.setValue(e);
+
           }
         },
         {
           label: 'Delete',
           icon: 'pi pi-times',
           command: () => {
+            this.examList.splice(this.activeRowIndex, 1);
           }
         }
       ]
     },
   ];
   selectedExamPassword = '';
+  activeRowIndex: any;
 
   constructor(private formBuilder: FormBuilder, private adminService: AdminService) {
     super();
@@ -74,10 +79,14 @@ export class CreateExamComponent extends BaseComponent {
 
   submit() {
     if (this.formInvalid()) return;
+    if (this.editMode) {
+      this.examList[this.activeRowIndex] = this.createExamForm.value;
+    } else {
+      this.examList.push(this.createExamForm.value);
+    }
+    this.editMode = false;
+    this.prepareCreateExamForm();
 
-    let e = new ExamModel()
-    e = this.createExamForm.value;
-    this.examList.push(e);
   }
 
   private formInvalid() {
@@ -110,4 +119,6 @@ export class CreateExamComponent extends BaseComponent {
     this.selectedExamPassword = e.examPassword;
     this.passwordDialogVisible = true;
   }
+
+
 }

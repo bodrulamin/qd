@@ -57,7 +57,7 @@
                 <th class="justify-content-center">Action</th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-e>
+            <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
               <tr>
                 <td>{{  e.examLevel  }}</td>
                 <td>{{ e.session  }}</td>
@@ -70,7 +70,7 @@
                 </td>
                 <td>
                   <p-menu #menu [model]="actionMenu" [popup]="true" appendTo="body"></p-menu>
-                  <p-button type="button" [text]="true" (click)="menu.toggle($event)" icon="pi pi-ellipsis-v"></p-button>
+                  <p-button type="button" [text]="true" (click)="activeRowIndex = rowIndex;menu.toggle($event)" icon="pi pi-ellipsis-v"></p-button>
                 </td>
               </tr>
             </ng-template>
