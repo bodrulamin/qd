@@ -5,6 +5,8 @@ import {studentAuthGuard} from "../auth/auth-guard/auth.guard";
 
 export const sudentRoutes: Routes = [
   { path: "", component: StudentLoginComponent},
-  {path: "home", component: StudentHomeComponent, canActivate: [studentAuthGuard] },
+  {path: "home", component: StudentHomeComponent, canActivate: [studentAuthGuard],children:[
+      {path: 'exam-paper', loadChildren: () => import('./components/exam-paper/exam-paper.module').then(m => m.ExamPaperModule)},
+    ] },
 
 ]

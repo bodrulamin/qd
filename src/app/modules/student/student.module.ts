@@ -14,7 +14,7 @@ import {ButtonModule} from "primeng/button";
 
   ],
   imports: [
-    [RouterModule.forChild(sudentRoutes)],
+    RouterModule.forChild(sudentRoutes),
     FormsModule,
     AuthModule,
     ButtonModule,
