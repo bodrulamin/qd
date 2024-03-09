@@ -2,10 +2,9 @@ import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {BaseComponent} from "../../../../base/components/base-component/base.component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AdminService} from "../../../service/admin.service";
 import {LayoutService} from "../../../layout/service/app.layout.service";
 import {CreateQuestionService} from "../service/create-question.service";
-import {SearchQuestionModel} from "../service/domain/question.model";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-create-question',
@@ -13,7 +12,7 @@ import {SearchQuestionModel} from "../service/domain/question.model";
   styleUrls: ['./create-question.component.css']
 })
 export class CreateQuestionComponent extends BaseComponent {
-  examLevelOptions:any[] = [];
+  examLevelOptions: any[] = [];
   sessionOptions = [];
   subjectOptions = [];
   yearOptions = [];
@@ -24,13 +23,14 @@ export class CreateQuestionComponent extends BaseComponent {
     examLevel: 'Exam Level',
     session: 'Session',
     year: 'Year',
-    subject: 'Subject',
+    subjectCode: 'Subject',
   };
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public layoutService: LayoutService,
+    public messageService: MessageService,
     private createQuestionService: CreateQuestionService,
     private formBuilder: FormBuilder
   ) {
@@ -38,6 +38,7 @@ export class CreateQuestionComponent extends BaseComponent {
     this.generateMinMaxYear();
     this.prepareCreateQuestionForm();
     this.fetchConfiguration();
+
   }
 
   private generateMinMaxYear() {
@@ -53,18 +54,34 @@ export class CreateQuestionComponent extends BaseComponent {
       examLevel: [null, Validators.required],
       session: [null, Validators.required],
       year: [null, [Validators.required]],
-      subject: [null, Validators.required]
+      subjectCode: [null, Validators.required]
     });
   }
 
 
   searchQuestion() {
     if (this.formInvalid()) return;
-let s = new SearchQuestionModel();
-    this.createQuestionService.searchQuestion(s);
+    this.createQuestionService.searchQuestion(this.createQuestionForm.value).subscribe(apiResponse => {
+      if (apiResponse.result) {
+        if (apiResponse.data.isNew) {
+          this.messageService.add({summary: 'Creating new question', detail: '', severity: 'success'})
+          this.router.navigate(["../edit-question"], {
+            state: {data: this.createQuestionForm.value},
+            relativeTo: this.activatedRoute
+          })
+        } else {
+          this.messageService.add({summary: 'Editing existing question', detail: '', severity: 'success'})
+          this.router.navigate(["../edit-question"], {
+            queryParams: {id: apiResponse.data.existingQues.id},
+            relativeTo: this.activatedRoute
+          })
+        }
 
 
-    this.router.navigate(["../edit-question"], {relativeTo: this.activatedRoute})
+      }
+    });
+
+
   }
 
   private formInvalid() {
@@ -85,12 +102,12 @@ let s = new SearchQuestionModel();
 
 
   onExamLevelChange(examLevel: any) {
-    this.createQuestionForm.controls['subject'].setValue(null)
-    this.subjectOptions = examLevel ? this.examLevelOptions.find(l=> l.code === examLevel).subList : [];
+    this.createQuestionForm.controls['subjectCode'].setValue(null)
+    this.subjectOptions = examLevel ? this.examLevelOptions.find(l => l.code === examLevel).subList : [];
   }
 
   onExamLevelClear() {
-    this.createQuestionForm.controls['subject'].setValue(null)
+    this.createQuestionForm.controls['subjectCode'].setValue(null)
     this.subjectOptions = []
   }
 }

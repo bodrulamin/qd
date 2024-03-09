@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {FETCH_CONFIGURATION} from "./create-question.endpoints";
+import {FETCH_CONFIGURATION, SEARCH_QUESTION} from "./create-question.endpoints";
 import {Observable} from "rxjs";
 import {BaseService} from "../../../../base/service/base.service";
 import {ApiResponse} from "../../../../base/service/domain/api.response";
-import {SearchQuestionModel} from "./domain/question.model";
+import {SearchQuestionModel} from "./domain/search-question.model";
 
 
 @Injectable({
@@ -18,9 +18,9 @@ export class CreateQuestionService extends BaseService {
   fetchConfiguration(): Observable<ApiResponse> {
     return this.http.get<ApiResponse>(FETCH_CONFIGURATION);
   }
-
-
-  searchQuestion(searchModel: SearchQuestionModel) {
-    let a = new SearchQuestionModel();
+  searchQuestion(searchModel: SearchQuestionModel): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(SEARCH_QUESTION,searchModel);
   }
+
+
 }

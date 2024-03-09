@@ -16,12 +16,20 @@ export class AuthInterceptor implements HttpInterceptor {
     const token = this.authService.getToken();
 
     // If a token exists, add it to the request headers
+    let contentType = 'application/json';
+    let headers: any = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': contentType
+    };
+    if (request.body instanceof FormData) {
+      headers = {
+        Authorization: `Bearer ${token}`
+      };
+    }
     if (token) {
+
       request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': `application/json`
-        }
+        setHeaders: headers
       });
     }
 
@@ -32,9 +40,9 @@ export class AuthInterceptor implements HttpInterceptor {
         if (error.status === 401) {
           this.authService.adminLogout();
           this.authService.studentLogout();
-        } else {
-          this.messageService.add({summary: 'Error', detail: error.error.remarks.join(', '), severity: 'error'})
         }
+        this.messageService.add({summary: 'Error', detail: error.error.remarks.join(', '), severity: 'error'})
+
         // Pass the error to the caller of the request
         return throwError(error);
       })
