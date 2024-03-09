@@ -4,7 +4,7 @@ import {BaseComponent} from "../../../base/components/base-component/base.compon
 import {TableLazyLoadEvent} from "primeng/table";
 import {ExamSearchModel} from "../service/domain/exam.model";
 import {ExamConfgurationService} from "../service/exam-confguration.service";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-create-exam',
@@ -41,6 +41,7 @@ export class ExamConfigurationComponent extends BaseComponent {
     private formBuilder: FormBuilder,
     private examConfgurationService: ExamConfgurationService,
     private messageService: MessageService,
+    private confirmationService: ConfirmationService,
   ) {
     super();
     this.setupActionMenu();
@@ -166,22 +167,36 @@ export class ExamConfigurationComponent extends BaseComponent {
             label: 'Delete',
             icon: 'pi pi-times',
             command: () => {
-              let e = this.examList[this.activeRowIndex];
-              this.examConfgurationService.deleteExamConfig(e).subscribe(apiResponse => {
-                this.fetchExamList(this.urlSearchParam)
-                if (apiResponse.result) {
-                  this.messageService.add({
-                    summary: 'Deleted !',
-                    detail: 'Exam Configuration Deleted !',
-                    severity: 'info'
-                  })
+              this.confirmationService.confirm({
+                message: 'Are you sure that you want to delete this exam configuration? this can not be undone!',
+                header: 'Confirmation',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                  this.deleteExamConfig();
+                },
+                reject: (type) => {
+
                 }
-              })
+              });
             }
           }
         ]
       },
     ];
+  }
+
+  private deleteExamConfig() {
+    let e = this.examList[this.activeRowIndex];
+    this.examConfgurationService.deleteExamConfig(e).subscribe(apiResponse => {
+      this.fetchExamList(this.urlSearchParam)
+      if (apiResponse.result) {
+        this.messageService.add({
+          summary: 'Deleted !',
+          detail: 'Exam Configuration Deleted !',
+          severity: 'info'
+        })
+      }
+    })
   }
 
   private clearInput() {

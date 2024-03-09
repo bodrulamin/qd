@@ -3,9 +3,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
 import {LayoutService} from "../../layout/service/app.layout.service";
-import {AdminService} from "../../service/admin.service";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {SubjectCofigService} from "../service/subject-cofig.service";
+import {SubjectModel} from "../service/domain/subject.model";
 
 
 @Component({
@@ -32,6 +32,7 @@ export class SubjectConfigurationComponent extends BaseComponent {
     public layoutService: LayoutService,
     private subjectCofigService: SubjectCofigService,
     private messageService: MessageService,
+    private confirmationService: ConfirmationService,
     private formBuilder: FormBuilder
   ) {
     super();
@@ -54,19 +55,22 @@ export class SubjectConfigurationComponent extends BaseComponent {
     if (this.editMode) {
       this.subjectCofigService.addSubject(this.createSubjectForm.value).subscribe(apiResponse => {
         if (apiResponse.result) {
-
+          this.messageService.add({summary: 'Successful', severity: 'success', detail: 'Subject Edited Successfully'})
+          this.fetchConfiguration();
         }
       })
     } else {
       delete this.createSubjectForm.value['id'];
       this.subjectCofigService.addSubject(this.createSubjectForm.value).subscribe(apiResponse => {
         if (apiResponse.result) {
+          this.fetchConfiguration();
           this.messageService.add({summary: 'Successful', severity: 'success', detail: 'Subject Added Successfully'})
         }
-      })
+      });
     }
     this.editMode = false;
-    this.prepareCreateSubjectForm();
+    this.clearInput();
+    this.markFormGroupAsUnTouched(this.createSubjectForm);
 
   }
 
@@ -80,16 +84,55 @@ export class SubjectConfigurationComponent extends BaseComponent {
     this.subscribers.confSubs = this.subjectCofigService.fetchConfiguration().subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examLevelOptions = apiResponse.data.examLevelList;
+        if (this.selectedExamLevel){
+          this.onExamLevelChange(this.selectedExamLevel);
+        }
       }
     })
   }
 
   onExamLevelChange(examLevel: any) {
     this.selectedExamLevel = examLevel;
-    this.subjectList = examLevel ? this.examLevelOptions.find(l=> l.code === examLevel).subList : [];
+    this.subjectList = examLevel ? this.examLevelOptions.find(l => l.code === examLevel).subList : [];
   }
 
   onExamLevelClear() {
+
+  }
+
+  editSubject(e: any) {
+    this.editMode = true;
+    this.createSubjectForm.controls['id'].setValue(e.id);
+    this.createSubjectForm.controls['subjectName'].setValue(e.name);
+    this.createSubjectForm.controls['subjectCode'].setValue(e.code);
+  }
+
+  private clearInput() {
+    this.createSubjectForm.controls['subjectName'].setValue(null);
+    this.createSubjectForm.controls['subjectCode'].setValue(null);
+  }
+
+  deleteSubject(e: any) {
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to delete this subject configuration? this can not be undone!',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        let subjectModel = new SubjectModel();
+        subjectModel.id = e.id;
+        subjectModel.subjectCode = e.code;
+        subjectModel.subjectName = e.name;
+        subjectModel.examLevelCode = this.selectedExamLevel;
+        this.subjectCofigService.deleteSubject(subjectModel).subscribe(apiResponse=>{
+          if (apiResponse.result){
+            this.fetchConfiguration();
+            this.messageService.add({summary: 'Successful', severity: 'success', detail: 'Subject Deleted Successfully'})
+          }
+        })      },
+      reject: (type) => {
+
+      }
+    });
 
   }
 }

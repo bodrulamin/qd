@@ -26,7 +26,7 @@
 
 
         <div class="flex justify-content-end">
-          <p-button icon="pi pi-save" (onClick)="createSubject()" label="Add Subject"></p-button>
+          <p-button icon="pi pi-save" (onClick)="createSubject()" label="{{editMode? 'Edit Subject' : 'Add Subject'}}"></p-button>
         </div>
 
 
@@ -49,11 +49,11 @@
                 <td>{{  e.name  }}</td>
                 <td>{{ e.code  }}</td>
                 <td>
-                  <p-button type="button" [text]="true"
+                  <p-button (onClick)="editSubject(e)" type="button" [text]="true"
                             icon="pi pi-pencil"></p-button>
                 </td>
                 <td>
-                  <p-button type="button" [text]="true"
+                  <p-button (onClick)="deleteSubject(e)" type="button" [text]="true"
                             icon="pi pi-times"></p-button>
                 </td>
               </tr>
