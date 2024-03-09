@@ -4,6 +4,8 @@ import {BaseComponent} from "../../../../base/components/base-component/base.com
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AdminService} from "../../../service/admin.service";
 import {LayoutService} from "../../../layout/service/app.layout.service";
+import {CreateQuestionService} from "../service/create-question.service";
+import {SearchQuestionModel} from "../service/domain/question.model";
 
 @Component({
   selector: 'app-create-question',
@@ -29,7 +31,7 @@ export class CreateQuestionComponent extends BaseComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public layoutService: LayoutService,
-    private adminService: AdminService,
+    private createQuestionService: CreateQuestionService,
     private formBuilder: FormBuilder
   ) {
     super();
@@ -58,6 +60,10 @@ export class CreateQuestionComponent extends BaseComponent {
 
   searchQuestion() {
     if (this.formInvalid()) return;
+let s = new SearchQuestionModel();
+    this.createQuestionService.searchQuestion(s);
+
+
     this.router.navigate(["../edit-question"], {relativeTo: this.activatedRoute})
   }
 
@@ -68,7 +74,7 @@ export class CreateQuestionComponent extends BaseComponent {
   }
 
   private fetchConfiguration() {
-    this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
+    this.subscribers.confSubs = this.createQuestionService.fetchConfiguration().subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;

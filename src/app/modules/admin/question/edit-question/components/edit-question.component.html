@@ -4,8 +4,9 @@
     <div class="flex justify-content-between flex-wrap">
       <div class="flex align-items-center justify-content-center">
         <h5>Edit Question</h5></div>
-      <div class="flex align-items-center justify-content-center">
-        <p-button [text]="true" icon="pi pi-check" (onClick)="layoutService.fullScreenToggle()"></p-button>
+      <div class="flex align-items-baseline justify-content-center">
+        <p-button [text]="true" icon="{{layoutService.fullScreen?'fas fa-minimize' : 'fas fa-expand'}}"
+                  (onClick)="layoutService.fullScreenToggle()"></p-button>
       </div>
     </div>
 
@@ -13,22 +14,22 @@
       <p-splitter [panelSizes]="[25, 75]">
         <ng-template pTemplate>
           <div class="col">
-              <div class="grid">
-                <div class="col-12" *ngFor="let item of questions; index as i;">
-                  <p-card (click)="selectQuestion(i)">
-                    <ng-template pTemplate="header">
-                      <p-button [style]="{float:'right'}" icon="pi pi-times" [text]="true" [rounded]="true"
-                                severity="danger"
-                                [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
-                    </ng-template>
-                    <div class="overflow-hidden surface-overlay" style="height:200px;width: 170px">
-                      <div style="transform:scale(0.3); transform-origin: 0 0" [innerHTML]="item.html">
+            <div class="grid">
+              <div class="col-12" *ngFor="let item of questions; index as i;">
+                <p-card (click)="selectQuestion(i)">
+                  <ng-template pTemplate="header">
+                    <p-button [style]="{float:'right'}" icon="pi pi-times" [text]="true" [rounded]="true"
+                              severity="danger"
+                              [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
+                  </ng-template>
+                  <div class="overflow-hidden surface-overlay" style="height:200px;width: 170px">
+                    <div style="transform:scale(0.3); transform-origin: 0 0" [innerHTML]="item.html">
 
-                      </div>
                     </div>
-                  </p-card>
-                </div>
+                  </div>
+                </p-card>
               </div>
+            </div>
           </div>
         </ng-template>
         <ng-template pTemplate>
@@ -42,7 +43,8 @@
                 <p-button [style]="{float:'right'}" label="Attach File" icon="pi pi-plus"></p-button>
               </div>
             </div>
-            <p-editor #editor [(ngModel)]="question.html" [placeholder]="!questionSelected ? 'Select Question':null" [readonly]="!questionSelected"
+            <p-editor #editor [(ngModel)]="question.html" [placeholder]="!questionSelected ? 'Select Question':null"
+                      [readonly]="!questionSelected"
                       [style]="{ height: '100vh', width:'auto'}"
                       (onTextChange)="onTextChange($event,editor)">
             </p-editor>
