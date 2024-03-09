@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {MessageService} from "primeng/api";
-import {ADMIN_DATA, AuthService} from "../../auth/service/auth.service";
-import {LoginModel} from "../../student/service/domain/login.model";
-import {BaseComponent} from "../../base/components/base-component/base.component";
+import {ADMIN_DATA, AuthService} from "../../../auth/service/auth.service";
+import {LoginModel} from "../../../student/service/domain/login.model";
+import {BaseComponent} from "../../../base/components/base-component/base.component";
 
 @Component({
   selector: 'app-admin-login',

@@ -1,10 +1,10 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {BaseComponent} from "../../base/components/base-component/base.component";
-import {AdminService} from "../service/admin.service";
+import {BaseComponent} from "../../../base/components/base-component/base.component";
 import {TableLazyLoadEvent} from "primeng/table";
 import {ExamSearchModel} from "../service/domain/exam.model";
-import {DatePipe} from "@angular/common";
+import {ExamConfgurationService} from "../service/exam-confguration.service";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-create-exam',
@@ -33,36 +33,17 @@ export class ExamConfigurationComponent extends BaseComponent {
   editMode = false;
   examList = [];
   passwordDialogVisible = false;
-  actionMenu = [
-    {
-      label: '',
-      items: [
-        {
-          label: 'Edit',
-          icon: 'pi pi-pencil',
-          command: () => {
-            this.editMode = true;
-            let e = this.examList[this.activeRowIndex];
-            e.examDate = new Date(e.examDate);
-            this.createExamForm.patchValue(e);
-
-          }
-        },
-        {
-          label: 'Delete',
-          icon: 'pi pi-times',
-          command: () => {
-            this.examList.splice(this.activeRowIndex, 1);
-          }
-        }
-      ]
-    },
-  ];
+  actionMenu = [];
   selectedPassword = '';
   activeRowIndex: any;
 
-  constructor(private formBuilder: FormBuilder, private adminService: AdminService) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private examConfgurationService: ExamConfgurationService,
+    private messageService: MessageService,
+  ) {
     super();
+    this.setupActionMenu();
     this.prepareCreateExamForm();
     this.generateInitialValue();
     this.fetchConfiguration();
@@ -83,24 +64,25 @@ export class ExamConfigurationComponent extends BaseComponent {
   submit() {
     if (this.formInvalid()) return;
     if (this.editMode) {
-      this.adminService.addExam(this.createExamForm.value).subscribe(apiResponse => {
+      this.examConfgurationService.addExam(this.createExamForm.value).subscribe(apiResponse => {
         if (apiResponse.result) {
+          this.messageService.add({summary:'Successful !',detail:'Exam Edited Successfully',severity:'success'})
           this.fetchExamList(this.urlSearchParam);
-
         }
       })
     } else {
       delete this.createExamForm.value['id'];
-      this.adminService.addExam(this.createExamForm.value).subscribe(apiResponse => {
+      this.examConfgurationService.addExam(this.createExamForm.value).subscribe(apiResponse => {
         if (apiResponse.result) {
+          this.messageService.add({summary:'Successful !',detail:'Exam Created Successfully',severity:'success'})
           this.fetchExamList(this.urlSearchParam);
 
         }
       })
-      // this.examList.push(this.createExamForm.value);
     }
     this.editMode = false;
-    this.prepareCreateExamForm();
+    this.clearInput();
+    this.markFormGroupAsUnTouched(this.createExamForm);
 
   }
 
@@ -121,7 +103,7 @@ export class ExamConfigurationComponent extends BaseComponent {
   }
 
   private fetchConfiguration() {
-    this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
+    this.subscribers.confSubs = this.examConfgurationService.fetchConfiguration().subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;
@@ -152,7 +134,7 @@ export class ExamConfigurationComponent extends BaseComponent {
     if (!searchModel.session) return;
     if (!searchModel.year) return;
 
-    this.adminService.fetchExamList(urlSearchParam, searchModel).subscribe(data => {
+    this.examConfgurationService.fetchExamList(urlSearchParam, searchModel).subscribe(data => {
       if (data.result) {
         this.examList = data.data.dataList;
       }
@@ -160,6 +142,51 @@ export class ExamConfigurationComponent extends BaseComponent {
   }
 
   onSearchRequiredFieldChange() {
+    this.examList = []
     this.fetchExamList(this.urlSearchParam)
+  }
+
+  private setupActionMenu() {
+    this.actionMenu = [
+      {
+        label: '',
+        items: [
+          {
+            label: 'Edit',
+            icon: 'pi pi-pencil',
+            command: () => {
+              this.editMode = true;
+              let e = this.examList[this.activeRowIndex];
+              e.examDate = new Date(e.examDate);
+              this.createExamForm.patchValue(e);
+
+            }
+          },
+          {
+            label: 'Delete',
+            icon: 'pi pi-times',
+            command: () => {
+              let e = this.examList[this.activeRowIndex];
+              this.examConfgurationService.deleteExamConfig(e).subscribe(apiResponse => {
+                this.fetchExamList(this.urlSearchParam)
+                if (apiResponse.result) {
+                  this.messageService.add({
+                    summary: 'Deleted !',
+                    detail: 'Exam Configuration Deleted !',
+                    severity: 'info'
+                  })
+                }
+              })
+            }
+          }
+        ]
+      },
+    ];
+  }
+
+  private clearInput() {
+    this.createExamForm.controls['examName'].setValue(null);
+    this.createExamForm.controls['examDate'].setValue(null);
+    this.createExamForm.controls['password'].setValue(null);
   }
 }

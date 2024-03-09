@@ -1,10 +1,10 @@
 import {Component, ViewChild} from '@angular/core';
-import {QuestionModel} from "../../service/domain/question.model";
+import {QuestionModel} from "../../create-question/service/domain/question.model";
 import {Editor, EditorTextChangeEvent} from "primeng/editor";
 import {ConfirmationService, MessageService} from "primeng/api";
-import {BaseComponent} from "../../../base/components/base-component/base.component";
+import {BaseComponent} from "../../../../base/components/base-component/base.component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {LayoutService} from "../../layout/service/app.layout.service";
+import {LayoutService} from "../../../layout/service/app.layout.service";
 
 @Component({
   selector: 'app-edit-question',

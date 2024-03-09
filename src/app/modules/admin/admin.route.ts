@@ -1,22 +1,30 @@
 import {Routes} from "@angular/router";
 import {AppLayoutComponent} from "./layout/app.layout.component";
-import {CreateQuestionComponent} from "./question/create-question/create-question.component";
-import {EditQuestionComponent} from "./question/edit-question/edit-question.component";
 import {adminAuthGuard} from "../auth/auth-guard/auth.guard";
-import {AdminLoginComponent} from "./login/admin-login.component";
-import {ExamConfigurationComponent} from "./exam-configuration/exam-configuration.component";
-import {SubjectConfigurationComponent} from "./subject-configuration/subject-configuration.component";
 
 export const adminRoutes: Routes = [
   {
-    path: "", component: AdminLoginComponent,
+    path: "",
+    loadChildren: () => import('./login/admin-login.module').then(m => m.AdminLoginModule)
   },
   {
     path: "home", canActivate: [adminAuthGuard], component: AppLayoutComponent, children: [
-      {path: "exam-configuration", component: ExamConfigurationComponent},
-      {path: "subject-configuration", component: SubjectConfigurationComponent},
-      {path: "create-question", component: CreateQuestionComponent},
-      {path: "edit-question", component: EditQuestionComponent}
+      {
+        path: 'exam-configuration',
+        loadChildren: () => import('./exam-configuration/exam-config.module').then(m => m.ExamConfigModule)
+      },
+      {
+        path: "subject-configuration",
+        loadChildren: () => import('./subject-configuration/subject-config.module').then(m => m.SubjectConfigModule)
+      },
+      {
+        path: "create-question",
+        loadChildren: () => import('./question/create-question/create-question.module').then(m => m.CreateQuestionModule)
+      },
+      {
+        path: "edit-question",
+        loadChildren: () => import('./question/edit-question/edit-question.module').then(m => m.EditQuestionModule)
+      },
     ],
   },
 

@@ -36,6 +36,18 @@ export class BaseComponent implements OnDestroy {
       }
     }
   }
+  protected markFormGroupAsUnTouched(group: FormGroup | FormArray) {
+    group.markAsUntouched();
+    group.markAsPristine();
+    for (const i in group.controls) {
+      if (group.controls[i] instanceof FormControl) {
+        group.controls[i].markAsUntouched();
+        group.controls[i].markAsPristine();
+      } else {
+        this.markFormGroupAsUnTouched(group.controls[i]);
+      }
+    }
+  }
 
   showRequiredErrorMessage(form: FormGroup, required_field: any) {
     let requiredErrorMessage = null;

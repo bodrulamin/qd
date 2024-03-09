@@ -1,10 +1,9 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {BaseComponent} from "../../../base/components/base-component/base.component";
+import {BaseComponent} from "../../../../base/components/base-component/base.component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AdminService} from "../../service/admin.service";
-import {DropdownChangeEvent} from "primeng/dropdown";
-import {LayoutService} from "../../layout/service/app.layout.service";
+import {AdminService} from "../../../service/admin.service";
+import {LayoutService} from "../../../layout/service/app.layout.service";
 
 @Component({
   selector: 'app-create-question',
