@@ -5,8 +5,9 @@ import {BaseComponent} from "../../../../base/components/base-component/base.com
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LayoutService} from "../../../layout/service/app.layout.service";
 import {ActivatedRoute} from "@angular/router";
-import {QuestionDetailModel, QuestionModel} from "../service/domain/question.model";
+import {DeleteQuestionModel, QuestionDetailModel, QuestionModel} from "../service/domain/question.model";
 import {EditQuestionService} from "../service/edit-question.service";
+import {CreateQuestionService} from "../../create-question/service/create-question.service";
 
 @Component({
   selector: 'app-edit-question',
@@ -18,7 +19,7 @@ export class EditQuestionComponent extends BaseComponent {
   questionDetail: QuestionDetailModel = new QuestionDetailModel();
   questionMaster: QuestionModel = new QuestionModel();
   questionDetails: QuestionDetailModel[] = [];
-  private selectedIndex: number = -1;
+  selectedIndex: number = -1;
   @ViewChild("editor") editor!: Editor;
   questionSelected = false;
   editQuestionForm: FormGroup;
@@ -29,45 +30,37 @@ export class EditQuestionComponent extends BaseComponent {
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private editQuestionService: EditQuestionService,
+    private createQuestionService: CreateQuestionService,
     public layoutService: LayoutService,
     public activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder
   ) {
     super();
-    this.prepareCreateQuestionForm();
-    this.questionMaster = history.state.data;
-
-  }
-
-  private prepareCreateQuestionForm() {
-    this.editQuestionForm = this.formBuilder.group({
-      examLevel: ['', Validators.required],
-      session: ['', Validators.required],
-      year: ['', [Validators.required]],
-      subjectCode: ['', Validators.required]
-    });
   }
 
   ngOnInit() {
+
     this.activatedRoute.queryParams.subscribe(params => {
       this.id = params['id'];
       if (this.id) {
         this.fetchExistingQuestion(this.id);
+      } else {
+        if (history.state.data) {
+          this.questionMaster = history.state.data;
+          this.subscribers.searchQuesSubs = this.createQuestionService.searchQuestion(this.questionMaster).subscribe(apiResponse => {
+            if (apiResponse.result) {
+              let data = apiResponse.data;
+              if (!data.isNew) {
+                this.selectedIndex = 0;
+                this.fetchExistingQuestion(data.existingQues.id);
+              }
+            }
+          });
+        }
       }
     });
   }
 
-
-  selectQuestion(i: number) {
-    this.questionSelected = true;
-    this.questionDetails[this.selectedIndex] = this.questionDetail;
-    this.selectedIndex = i;
-    this.questionDetail = this.questionDetails[this.selectedIndex];
-    setTimeout(() => {
-      this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.questionDetail.quesDesc
-    }, 5)
-
-  }
 
   onTextChange($event: EditorTextChangeEvent, editor: Editor) {
     // console.log($event);
@@ -80,8 +73,16 @@ export class EditQuestionComponent extends BaseComponent {
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.questionDetails.splice(i, 1);
-        this.messageService.add({severity: 'info', summary: 'Confirmed', detail: 'Question Deleted'});
+        let deleteModel = new DeleteQuestionModel();
+        deleteModel.isFullQuesDelete = false;
+        deleteModel.quesDetailsId = this.questionDetails[i].id;
+        deleteModel.quesId = this.questionMaster.id;
+        this.subscribers.deleteQuestionsubs = this.editQuestionService.deleteQuetion(deleteModel).subscribe(apiResponse=>{
+          if (apiResponse.result){
+            this.messageService.add({severity: 'info', summary: 'Confirmed', detail: 'Question Deleted'});
+            this.fetchExistingQuestion(this.questionMaster.id);
+          }
+        });
       },
       reject: (type) => {
 
@@ -89,12 +90,28 @@ export class EditQuestionComponent extends BaseComponent {
     });
   }
 
+  selectQuestion(i: number) {
+    this.questionSelected = true;
+    this.questionDetails[this.selectedIndex] = this.questionDetail;
+    this.selectedIndex = i;
+    this.questionDetail = this.questionDetails[this.selectedIndex];
+    setTimeout(() => {
+      this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.questionDetail.quesDesc
+    }, 5)
+
+  }
+
   saveQuestion() {
     if (this.selectedIndex < 0) return;
-    this.questionMaster.quesDetail = this.questionDetail;
+    let savingDetailQues = this.questionDetail;
+    if (savingDetailQues.id == 0){
+      delete savingDetailQues.id
+    }
+    this.questionMaster.quesDetail = savingDetailQues;
     let data = JSON.stringify(this.questionMaster);
+    this.formData = new FormData();
     this.formData.append('data', data);
-    this.editQuestionService.addQuestion(this.formData).subscribe(apiResponse => {
+    this.subscribers.editQuesSubs = this.editQuestionService.addQuestion(this.formData).subscribe(apiResponse => {
       let data = apiResponse.data
       this.setupExistingQuestion(data);
     });
@@ -105,17 +122,15 @@ export class EditQuestionComponent extends BaseComponent {
     qd.quesDesc = '';
     qd.seqNo = this.questionDetails.length + 1;
     this.questionDetails.push(qd);
-
-    if (!this.questionDetails.length) {
-      this.selectQuestion(0);
-    }
-
+    this.questionDetail = qd;
+    this.selectQuestion(this.questionDetails.length - 1);
+    this.saveQuestion();
   }
 
   private fetchExistingQuestion(id: any) {
     let urlSearchParam = new Map();
     urlSearchParam.set('questionId', id)
-    this.editQuestionService.fetchExistingQuestion(urlSearchParam).subscribe(apiResponse => {
+    this.subscribers.fetchExistingQuestionSubs = this.editQuestionService.fetchExistingQuestion(urlSearchParam).subscribe(apiResponse => {
       if (apiResponse.result) {
         let data = apiResponse.data
         this.setupExistingQuestion(data);
@@ -132,9 +147,18 @@ export class EditQuestionComponent extends BaseComponent {
     this.questionMaster.year = data.year;
     this.questionMaster.subjectCode = data.subjectCode;
 
+    this.questionDetails = [];
     data.quesDetailsList.forEach(e => {
       e.marks = e.marks ? e.marks : 0;
       this.questionDetails.push(e);
     });
+    if (this.selectedIndex > -1 && this.questionDetails.length) {
+      this.questionDetail = this.questionDetails[this.selectedIndex];
+    }
+    if (this.questionDetails.length == 0){
+      this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = '';
+
+    }
+
   }
 }
