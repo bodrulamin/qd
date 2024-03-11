@@ -23,7 +23,7 @@
                               [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
                   </ng-template>
                   <div class="overflow-hidden surface-overlay" style="height:200px;width: 170px">
-                    <div style="transform:scale(0.3); transform-origin: 0 0" [innerHTML]="item.quesDesc">
+                    <div style="transform:scale(0.3); transform-origin: 0 0" [innerHTML]="questionDetails[i].quesDesc">
 
                     </div>
                   </div>
@@ -31,7 +31,7 @@
               </div>
             </div>
             <div class="flex justify-content-center p-2">
-              <p-button icon='pi pi-plus' label="Add Question" (onClick)="addNewQuestion()"></p-button>
+              <p-button icon='pi pi-plus' label="Add Question" (onClick)="showAddQuestionDialog()"></p-button>
             </div>
           </div>
         </ng-template>
@@ -44,15 +44,15 @@
               </div>
               <div class="col-4 mb-2 lg:mb-0 p-inputgroup">
                 <span class="p-inputgroup-addon">Marks</span>
-                <input type="text" pInputText (blur)="saveQuestion()" [disabled]="selectedIndex<0" [(ngModel)]="questionDetail.marks"/>
+                <input type="text" pInputText (blur)="autoSaveQuestion()" [disabled]="selectedIndex<0"
+                       [(ngModel)]="questionDetail.marks"/>
               </div>
               <div class="col-4 mb-2 lg:mb-0">
                 <p-button [style]="{float:'right'}" label="Attach File" icon="pi pi-plus"></p-button>
               </div>
             </div>
             <p-editor #editor [(ngModel)]="questionDetail.quesDesc"
-                      [placeholder]="!questionSelected ? 'Select Question':null"
-                      [readonly]="!questionSelected" (onSelectionChange)="saveQuestion()"
+                      [readonly]="!questionSelected" (onSelectionChange)="autoSaveQuestion()"
                       [style]="{ height: '100vh', width:'auto'}"
                       (onTextChange)="onTextChange($event,editor)">
             </p-editor>
@@ -65,3 +65,11 @@
     <p-button label="Save"></p-button>
   </div>
 </div>
+<p-dialog header="Input Marks of question" [modal]="true" [(visible)]="newQuestionDialogVisible">
+<div class="flex flex-column flex-wrap">
+  <input class="mb-2" pInputText [(ngModel)]="inputMark"  placeholder="Question Mark">
+  <p-button label="Add Question" (onClick)="addNewQuestion()"></p-button>
+</div>
+
+
+</p-dialog>

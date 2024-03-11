@@ -14,8 +14,8 @@ export class EditQuestionService extends BaseService {
     super();
   }
 
-  addQuestion(formdata: FormData): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(SAVE_QUESTION, formdata);
+  addQuestion(formData: FormData): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(SAVE_QUESTION, formData);
   }
 
   deleteQuetion(deleteQuestionModel: DeleteQuestionModel): Observable<ApiResponse> {

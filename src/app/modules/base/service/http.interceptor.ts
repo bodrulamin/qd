@@ -47,7 +47,6 @@ export class AuthInterceptor implements HttpInterceptor {
           502: "Bad Gateway",
           503: "Service Unavailable",
           504: "Gateway Timeout",
-          // Add more error codes and headings as needed
         };
 
         if (error.status === 401) {

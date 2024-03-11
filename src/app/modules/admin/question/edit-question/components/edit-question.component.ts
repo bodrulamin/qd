@@ -2,9 +2,8 @@ import {Component, ViewChild} from '@angular/core';
 import {Editor, EditorTextChangeEvent} from "primeng/editor";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {BaseComponent} from "../../../../base/components/base-component/base.component";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LayoutService} from "../../../layout/service/app.layout.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {DeleteQuestionModel, QuestionDetailModel, QuestionModel} from "../service/domain/question.model";
 import {EditQuestionService} from "../service/edit-question.service";
 import {CreateQuestionService} from "../../create-question/service/create-question.service";
@@ -22,9 +21,10 @@ export class EditQuestionComponent extends BaseComponent {
   selectedIndex: number = -1;
   @ViewChild("editor") editor!: Editor;
   questionSelected = false;
-  editQuestionForm: FormGroup;
-  formData: FormData = new FormData();
   private id: any;
+  inputMark: any;
+  autoSave: boolean = false;
+  newQuestionDialogVisible: boolean = false;
 
   constructor(
     private confirmationService: ConfirmationService,
@@ -33,7 +33,7 @@ export class EditQuestionComponent extends BaseComponent {
     private createQuestionService: CreateQuestionService,
     public layoutService: LayoutService,
     public activatedRoute: ActivatedRoute,
-    private formBuilder: FormBuilder
+    public router: Router,
   ) {
     super();
   }
@@ -51,8 +51,10 @@ export class EditQuestionComponent extends BaseComponent {
             if (apiResponse.result) {
               let data = apiResponse.data;
               if (!data.isNew) {
-                this.selectedIndex = 0;
-                this.fetchExistingQuestion(data.existingQues.id);
+                this.router.navigate(["../edit-question"], {
+                  queryParams: {id: apiResponse.data.existingQues.id},
+                  relativeTo: this.activatedRoute
+                })
               }
             }
           });
@@ -77,10 +79,14 @@ export class EditQuestionComponent extends BaseComponent {
         deleteModel.isFullQuesDelete = false;
         deleteModel.quesDetailsId = this.questionDetails[i].id;
         deleteModel.quesId = this.questionMaster.id;
-        this.subscribers.deleteQuestionsubs = this.editQuestionService.deleteQuetion(deleteModel).subscribe(apiResponse=>{
-          if (apiResponse.result){
+        if (!deleteModel.quesDetailsId) {
+          this.removeItemFromList(i);
+        }
+        this.subscribers.deleteQuestionsubs = this.editQuestionService.deleteQuetion(deleteModel).subscribe(apiResponse => {
+          if (apiResponse.result) {
             this.messageService.add({severity: 'info', summary: 'Confirmed', detail: 'Question Deleted'});
-            this.fetchExistingQuestion(this.questionMaster.id);
+            this.removeItemFromList(i);
+            return;
           }
         });
       },
@@ -90,41 +96,66 @@ export class EditQuestionComponent extends BaseComponent {
     });
   }
 
+  private removeItemFromList(i: number) {
+    this.selectedIndex = -1;
+    this.questionSelected = false;
+    this.questionDetail = new QuestionDetailModel();
+    this.questionDetails.splice(i, 1);
+  }
+
   selectQuestion(i: number) {
     this.questionSelected = true;
-    this.questionDetails[this.selectedIndex] = this.questionDetail;
     this.selectedIndex = i;
-    this.questionDetail = this.questionDetails[this.selectedIndex];
+    this.questionDetail = this.questionDetails[i];
     setTimeout(() => {
-      this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.questionDetail.quesDesc
-    }, 5)
+      this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.questionDetails[i].quesDesc
+    }, 1)
 
   }
 
-  saveQuestion() {
-    if (this.selectedIndex < 0) return;
-    let savingDetailQues = this.questionDetail;
-    if (savingDetailQues.id == 0){
-      delete savingDetailQues.id
+  autoSaveQuestion() {
+    if (!this.questionMaster.id) {
+      this.saveQuestion(this.questionMaster, this.selectedIndex)
     }
-    this.questionMaster.quesDetail = savingDetailQues;
-    let data = JSON.stringify(this.questionMaster);
-    this.formData = new FormData();
-    this.formData.append('data', data);
-    this.subscribers.editQuesSubs = this.editQuestionService.addQuestion(this.formData).subscribe(apiResponse => {
-      let data = apiResponse.data
-      this.setupExistingQuestion(data);
+    if (this.selectedIndex < 0) return;
+    if (!this.autoSave) return;
+    this.saveQuestion(this.questionMaster, this.selectedIndex)
+  }
+
+  saveQuestion(master: QuestionModel, i: number) {
+    master.quesDetail = this.questionDetails[i];
+    let data = JSON.stringify(master);
+    let formData = new FormData();
+    formData.append('data', data);
+    this.autoSave = false;
+    this.subscribers.editQuesSubs = this.editQuestionService.addQuestion(formData).subscribe(apiResponse => {
+      if (apiResponse.result) {
+        let data = apiResponse.data;
+        this.setupSavedData(data, i);
+      }
     });
   }
 
+  showAddQuestionDialog() {
+    this.inputMark = 0;
+    this.newQuestionDialogVisible = true;
+  }
+
   addNewQuestion() {
-    let qd = new QuestionDetailModel();
-    qd.quesDesc = '';
-    qd.seqNo = this.questionDetails.length + 1;
-    this.questionDetails.push(qd);
-    this.questionDetail = qd;
-    this.selectQuestion(this.questionDetails.length - 1);
-    this.saveQuestion();
+    this.newQuestionDialogVisible = true;
+    if (!this.inputMark) {
+      return;
+    }
+    this.questionDetail = new QuestionDetailModel();
+    this.questionDetail.quesDesc = '<p></p>';
+    this.questionDetail.marks = this.inputMark;
+    this.questionDetail.seqNo = this.questionDetails.length + 1;
+    delete this.questionDetail.id;
+    this.questionDetails.push(this.questionDetail);
+    this.selectedIndex = this.questionDetails.length - 1;
+    this.newQuestionDialogVisible = false;
+    this.selectQuestion(this.selectedIndex);
+
   }
 
   private fetchExistingQuestion(id: any) {
@@ -140,25 +171,17 @@ export class EditQuestionComponent extends BaseComponent {
   }
 
   private setupExistingQuestion(data) {
-    this.questionMaster = new QuestionModel();
     this.questionMaster.id = data.id;
-    this.questionMaster.examLevel = data.examLevel;
-    this.questionMaster.session = data.session;
-    this.questionMaster.year = data.year;
-    this.questionMaster.subjectCode = data.subjectCode;
-
-    this.questionDetails = [];
-    data.quesDetailsList.forEach(e => {
-      e.marks = e.marks ? e.marks : 0;
-      this.questionDetails.push(e);
-    });
-    if (this.selectedIndex > -1 && this.questionDetails.length) {
-      this.questionDetail = this.questionDetails[this.selectedIndex];
+    for (let i = 0; i < data.quesDetailsList.length; i++) {
+      this.questionDetails[i] = data.quesDetailsList[i];
     }
-    if (this.questionDetails.length == 0){
-      this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = '';
-
-    }
-
+    this.autoSave = true;
   }
+
+  private setupSavedData(data, i: number) {
+    this.questionMaster.id = data.id;
+    this.questionDetails[i].id = data.quesDetailsList[0].id;
+    this.autoSave = true;
+  }
+
 }
