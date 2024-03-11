@@ -25,6 +25,10 @@ export const adminRoutes: Routes = [
         path: "edit-question",
         loadChildren: () => import('./question/edit-question/edit-question.module').then(m => m.EditQuestionModule)
       },
+      {
+        path: "schedule-exam",
+        loadChildren: () => import('./schedule/schedule-exam.module').then(m => m.ScheduleExamModule)
+      },
     ],
   },
 
