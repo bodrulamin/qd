@@ -56,7 +56,7 @@ export class AuthInterceptor implements HttpInterceptor {
         } else if (error.status >= 500) {
           this.messageService.add({summary: 'Error', detail: htmlErrorMessages[error.status], severity: 'error'})
         } else {
-          this.messageService.add({summary: 'Error', detail: error.error.remarks.join(', '), severity: 'error'})
+          this.messageService.add({summary: 'Error', detail:error.error.remarks ?  error.error.remarks.join(', ') : error.statusText, severity: 'error'})
         }
 
         // Pass the error to the caller of the request
