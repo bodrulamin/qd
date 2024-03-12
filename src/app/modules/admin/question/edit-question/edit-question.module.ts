@@ -11,7 +11,7 @@ import {CardModule} from "primeng/card";
 import {InputTextModule} from "primeng/inputtext";
 import {DialogModule} from "primeng/dialog";
 import {FileUploadModule} from "primeng/fileupload";
-import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer";
+import {PdfViewerModule} from "ng2-pdf-viewer";
 
 
 @NgModule({
@@ -27,7 +27,7 @@ import {NgxExtendedPdfViewerModule} from "ngx-extended-pdf-viewer";
     InputTextModule,
     DialogModule,
     FileUploadModule,
-    NgxExtendedPdfViewerModule
+    PdfViewerModule,
   ],
   declarations: [
     EditQuestionComponent
