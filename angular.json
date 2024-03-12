@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["quill-delta"],
+            "allowedCommonJsDependencies": ["quill-delta","pdfjs-dist","html2canvas","pdf-thumbnails-generator"],
             "outputPath": "dist/testspeedsheet",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -37,8 +37,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1mb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",

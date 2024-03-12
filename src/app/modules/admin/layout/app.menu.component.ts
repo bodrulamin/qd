@@ -11,9 +11,9 @@ export class AppMenuComponent implements OnInit {
 
   model: any[] = [];
   private customMenu = {
-    label: 'Schedule', icon: 'far fa-calendar-days', items: [
-      {label: 'Exam Schedule', icon: 'far fa-calendar-days', routerLink: ['schedule-exam']},
-    ]
+    // label: 'Schedule', icon: 'far fa-calendar-days', items: [
+    //   {label: 'Exam Schedule', icon: 'far fa-calendar-days', routerLink: ['schedule-exam']},
+    // ]
   };
 
   constructor(public layoutService: LayoutService, private authService: AuthService) {

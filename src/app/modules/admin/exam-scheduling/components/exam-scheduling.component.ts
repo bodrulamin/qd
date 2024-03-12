@@ -1,16 +1,17 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ScheduleexamService} from "../service/scheduleexam.service";
+import {ExamSchedulingService} from "../service/exam-scheduling.service";
 import {MessageService} from "primeng/api";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
+import {ExamModel} from "../service/domain/exam-scheduling.model";
 
 @Component({
   selector: 'app-create-question',
-  templateUrl: './schedule-exam.component.html',
-  styleUrls: ['./schedule-exam.component.css']
+  templateUrl: './exam-scheduling.component.html',
+  styleUrls: ['./exam-scheduling.component.css']
 })
-export class ScheduleExamComponent extends BaseComponent {
+export class ExamSchedulingComponent extends BaseComponent {
   examLevelOptions: any[] = [];
   sessionOptions = [];
   subjectOptions = [];
@@ -23,12 +24,13 @@ export class ScheduleExamComponent extends BaseComponent {
     session: 'Session',
     year: 'Year',
   };
+  examList:any[] = [];
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public messageService: MessageService,
-    private createQuestionService: ScheduleexamService,
+    private createQuestionService: ExamSchedulingService,
     private formBuilder: FormBuilder
   ) {
     super();
@@ -59,22 +61,9 @@ export class ScheduleExamComponent extends BaseComponent {
     if (this.formInvalid()) return;
     this.createQuestionService.searchQuestion(this.examSearchForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
-        if (apiResponse.data.isNew) {
-          this.messageService.add({summary: 'Creating new question', detail: '', severity: 'success'})
-          this.router.navigate(["../edit-question"], {
-            state: {data: this.examSearchForm.value},
-            relativeTo: this.activatedRoute
-          })
-        } else {
-          this.messageService.add({summary: 'Editing existing question', detail: '', severity: 'success'})
-          this.router.navigate(["../edit-question"], {
-            queryParams: {id: apiResponse.data.existingQues.id},
-            relativeTo: this.activatedRoute
-          })
-        }
-
-
+        this.examList = apiResponse.data
       }
+
     });
 
 
@@ -98,12 +87,10 @@ export class ScheduleExamComponent extends BaseComponent {
 
 
   onExamLevelChange(examLevel: any) {
-    this.examSearchForm.controls['subjectCode'].setValue(null)
     this.subjectOptions = examLevel ? this.examLevelOptions.find(l => l.code === examLevel).subList : [];
   }
 
   onExamLevelClear() {
-    this.examSearchForm.controls['subjectCode'].setValue(null)
     this.subjectOptions = []
   }
 }
