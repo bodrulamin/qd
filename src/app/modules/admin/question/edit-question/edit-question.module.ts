@@ -10,20 +10,23 @@ import {EditorModule} from "primeng/editor";
 import {CardModule} from "primeng/card";
 import {InputTextModule} from "primeng/inputtext";
 import {DialogModule} from "primeng/dialog";
+import {FileUploadModule} from "primeng/fileupload";
+
 
 @NgModule({
-    imports: [
-        RouterModule.forChild(editQuestionRoute),
-        ReactiveFormsModule,
-        FormsModule,
-        CommonModule,
-        ButtonModule,
-        SplitterModule,
-        EditorModule,
-        CardModule,
-        InputTextModule,
-        DialogModule
-    ],
+  imports: [
+    RouterModule.forChild(editQuestionRoute),
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    ButtonModule,
+    SplitterModule,
+    EditorModule,
+    CardModule,
+    InputTextModule,
+    DialogModule,
+    FileUploadModule
+  ],
   declarations: [
     EditQuestionComponent
   ]

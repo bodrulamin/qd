@@ -27,10 +27,16 @@ export class AuthInterceptor implements HttpInterceptor {
       };
     }
     if (token) {
+      if (request.url.includes('get-exam-question-details-file')){
+        request = request.clone({
+          setHeaders: headers,responseType:'arraybuffer'
+        });
+      } else {
+        request = request.clone({
+          setHeaders: headers
+        });
+      }
 
-      request = request.clone({
-        setHeaders: headers
-      });
     }
 
     // Continue with the request

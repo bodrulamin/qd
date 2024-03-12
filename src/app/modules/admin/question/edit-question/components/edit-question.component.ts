@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {Editor, EditorTextChangeEvent} from "primeng/editor";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {BaseComponent} from "../../../../base/components/base-component/base.component";
@@ -7,6 +7,12 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {DeleteQuestionModel, QuestionDetailModel, QuestionModel} from "../service/domain/question.model";
 import {EditQuestionService} from "../service/edit-question.service";
 import {CreateQuestionService} from "../../create-question/service/create-question.service";
+import {FileSelectEvent, FileUpload} from "primeng/fileupload";
+
+interface UploadEvent {
+  originalEvent: Event;
+  files: File[];
+}
 
 @Component({
   selector: 'app-edit-question',
@@ -20,11 +26,14 @@ export class EditQuestionComponent extends BaseComponent {
   questionDetails: QuestionDetailModel[] = [];
   selectedIndex: number = -1;
   @ViewChild("editor") editor!: Editor;
+  @ViewChild("fileUpload") fileUpload!: FileUpload;
+  @ViewChild("pdfIframe") pdfIframe!: ElementRef;
   questionSelected = false;
   private id: any;
   inputMark: any;
   autoSave: boolean = false;
   newQuestionDialogVisible: boolean = false;
+  blobUrls = [];
 
   constructor(
     private confirmationService: ConfirmationService,
@@ -107,10 +116,32 @@ export class EditQuestionComponent extends BaseComponent {
     this.questionSelected = true;
     this.selectedIndex = i;
     this.questionDetail = this.questionDetails[i];
-    setTimeout(() => {
-      this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.questionDetails[i].quesDesc
-    }, 1)
+    if (!this.questionDetail.isFile) {
+      setTimeout(() => {
+        this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.questionDetails[i].quesDesc
+      }, 1)
+    } else {
+      if (this.blobUrls[i]) {
+        this.pdfIframe.nativeElement.src = this.blobUrls[i];
+        return;
+      }
 
+
+    }
+
+
+  }
+
+  setupBlobUrl(i: number, fileUrl: string, viewNow?: boolean) {
+    let urlParam = new Map();
+    urlParam.set('filePath', fileUrl)
+    this.editQuestionService.fetchByFileUrl(urlParam).subscribe(data => {
+      var file = new Blob([data], {type: 'application/pdf'});
+      this.blobUrls[i] = URL.createObjectURL(file);
+      if (viewNow) {
+        this.pdfIframe.nativeElement.src = this.blobUrls[i];
+      }
+    })
   }
 
   autoSaveQuestion() {
@@ -122,12 +153,19 @@ export class EditQuestionComponent extends BaseComponent {
     this.saveQuestion(this.questionMaster, this.selectedIndex)
   }
 
-  saveQuestion(master: QuestionModel, i: number) {
-    master.quesDetail = this.questionDetails[i];
-    let data = JSON.stringify(master);
+  saveQuestion(master: QuestionModel, i: number, file?: File) {
     let formData = new FormData();
+
+    master.quesDetail = this.questionDetails[i];
+    if (file) {
+      master.quesDetail.isFile = true;
+      formData.append('file', file);
+    }
+
+    let data = JSON.stringify(master);
     formData.append('data', data);
     this.autoSave = false;
+
     this.subscribers.editQuesSubs = this.editQuestionService.addQuestion(formData).subscribe(apiResponse => {
       if (apiResponse.result) {
         let data = apiResponse.data;
@@ -174,6 +212,9 @@ export class EditQuestionComponent extends BaseComponent {
     this.questionMaster.id = data.id;
     for (let i = 0; i < data.quesDetailsList.length; i++) {
       this.questionDetails[i] = data.quesDetailsList[i];
+      if (this.questionDetails[i].isFile) {
+        this.setupBlobUrl(i, this.questionDetails[i].fileUrl);
+      }
     }
     this.autoSave = true;
   }
@@ -181,7 +222,18 @@ export class EditQuestionComponent extends BaseComponent {
   private setupSavedData(data, i: number) {
     this.questionMaster.id = data.id;
     this.questionDetails[i].id = data.quesDetailsList[0].id;
+    this.questionDetails[i].isFile = data.quesDetailsList[0].isFile;
+    this.questionDetails[i].filePath = data.quesDetailsList[0].filePath;
+    this.questionDetails[i].fileUrl = data.quesDetailsList[0].fileUrl;
+    if (this.questionDetails[i].isFile) {
+      this.setupBlobUrl(i, this.questionDetails[i].fileUrl, true);
+    }
     this.autoSave = true;
   }
 
+  onFileSelect(event: FileSelectEvent) {
+    let file = event.files[0];
+    this.saveQuestion(this.questionMaster, this.selectedIndex, file);
+    this.fileUpload.clear();
+  }
 }

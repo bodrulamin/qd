@@ -4,6 +4,9 @@ export class QuestionDetailModel {
   marks: number = 0;
   quesDesc: string = '';
   isFile: boolean = false;
+  fileName: string;
+  filePath: string;
+  fileUrl: string;
 }
 
 export class QuestionModel {
