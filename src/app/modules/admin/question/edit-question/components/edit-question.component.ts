@@ -30,8 +30,8 @@ export class EditQuestionComponent extends BaseComponent {
   inputMark: any;
   autoSave: boolean = false;
   newQuestionDialogVisible: boolean = false;
-  fileBlobUrls = [];
-  thumbainsBlobUrls = [];
+  pdfBlobMap = new Map();
+  thumbnailBlobMap = new Map();
 
   constructor(
     private confirmationService: ConfirmationService,
@@ -104,6 +104,13 @@ export class EditQuestionComponent extends BaseComponent {
   }
 
   private removeItemFromList(i: number) {
+    if (this.thumbnailBlobMap.get(this.questionDetails[i].id)){
+      this.thumbnailBlobMap.delete(this.questionDetails[i].id);
+    }
+    if (this.pdfBlobMap.get(this.questionDetails[i].id)){
+      this.pdfBlobMap.delete(this.questionDetails[i].id);
+    }
+
     this.selectedIndex = -1;
     this.questionSelected = false;
     this.questionDetail = new QuestionDetailModel();
@@ -119,23 +126,17 @@ export class EditQuestionComponent extends BaseComponent {
         this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.questionDetails[i].quesDesc
       }, 1)
     } else {
-      if (this.fileBlobUrls[i]) {
-        this.pdfView.nativeElement.src = this.fileBlobUrls[i];
-        return;
-      }
     }
   }
 
-  generateFileBlobsFromApi(i: number, fileUrl: string, viewNow?: boolean) {
+  generateFileBlobsFromApi(i: number, fileUrl: string) {
     let urlParam = new Map();
     urlParam.set('filePath', fileUrl)
     this.editQuestionService.fetchByFileUrl(urlParam).subscribe(data => {
       var file = new Blob([data], {type: 'application/pdf'});
-      this.fileBlobUrls[i] = URL.createObjectURL(file);
+      let blobUrl = URL.createObjectURL(file);
+      this.pdfBlobMap.set(this.questionDetails[i].id, blobUrl)
       this.generatePdfThumbnails(i)
-      if (viewNow) {
-        this.pdfView.nativeElement.src = this.fileBlobUrls[i];
-      }
     })
   }
 
@@ -224,7 +225,7 @@ export class EditQuestionComponent extends BaseComponent {
     this.questionDetails[i].filePath = data.quesDetailsList[0].filePath;
     this.questionDetails[i].fileUrl = data.quesDetailsList[0].fileUrl;
     if (this.questionDetails[i].isFile) {
-      this.generateFileBlobsFromApi(i, this.questionDetails[i].fileUrl, true);
+      this.generateFileBlobsFromApi(i, this.questionDetails[i].fileUrl);
     } else {
       this.generateHtmlThumbnails(i);
     }
@@ -236,15 +237,16 @@ export class EditQuestionComponent extends BaseComponent {
     element.innerHTML = this.questionDetails[i].quesDesc;
     if (!this.questionDetails[i].quesDesc) return;
     html2canvas(element).then(canvas => {
-      this.thumbainsBlobUrls[i] = canvas.toDataURL('image/png');
+      let blobUrl = canvas.toDataURL('image/png');
+      this.thumbnailBlobMap.set(this.questionDetails[i].id, blobUrl)
       element.innerHTML = '';
     });
   }
+
   async generatePdfThumbnails(i: number) {
     try {
-      const thumbnails = await generatePdfThumbnails(this.fileBlobUrls[i], 500);
-      // Use the generated thumbnail data (e.g., display it in an image tag)
-      this.thumbainsBlobUrls[i] = thumbnails[0].thumbnail;
+      const thumbnails = await generatePdfThumbnails(this.pdfBlobMap.get(this.questionDetails[i].id), 500);
+      this.thumbnailBlobMap.set(this.questionDetails[i].id,thumbnails[0].thumbnail)
     } catch (err) {
       console.error(err);
     }
@@ -252,8 +254,12 @@ export class EditQuestionComponent extends BaseComponent {
   }
 
   onFileSelect(event: FileSelectEvent) {
-    if (this.selectedIndex < 0){
-      this.messageService.add({summary:'Question not selected',detail:'Please select a question to attach file',severity:'error'});
+    if (this.selectedIndex < 0) {
+      this.messageService.add({
+        summary: 'Question not selected',
+        detail: 'Please select a question to attach file',
+        severity: 'error'
+      });
       this.fileUpload.clear();
       return;
     }

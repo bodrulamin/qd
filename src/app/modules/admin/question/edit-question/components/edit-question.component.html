@@ -23,7 +23,7 @@
                               [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
                   </ng-template>
                   <div style="overflow:hidden; min-height: 150px" >
-                    <img *ngIf="thumbainsBlobUrls[i]" style="width:100%; overflow:hidden"  src="{{thumbainsBlobUrls[i]}}"
+                    <img *ngIf="thumbnailBlobMap.get(item.id)" style="width:100%; overflow:hidden"  src="{{thumbnailBlobMap.get(item.id)}}"
                          alt="thumbnail">
                   </div>
 
@@ -53,12 +53,12 @@
                               chooseLabel="Attach File"></p-fileUpload>
               </div>
             </div>
-            <p-editor [hidden]="questionDetail.isFile" #editor [(ngModel)]="questionDetail.quesDesc"
+            <p-editor *ngIf="!questionDetail.isFile" #editor [(ngModel)]="questionDetail.quesDesc"
                       [readonly]="!questionSelected" (onSelectionChange)="autoSaveQuestion()"
                       [style]="{ height: '100vh', width:'auto'}"
                       (onTextChange)="onTextChange($event,editor)"></p-editor>
 
-            <pdf-viewer [hidden]="!questionDetail.isFile" #pdfView [src]="fileBlobUrls[selectedIndex]" [style]="{width:'100%', height:'900px'}"
+            <pdf-viewer *ngIf="questionDetail.isFile" #pdfView [src]="pdfBlobMap.get(questionDetail.id)" [style]="{width:'100%', height:'900px'}"
                         [render-text]="true"
                         [original-size]="false"
                         style="width: 400px; height: 500px"
