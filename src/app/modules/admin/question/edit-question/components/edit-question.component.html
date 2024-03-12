@@ -16,17 +16,17 @@
           <div class="col">
             <div class="grid">
               <div class="col-12" *ngFor="let item of questionDetails; index as i;">
-                <p-card (click)="selectQuestion(i)">
+                <p-card  (click)="selectQuestion(i)">
                   <ng-template pTemplate="header">
                     <p-button [style]="{float:'right'}" icon="pi pi-times" [text]="true" [rounded]="true"
                               severity="danger"
                               [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
                   </ng-template>
-                  <div class="overflow-hidden surface-overlay" style="height:200px;width: 170px">
-                    <div style="transform:scale(0.3); transform-origin: 0 0" [innerHTML]="questionDetails[i].quesDesc">
-
-                    </div>
+                  <div style="overflow:hidden" >
+                    <img *ngIf="thumbainsBlobUrls[i]" style="width:100%; overflow:hidden"  src="{{thumbainsBlobUrls[i]}}"
+                         alt="thumbnail">
                   </div>
+
                 </p-card>
               </div>
             </div>
@@ -48,7 +48,9 @@
                        [(ngModel)]="questionDetail.marks"/>
               </div>
               <div class="col-4 mb-2 lg:mb-0">
-                <p-fileUpload #fileUpload mode="basic" name="demo[]" accept=".pdf" [maxFileSize]="1000000" (onSelect)="onFileSelect($event)" [auto]="true" [multiple]="false" chooseLabel="Browse"></p-fileUpload>
+                <p-fileUpload #fileUpload mode="basic" name="demo[]" accept=".pdf" [maxFileSize]="1000000"
+                              (onSelect)="onFileSelect($event)" [auto]="true" [multiple]="false"
+                              chooseLabel="Browse"></p-fileUpload>
               </div>
             </div>
             <p-editor [hidden]="questionDetail.isFile" #editor [(ngModel)]="questionDetail.quesDesc"
@@ -56,7 +58,8 @@
                       [style]="{ height: '100vh', width:'auto'}"
                       (onTextChange)="onTextChange($event,editor)"></p-editor>
 
-            <iframe [hidden]="!questionDetail.isFile"  #pdfIframe width="100%" height="100%" type="application/pdf"></iframe>
+            <iframe id="pdfPreview" [hidden]="!questionDetail.isFile" #pdfIframe width="100%" height="800"
+                    type="application/pdf"></iframe>
 
           </div>
         </ng-template>
@@ -67,11 +70,13 @@
     <p-button label="Save"></p-button>
   </div>
 </div>
-<p-dialog header="Input Marks of question" [modal]="true" [(visible)]="newQuestionDialogVisible">
-<div class="flex flex-column flex-wrap">
-  <input class="mb-2" pInputText [(ngModel)]="inputMark"  placeholder="Question Mark">
-  <p-button label="Add Question" (onClick)="addNewQuestion()"></p-button>
-</div>
-
-
+<p-dialog header="Input Marks of Question" [modal]="true" [(visible)]="newQuestionDialogVisible">
+  <div class="flex flex-column flex-wrap">
+    <input class="mb-2" pInputText [(ngModel)]="inputMark" placeholder="Question Mark">
+    <p-button label="Add Question" (onClick)="addNewQuestion()"></p-button>
+  </div>
 </p-dialog>
+
+
+<div id="preview" style="width:600px; height:600px"> </div>
+

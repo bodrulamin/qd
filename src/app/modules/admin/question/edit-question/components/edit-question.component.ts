@@ -8,11 +8,9 @@ import {DeleteQuestionModel, QuestionDetailModel, QuestionModel} from "../servic
 import {EditQuestionService} from "../service/edit-question.service";
 import {CreateQuestionService} from "../../create-question/service/create-question.service";
 import {FileSelectEvent, FileUpload} from "primeng/fileupload";
+import html2canvas from 'html2canvas';
 
-interface UploadEvent {
-  originalEvent: Event;
-  files: File[];
-}
+
 
 @Component({
   selector: 'app-edit-question',
@@ -33,7 +31,8 @@ export class EditQuestionComponent extends BaseComponent {
   inputMark: any;
   autoSave: boolean = false;
   newQuestionDialogVisible: boolean = false;
-  blobUrls = [];
+  fileBlobUrls = [];
+  thumbainsBlobUrls = [];
 
   constructor(
     private confirmationService: ConfirmationService,
@@ -121,15 +120,11 @@ export class EditQuestionComponent extends BaseComponent {
         this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.questionDetails[i].quesDesc
       }, 1)
     } else {
-      if (this.blobUrls[i]) {
-        this.pdfIframe.nativeElement.src = this.blobUrls[i];
+      if (this.fileBlobUrls[i]) {
+        this.pdfIframe.nativeElement.src = this.fileBlobUrls[i];
         return;
       }
-
-
     }
-
-
   }
 
   setupBlobUrl(i: number, fileUrl: string, viewNow?: boolean) {
@@ -137,9 +132,10 @@ export class EditQuestionComponent extends BaseComponent {
     urlParam.set('filePath', fileUrl)
     this.editQuestionService.fetchByFileUrl(urlParam).subscribe(data => {
       var file = new Blob([data], {type: 'application/pdf'});
-      this.blobUrls[i] = URL.createObjectURL(file);
+      this.fileBlobUrls[i] = URL.createObjectURL(file);
+      this.generatePdfThumbnails(i)
       if (viewNow) {
-        this.pdfIframe.nativeElement.src = this.blobUrls[i];
+        this.pdfIframe.nativeElement.src = this.fileBlobUrls[i];
       }
     })
   }
@@ -214,6 +210,9 @@ export class EditQuestionComponent extends BaseComponent {
       this.questionDetails[i] = data.quesDetailsList[i];
       if (this.questionDetails[i].isFile) {
         this.setupBlobUrl(i, this.questionDetails[i].fileUrl);
+
+      } else {
+        this.generateHtmlThumbnails(i);
       }
     }
     this.autoSave = true;
@@ -229,6 +228,23 @@ export class EditQuestionComponent extends BaseComponent {
       this.setupBlobUrl(i, this.questionDetails[i].fileUrl, true);
     }
     this.autoSave = true;
+  }
+
+  generateHtmlThumbnails(i: number) {
+    let element = document.getElementById('preview')
+    element.innerHTML = this.questionDetails[i].quesDesc;
+    if (!this.questionDetails[i].quesDesc) return;
+    html2canvas(element).then(canvas => {
+      this.thumbainsBlobUrls[i] = canvas.toDataURL('image/png');
+      element.innerHTML = '';
+    });
+  }
+  generatePdfThumbnails(i: number) {
+    this.pdfIframe.nativeElement.src = this.fileBlobUrls[i];
+    let element = document.getElementById('pdfPreview')
+    html2canvas(element).then(canvas => {
+      this.thumbainsBlobUrls[i] = canvas.toDataURL('image/png');
+    });
   }
 
   onFileSelect(event: FileSelectEvent) {
