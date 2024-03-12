@@ -11,7 +11,7 @@
     </div>
 
     <div>
-      <p-splitter [panelSizes]="[25, 75]">
+      <p-splitter [panelSizes]="[20, 80]">
         <ng-template pTemplate>
           <div class="col">
             <div class="grid">
@@ -22,7 +22,7 @@
                               severity="danger"
                               [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
                   </ng-template>
-                  <div style="overflow:hidden" >
+                  <div style="overflow:hidden; min-height: 150px" >
                     <img *ngIf="thumbainsBlobUrls[i]" style="width:100%; overflow:hidden"  src="{{thumbainsBlobUrls[i]}}"
                          alt="thumbnail">
                   </div>
@@ -40,7 +40,7 @@
             <div class="grid formgrid mb-1">
               <div class="col-4 mb-2 lg:mb-0 p-inputgroup">
                 <span class="p-inputgroup-addon">Sequence No.</span>
-                <input type="text" pInputText [disabled]="true" [(ngModel)]="questionDetail.seqNo"/>
+                <input type="text" pInputText  (blur)="autoSaveQuestion()" [disabled]="selectedIndex<0" [(ngModel)]="questionDetail.seqNo"/>
               </div>
               <div class="col-4 mb-2 lg:mb-0 p-inputgroup">
                 <span class="p-inputgroup-addon">Marks</span>
@@ -48,9 +48,9 @@
                        [(ngModel)]="questionDetail.marks"/>
               </div>
               <div class="col-4 mb-2 lg:mb-0">
-                <p-fileUpload #fileUpload mode="basic" name="demo[]" accept=".pdf" [maxFileSize]="1000000"
+                <p-fileUpload #fileUpload mode="basic" name="demo[]" accept=".pdf" (onUpload)="onUpload($event)" [maxFileSize]="1000000"
                               (onSelect)="onFileSelect($event)" [auto]="true" [multiple]="false"
-                              chooseLabel="Browse"></p-fileUpload>
+                              chooseLabel="Attach File"></p-fileUpload>
               </div>
             </div>
             <p-editor [hidden]="questionDetail.isFile" #editor [(ngModel)]="questionDetail.quesDesc"
@@ -58,8 +58,11 @@
                       [style]="{ height: '100vh', width:'auto'}"
                       (onTextChange)="onTextChange($event,editor)"></p-editor>
 
-            <iframe id="pdfPreview" [hidden]="!questionDetail.isFile" #pdfIframe width="100%" height="800"
-                    type="application/pdf"></iframe>
+            <pdf-viewer [hidden]="!questionDetail.isFile" #pdfView [src]="fileBlobUrls[selectedIndex]" [style]="{width:'100%', height:'900px'}"
+                        [render-text]="true"
+                        [original-size]="false"
+                        style="width: 400px; height: 500px"
+            ></pdf-viewer>
 
           </div>
         </ng-template>

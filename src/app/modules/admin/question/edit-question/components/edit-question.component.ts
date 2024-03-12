@@ -7,10 +7,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {DeleteQuestionModel, QuestionDetailModel, QuestionModel} from "../service/domain/question.model";
 import {EditQuestionService} from "../service/edit-question.service";
 import {CreateQuestionService} from "../../create-question/service/create-question.service";
-import {FileSelectEvent, FileUpload} from "primeng/fileupload";
+import {FileSelectEvent, FileUpload, FileUploadEvent} from "primeng/fileupload";
 import html2canvas from 'html2canvas';
-
-
+import generatePdfThumbnails from 'pdf-thumbnails-generator';
 
 @Component({
   selector: 'app-edit-question',
@@ -25,7 +24,7 @@ export class EditQuestionComponent extends BaseComponent {
   selectedIndex: number = -1;
   @ViewChild("editor") editor!: Editor;
   @ViewChild("fileUpload") fileUpload!: FileUpload;
-  @ViewChild("pdfIframe") pdfIframe!: ElementRef;
+  @ViewChild("pdfView") pdfView!: ElementRef;
   questionSelected = false;
   private id: any;
   inputMark: any;
@@ -121,13 +120,13 @@ export class EditQuestionComponent extends BaseComponent {
       }, 1)
     } else {
       if (this.fileBlobUrls[i]) {
-        this.pdfIframe.nativeElement.src = this.fileBlobUrls[i];
+        this.pdfView.nativeElement.src = this.fileBlobUrls[i];
         return;
       }
     }
   }
 
-  setupBlobUrl(i: number, fileUrl: string, viewNow?: boolean) {
+  generateFileBlobsFromApi(i: number, fileUrl: string, viewNow?: boolean) {
     let urlParam = new Map();
     urlParam.set('filePath', fileUrl)
     this.editQuestionService.fetchByFileUrl(urlParam).subscribe(data => {
@@ -135,12 +134,13 @@ export class EditQuestionComponent extends BaseComponent {
       this.fileBlobUrls[i] = URL.createObjectURL(file);
       this.generatePdfThumbnails(i)
       if (viewNow) {
-        this.pdfIframe.nativeElement.src = this.fileBlobUrls[i];
+        this.pdfView.nativeElement.src = this.fileBlobUrls[i];
       }
     })
   }
 
   autoSaveQuestion() {
+
     if (!this.questionMaster.id) {
       this.saveQuestion(this.questionMaster, this.selectedIndex)
     }
@@ -209,8 +209,7 @@ export class EditQuestionComponent extends BaseComponent {
     for (let i = 0; i < data.quesDetailsList.length; i++) {
       this.questionDetails[i] = data.quesDetailsList[i];
       if (this.questionDetails[i].isFile) {
-        this.setupBlobUrl(i, this.questionDetails[i].fileUrl);
-
+        this.generateFileBlobsFromApi(i, this.questionDetails[i].fileUrl);
       } else {
         this.generateHtmlThumbnails(i);
       }
@@ -225,7 +224,9 @@ export class EditQuestionComponent extends BaseComponent {
     this.questionDetails[i].filePath = data.quesDetailsList[0].filePath;
     this.questionDetails[i].fileUrl = data.quesDetailsList[0].fileUrl;
     if (this.questionDetails[i].isFile) {
-      this.setupBlobUrl(i, this.questionDetails[i].fileUrl, true);
+      this.generateFileBlobsFromApi(i, this.questionDetails[i].fileUrl, true);
+    } else {
+      this.generateHtmlThumbnails(i);
     }
     this.autoSave = true;
   }
@@ -239,17 +240,29 @@ export class EditQuestionComponent extends BaseComponent {
       element.innerHTML = '';
     });
   }
-  generatePdfThumbnails(i: number) {
-    this.pdfIframe.nativeElement.src = this.fileBlobUrls[i];
-    let element = document.getElementById('pdfPreview')
-    html2canvas(element).then(canvas => {
-      this.thumbainsBlobUrls[i] = canvas.toDataURL('image/png');
-    });
+  async generatePdfThumbnails(i: number) {
+    try {
+      const thumbnails = await generatePdfThumbnails(this.fileBlobUrls[i], 500);
+      // Use the generated thumbnail data (e.g., display it in an image tag)
+      this.thumbainsBlobUrls[i] = thumbnails[0].thumbnail;
+    } catch (err) {
+      console.error(err);
+    }
+
   }
 
   onFileSelect(event: FileSelectEvent) {
+    if (this.selectedIndex < 0){
+      this.messageService.add({summary:'Question not selected',detail:'Please select a question to attach file',severity:'error'});
+      this.fileUpload.clear();
+      return;
+    }
     let file = event.files[0];
     this.saveQuestion(this.questionMaster, this.selectedIndex, file);
     this.fileUpload.clear();
+  }
+
+  onUpload($event: FileUploadEvent) {
+    console.log($event)
   }
 }

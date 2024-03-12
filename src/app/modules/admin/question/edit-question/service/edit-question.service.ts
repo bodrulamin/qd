@@ -5,6 +5,7 @@ import {ApiResponse} from "../../../../base/service/domain/api.response";
 import {DELETE_QUESTION, FETCH_EXISTING_QUESTION, FETCH_FILE_BY_URL, SAVE_QUESTION} from "./edit-question.endpoints";
 import {DeleteQuestionModel} from "./domain/question.model";
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,5 +30,6 @@ export class EditQuestionService extends BaseService {
   fetchByFileUrl(urlParam: Map<any, any>): Observable<Blob> {
     return this.http.get<Blob>(FETCH_FILE_BY_URL  + this.getHttpParams(urlParam),);
   }
+
 
 }
