@@ -1,35 +1,42 @@
-import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ExamSchedulingService} from "../service/exam-scheduling.service";
+import {LockQuestionService} from "../service/lock-question.service";
 import {MessageService} from "primeng/api";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
 import { ScheduleModel} from "../service/domain/exam-scheduling.model";
+import {Component, Input} from "@angular/core";
 
 @Component({
-  selector: 'app-exam-scheduling',
-  templateUrl: './exam-scheduling.component.html',
-  styleUrls: ['./exam-scheduling.component.css']
+  selector: 'app-lock-question',
+  templateUrl: './lock-question.component.html',
+  styleUrls: ['./lock-question.component.css']
 })
-export class ExamSchedulingComponent extends BaseComponent {
+export class LockQuestionComponent extends BaseComponent {
+
+  header = 'Lock Question';
   examLevelOptions: any[] = [];
   sessionOptions = [];
   yearOptions = [];
   examSearchForm: FormGroup;
   minDate: Date;
   maxDate: Date;
-  private required_field = {
+  required_field = {
     examLevel: 'Exam Level',
     session: 'Session',
     year: 'Year',
   };
   examList: any[] = [];
+  @Input('header') set setData(data){
+    this.header = data;
+  }
+  @Input() actionCode: string;
+
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public messageService: MessageService,
-    private ExamSchedulingService: ExamSchedulingService,
+    private ExamSchedulingService: LockQuestionService,
     private formBuilder: FormBuilder
   ) {
     super();
@@ -57,8 +64,11 @@ export class ExamSchedulingComponent extends BaseComponent {
 
 
   searchExams() {
+    console.log(this.actionCode)
+    let searchModel = this.examSearchForm.value;
+    searchModel.actionCode = this.actionCode;
     if (this.formInvalid()) return;
-    this.ExamSchedulingService.searchQuestion(this.examSearchForm.value).subscribe(apiResponse => {
+    this.ExamSchedulingService.searchQuestionToLock(this.examSearchForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examList = apiResponse.data
         this.examList.forEach(e => {

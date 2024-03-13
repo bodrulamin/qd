@@ -29,6 +29,14 @@ export const adminRoutes: Routes = [
         path: "exam-scheduling",
         loadChildren: () => import('./exam-scheduling/exam-scheduling.module').then(m => m.ExamSchedulingModule)
       },
+      {
+        path: "lock-question",
+        loadChildren: () => import('./lock-question/lock-question.module').then(m => m.LockQuestionModule)
+      },
+      {
+        path: "unlock-question",
+        loadChildren: () => import('./unlock-question/unlock-question.module').then(m => m.UnlockQuestionModule)
+      },
     ],
   },
 
