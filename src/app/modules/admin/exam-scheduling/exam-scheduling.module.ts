@@ -8,6 +8,8 @@ import {DropdownModule} from "primeng/dropdown";
 import {ButtonModule} from "primeng/button";
 import {TableModule} from "primeng/table";
 import {CalendarModule} from "primeng/calendar";
+import {InputTextModule} from "primeng/inputtext";
+import {PasswordModule} from "primeng/password";
 
 @NgModule({
   imports: [
@@ -17,7 +19,9 @@ import {CalendarModule} from "primeng/calendar";
     DropdownModule,
     ButtonModule,
     TableModule,
-    CalendarModule
+    CalendarModule,
+    InputTextModule,
+    PasswordModule
   ],
   declarations: [
     ExamSchedulingComponent,

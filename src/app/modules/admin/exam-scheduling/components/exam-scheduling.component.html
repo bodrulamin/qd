@@ -36,7 +36,7 @@
           <ng-template pTemplate="header">
             <tr>
               <th>Subject</th>
-              <th>Subject Code</th>
+              <th>Code</th>
               <th>Date</th>
               <th>Start Time</th>
               <th>End Time</th>
@@ -48,10 +48,13 @@
             <tr>
               <td>{{  e.subjectName  }}</td>
               <td>{{ e.subjectCode  }}</td>
-              <td><p-calendar id="exam-date" apendTo="none" [showTime]="true" [showSeconds]="true"
+              <td><p-calendar placeholder="Date" appendTo="body"
                               dateFormat="dd-M-yy" [showIcon]="true"></p-calendar></td>
-              <td>{{ e.examName   }}</td>
-              <td>{{ e.examDate | date:"dd-MMM-yyyy" }}</td>
+              <td><p-calendar placeholder="Start Time"  appendTo="body"
+                              dateFormat="dd-M-yy" [timeOnly]="true"></p-calendar></td>
+              <td><p-calendar placeholder="End Time" appendTo="body"
+                              dateFormat="dd-M-yy" [timeOnly]="true"></p-calendar></td>
+              <td><p-password [feedback]="false" [toggleMask]="true"></p-password></td>
               <td class="justify-content-center">
 <!--                <p-button  icon="pi pi-eye" [rounded]="true" [text]="true" (onClick)="showPassword(e)"></p-button>-->
 
