@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from "@angular/router";
 import {examSchedulingRoutes} from "./exam-scheduling.routes";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {ExamSchedulingComponent} from "./components/exam-scheduling.component";
 import {DropdownModule} from "primeng/dropdown";
@@ -15,6 +15,7 @@ import {PasswordModule} from "primeng/password";
   imports: [
     RouterModule.forChild(examSchedulingRoutes),
     ReactiveFormsModule,
+    FormsModule,
     CommonModule,
     DropdownModule,
     ButtonModule,

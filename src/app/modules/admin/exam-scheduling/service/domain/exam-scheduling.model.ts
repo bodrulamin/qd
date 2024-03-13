@@ -17,6 +17,14 @@ export class ExamModel {
   year: string
 }
 
+export class ScheduleModel    {
+  id: number
+  examDate: Date
+  examStartsAt: Date
+  examEndsAt: Date
+  quizPwd: string
+}
+
 
 
 

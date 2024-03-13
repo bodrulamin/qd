@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ExamSchedulingService} from "../service/exam-scheduling.service";
 import {MessageService} from "primeng/api";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
-import {ExamModel} from "../service/domain/exam-scheduling.model";
+import {ExamModel, ScheduleModel} from "../service/domain/exam-scheduling.model";
 
 @Component({
   selector: 'app-create-question',
@@ -14,7 +14,6 @@ import {ExamModel} from "../service/domain/exam-scheduling.model";
 export class ExamSchedulingComponent extends BaseComponent {
   examLevelOptions: any[] = [];
   sessionOptions = [];
-  subjectOptions = [];
   yearOptions = [];
   examSearchForm: FormGroup;
   minDate: Date;
@@ -24,13 +23,13 @@ export class ExamSchedulingComponent extends BaseComponent {
     session: 'Session',
     year: 'Year',
   };
-  examList:any[] = [];
+  examList: any[] = [];
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public messageService: MessageService,
-    private createQuestionService: ExamSchedulingService,
+    private ExamSchedulingService: ExamSchedulingService,
     private formBuilder: FormBuilder
   ) {
     super();
@@ -59,9 +58,14 @@ export class ExamSchedulingComponent extends BaseComponent {
 
   searchExams() {
     if (this.formInvalid()) return;
-    this.createQuestionService.searchQuestion(this.examSearchForm.value).subscribe(apiResponse => {
+    this.ExamSchedulingService.searchQuestion(this.examSearchForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examList = apiResponse.data
+        this.examList.forEach(e => {
+          e.examDate = e.examDate ? new Date(e.examDate) : e.examDate;
+          e.examStartsAt = e.examStartsAt ? new Date(e.examStartsAt) : e.examStartsAt;
+          e.examEndsAt = e.examEndsAt ? new Date(e.examEndsAt) : e.examEndsAt;
+        })
       }
 
     });
@@ -76,7 +80,7 @@ export class ExamSchedulingComponent extends BaseComponent {
   }
 
   private fetchConfiguration() {
-    this.subscribers.confSubs = this.createQuestionService.fetchConfiguration().subscribe(apiResponse => {
+    this.subscribers.confSubs = this.ExamSchedulingService.fetchConfiguration().subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;
@@ -86,11 +90,46 @@ export class ExamSchedulingComponent extends BaseComponent {
   }
 
 
-  onExamLevelChange(examLevel: any) {
-    this.subjectOptions = examLevel ? this.examLevelOptions.find(l => l.code === examLevel).subList : [];
+  clearExamList(examLevel: any) {
+    this.examList = []
   }
 
   onExamLevelClear() {
-    this.subjectOptions = []
+    this.examList = []
   }
+
+  save(e: any) {
+    let schedule = this.prepareSchedule(e);
+
+    this.ExamSchedulingService.saveSchedule([schedule]).subscribe(apiResponse => {
+      if (apiResponse.result) {
+
+      }
+
+    });
+  }
+
+  private prepareSchedule(e: any) {
+    let schedule = new ScheduleModel();
+    schedule.id = e.id;
+    schedule.examDate = e.examDate;
+    schedule.examStartsAt = this.changeDate(e.examStartsAt, schedule.examDate);
+    schedule.examEndsAt = this.changeDate(e.examEndsAt, schedule.examDate);
+    schedule.quizPwd = e.quizPwd;
+
+    return schedule;
+  }
+
+  changeDate(dateToChange: Date, newDate: Date): Date {
+    return new Date(
+      newDate.getFullYear(),
+      newDate.getMonth(),
+      newDate.getDate(),
+      dateToChange.getHours(),
+      dateToChange.getMinutes(),
+      dateToChange.getSeconds(),
+      dateToChange.getMilliseconds()
+    );
+  }
+
 }

@@ -104,10 +104,10 @@ export class EditQuestionComponent extends BaseComponent {
   }
 
   private removeItemFromList(i: number) {
-    if (this.thumbnailBlobMap.get(this.questionDetails[i].id)){
+    if (this.thumbnailBlobMap.get(this.questionDetails[i].id)) {
       this.thumbnailBlobMap.delete(this.questionDetails[i].id);
     }
-    if (this.pdfBlobMap.get(this.questionDetails[i].id)){
+    if (this.pdfBlobMap.get(this.questionDetails[i].id)) {
       this.pdfBlobMap.delete(this.questionDetails[i].id);
     }
 
@@ -141,6 +141,15 @@ export class EditQuestionComponent extends BaseComponent {
   }
 
   autoSaveQuestion() {
+    this.messageService.clear();
+    if (this.hasDuplicate(this.questionDetails, 'seqNo')) {
+      this.messageService.add({summary: 'Error', detail: 'Duplicate sequnce found !', severity: 'error'})
+      return;
+    }
+    if (this.questionDetail.marks <= 0) {
+      this.messageService.add({summary: 'Error', detail: 'Input valid marks!', severity: 'error'})
+      return;
+    }
 
     if (!this.questionMaster.id) {
       this.saveQuestion(this.questionMaster, this.selectedIndex)
@@ -163,7 +172,7 @@ export class EditQuestionComponent extends BaseComponent {
     formData.append('data', data);
     this.autoSave = false;
 
-    this.subscribers.editQuesSubs = this.editQuestionService.addQuestion(formData).subscribe(apiResponse => {
+    this.editQuestionService.addQuestion(formData).subscribe(apiResponse => {
       if (apiResponse.result) {
         let data = apiResponse.data;
         this.setupSavedData(data, i);
@@ -246,7 +255,7 @@ export class EditQuestionComponent extends BaseComponent {
   async generatePdfThumbnails(i: number) {
     try {
       const thumbnails = await generatePdfThumbnails(this.pdfBlobMap.get(this.questionDetails[i].id), 500);
-      this.thumbnailBlobMap.set(this.questionDetails[i].id,thumbnails[0].thumbnail)
+      this.thumbnailBlobMap.set(this.questionDetails[i].id, thumbnails[0].thumbnail)
     } catch (err) {
       console.error(err);
     }
@@ -270,5 +279,9 @@ export class EditQuestionComponent extends BaseComponent {
 
   onUpload($event: FileUploadEvent) {
     console.log($event)
+  }
+
+  hasDuplicate(arr: any[], field: string): boolean {
+    return arr.some((obj, index) => arr.findIndex(innerObj => innerObj[field] === obj[field]) !== index);
   }
 }

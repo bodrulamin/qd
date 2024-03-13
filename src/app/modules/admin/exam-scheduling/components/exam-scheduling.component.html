@@ -7,23 +7,20 @@
         <div class="formgrid grid">
           <div class="field col">
             <label for="exam-level">Exam Level</label>
-            <p-dropdown id="exam-level" (onChange)="onExamLevelChange($event.value)" (onClear)="onExamLevelClear()" formControlName="examLevel" [showClear]="true" placeholder="Select Exam Level"
+            <p-dropdown id="exam-level" (onChange)="clearExamList($event.value)" (onClear)="onExamLevelClear()" formControlName="examLevel" [showClear]="true" placeholder="Select Exam Level"
                         [options]="examLevelOptions" optionLabel="name" optionValue="code"></p-dropdown>
           </div>
           <div class="field col">
             <label for="session">Session</label>
-            <p-dropdown id="session" [showClear]="true" placeholder="Select Session" formControlName="session"
+            <p-dropdown id="session" (onChange)="clearExamList($event.value)" [showClear]="true" placeholder="Select Session" formControlName="session"
                         [options]="sessionOptions" optionLabel="name" optionValue="code"></p-dropdown>
           </div>
-
-        </div>
-
-        <div class="formgrid grid">
           <div class="field col">
             <label for="year">Year</label>
-            <p-dropdown id="year" [showClear]="true" placeholder="Select Year" formControlName="year"
+            <p-dropdown id="year" (onChange)="clearExamList($event.value)" [showClear]="true" placeholder="Select Year" formControlName="year"
                         [options]="yearOptions" optionLabel="name" optionValue="code"></p-dropdown>
           </div>
+
         </div>
 
         <div class="flex justify-content-end">
@@ -48,15 +45,17 @@
             <tr>
               <td>{{  e.subjectName  }}</td>
               <td>{{ e.subjectCode  }}</td>
-              <td><p-calendar placeholder="Date" appendTo="body"
-                              dateFormat="dd-M-yy" [showIcon]="true"></p-calendar></td>
-              <td><p-calendar placeholder="Start Time"  appendTo="body"
+              <td>
+                <p-calendar [(ngModel)]="e.examDate" placeholder="Date" appendTo="body"
+                              dateFormat="dd-M-yy" [showIcon]="true"></p-calendar>
+              </td>
+              <td><p-calendar [(ngModel)]="e.examStartsAt" placeholder="Start Time"  appendTo="body"
                               dateFormat="dd-M-yy" [timeOnly]="true"></p-calendar></td>
-              <td><p-calendar placeholder="End Time" appendTo="body"
+              <td><p-calendar [(ngModel)]="e.examEndsAt" placeholder="End Time" appendTo="body"
                               dateFormat="dd-M-yy" [timeOnly]="true"></p-calendar></td>
-              <td><p-password [feedback]="false" [toggleMask]="true"></p-password></td>
+              <td><p-password [(ngModel)]="e.quizPwd" [feedback]="false" [toggleMask]="true"></p-password></td>
               <td class="justify-content-center">
-<!--                <p-button  icon="pi pi-eye" [rounded]="true" [text]="true" (onClick)="showPassword(e)"></p-button>-->
+                <p-button  icon="pi pi-save" label="Save" [rounded]="true" [text]="true" (onClick)="save(e)"></p-button>
 
               </td>
               <td>

@@ -1,6 +1,13 @@
 import {Injectable} from '@angular/core';
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {Observable, throwError} from 'rxjs';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpEventType,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest, HttpResponse, HttpSentEvent
+} from '@angular/common/http';
+import {Observable, of, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {AuthService} from "../../auth/service/auth.service";
 import {MessageService} from "primeng/api";
@@ -64,9 +71,9 @@ export class AuthInterceptor implements HttpInterceptor {
           summary: 'Error',
           detail: errorMsg,
           severity: 'error'
-        })
+        });
         // Pass the error to the caller of the request
-        return throwError(error);
+        return of(new HttpResponse({ status: 200, body: 'Error skipped' }));;
       })
     );
   }
