@@ -27,9 +27,9 @@ export class AuthInterceptor implements HttpInterceptor {
       };
     }
     if (token) {
-      if (request.url.includes('get-exam-question-details-file')){
+      if (request.url.includes('get-exam-question-details-file')) {
         request = request.clone({
-          setHeaders: headers,responseType:'arraybuffer'
+          setHeaders: headers, responseType: 'arraybuffer'
         });
       } else {
         request = request.clone({
@@ -58,12 +58,13 @@ export class AuthInterceptor implements HttpInterceptor {
         if (error.status === 401) {
           this.authService.adminLogout();
           this.authService.studentLogout();
-        } else if (error.status >= 500) {
-          this.messageService.add({summary: 'Error', detail: htmlErrorMessages[error.status], severity: 'error'})
-        } else {
-          this.messageService.add({summary: 'Error', detail:error.error.remarks ?  error.error.remarks.join(', ') : error.statusText, severity: 'error'})
         }
-
+        let errorMsg = error.status >= 500 ? htmlErrorMessages[error.status] : error.error.remarks ? error.error.remarks.join(', ') : error.statusText;
+        this.messageService.add({
+          summary: 'Error',
+          detail: errorMsg,
+          severity: 'error'
+        })
         // Pass the error to the caller of the request
         return throwError(error);
       })
