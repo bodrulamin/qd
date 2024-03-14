@@ -75,6 +75,7 @@ export class LayoutService {
   }
 
   hideSideMenu(){
+    this.fullScreen = true;
     this.state.staticMenuDesktopInactive = true;
   }
 

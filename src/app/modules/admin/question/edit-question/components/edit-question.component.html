@@ -1,44 +1,51 @@
-<div class="col-12">
+<div class="col-12" style="z-index:1">
   <div class="card">
-
+    <div id="preview" style="width:600px; height:600px; z-index:-1; position: absolute; top: 100px; left:100px "></div>
     <div class="flex justify-content-between flex-wrap">
       <div class="flex align-items-center justify-content-center">
         <h5>Edit Question</h5></div>
       <div class="flex align-items-baseline justify-content-center">
-        <p-button [text]="true" icon="{{layoutService.fullScreen?'fas fa-minimize' : 'fas fa-expand'}}"
+        <p-button [text]="true" icon="{{layoutService.fullScreen ? 'fas fa-minimize' : 'fas fa-expand'}}"
                   (onClick)="layoutService.fullScreenToggle()"></p-button>
       </div>
     </div>
 
     <div>
-      <p-splitter [panelSizes]="[30, 70]">
+      <p-splitter [panelSizes]="[25, 75]">
         <ng-template pTemplate>
-          <div class="col">
-            <div class="grid">
-              <div class="col-12" *ngFor="let item of questionDetails; index as i;">
-                <p-card (click)="selectQuestion(i)">
-                  <ng-template pTemplate="header">
-                    <div class="flex justify-content-between p-2">
-                      <div>
-                        <p-badge [value]='item.seqNo.toString()' ></p-badge>
-                      </div>
-                      <div>
-                        <p-button [style]="{float:'right'}" icon="pi pi-times" [text]="true" [rounded]="true"
-                                  severity="danger"
-                                  [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
-                      </div>
-                    </div>
+          <div id="left-part">
+            <p-scrollPanel [style]="{ width: '100%', height: '80vh' , backgroundColor:'#e3e5e7', padding:'20px'}">
+              <div class="flex flex-column justify-content-center">
+                <div class="flex flex-column align-items-center justify-content-center">
+                  <div class="mb-5"
+                       *ngFor="let item of questionDetails; index as i;">
+                    <p-card (click)="selectQuestion(i)">
+                      <ng-template pTemplate="header">
+                        <div class="flex justify-content-between align-items-start">
+                          <div class="m-2">
+                            <p-badge [severity]="i===selectedIndex ? 'info':'warning'"
+                                     [value]='item.seqNo.toString()'></p-badge>
+                          </div>
+                          <div>
+                            <p-button  icon="pi pi-times" [text]="true" [rounded]="true"
+                                      severity="danger"
+                                      [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
+                          </div>
+                        </div>
 
-                  </ng-template>
-                  <div style="overflow:hidden; min-height: 150px">
-                    <img *ngIf="thumbnailBlobMap.get(item.id)" style="width:100%; overflow:hidden"
-                         src="{{thumbnailBlobMap.get(item.id)}}"
-                         alt="thumbnail">
+                      </ng-template>
+                      <div style="width: 150px; height: 200px">
+                        <img *ngIf="thumbnailBlobMap.get(item.id)" style="width:100%; overflow:clip "
+                             src="{{thumbnailBlobMap.get(item.id)}}"
+                             alt="thumbnail">
+                      </div>
+
+
+                    </p-card>
                   </div>
-
-                </p-card>
+                </div>
               </div>
-            </div>
+            </p-scrollPanel>
             <div class="flex justify-content-center p-2">
               <p-button icon='pi pi-plus' label="Add Question" (onClick)="showAddQuestionDialog()"></p-button>
             </div>
@@ -66,7 +73,7 @@
             </div>
             <p-editor *ngIf="!questionDetail.isFile" #editor [(ngModel)]="questionDetail.quesDesc"
                       [readonly]="!questionSelected" (onSelectionChange)="autoSaveQuestion()"
-                      [style]="{ height: '100vh', width:'auto'}"
+                      [style]="{ height: '80vh', width:'auto'}"
                       (onTextChange)="onTextChange($event,editor)"></p-editor>
 
             <pdf-viewer *ngIf="questionDetail.isFile" #pdfView [src]="pdfBlobMap.get(questionDetail.id)"
@@ -93,5 +100,4 @@
 </p-dialog>
 
 
-<div id="preview" style="width:600px; height:600px"></div>
 
