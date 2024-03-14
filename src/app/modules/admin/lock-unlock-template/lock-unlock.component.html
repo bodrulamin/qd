@@ -1,0 +1,69 @@
+<div class="grid">
+  <div class="col-12 md:col-12">
+    <div class="card p-fluid">
+      <h5>{{header}}</h5>
+
+      <form class="p-5" [formGroup]="examSearchForm">
+        <div class="formgrid grid">
+          <div class="field col">
+            <label for="exam-level">Exam Level</label>
+            <p-dropdown id="exam-level" (onChange)="clearExamList($event.value)" (onClear)="onExamLevelClear()"
+                        formControlName="examLevel" [showClear]="true" placeholder="Select Exam Level"
+                        [options]="examLevelOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="session">Session</label>
+            <p-dropdown id="session" (onChange)="clearExamList($event.value)" [showClear]="true"
+                        placeholder="Select Session" formControlName="session"
+                        [options]="sessionOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="year">Year</label>
+            <p-dropdown id="year" (onChange)="clearExamList($event.value)" [showClear]="true" placeholder="Select Year"
+                        formControlName="year"
+                        [options]="yearOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+
+        </div>
+
+        <div class="flex justify-content-end">
+          <p-button icon="pi pi-search" (onClick)="searchExams()" label="Find"></p-button>
+        </div>
+      </form>
+
+      <div class="mt-5">
+        <p-table [value]="examList" [tableStyle]="{ 'min-width': '50rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Subject</th>
+              <th>Code</th>
+              <th>Date</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
+            <tr>
+              <td>{{ e.subjectName }}</td>
+              <td>{{ e.subjectCode  }}</td>
+              <td>{{ e.examDate | date:'dd-M-yy'}} </td>
+              <td>{{ e.examEndsAt | date:'dd-M-yy'}} </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div class="flex justify-content-end mt-3 p-5">
+          <p-button [label]="actionCode === 'LOCK'? 'Lock' : 'Unlock' "
+                    (onClick)="inputPasswordDialogVisible = true"></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog [header]="'Insert password to ' + actionCode" [modal]="true" [(visible)]="inputPasswordDialogVisible">
+  <div class="flex flex-column flex-wrap">
+    <input class="mb-2" pInputText [(ngModel)]="lockPassword" placeholder="Password">
+    <p-button [label]="actionCode === 'LOCK' ? 'Lock' : 'Unlock'" (onClick)="lockUnlock()"></p-button>
+  </div>
+</p-dialog>

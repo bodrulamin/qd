@@ -1,13 +1,13 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from "@angular/router";
-import {UnlockQuestionComponent} from "./components/unlock-question.component";
 import {unlockQuestionRoutes} from "./unlock-question.routes";
-import {LockQuestionModule} from "../lock-question/lock-question.module";
+import {LockUnlockTemplateModule} from "../lock-unlock-template/lock-unlock-template.module";
+import {UnlockQuestionComponent} from "./components/unlock-question.component";
 
 @NgModule({
   imports: [
     RouterModule.forChild(unlockQuestionRoutes),
-    LockQuestionModule,
+    LockUnlockTemplateModule,
   ],
   declarations: [
     UnlockQuestionComponent
