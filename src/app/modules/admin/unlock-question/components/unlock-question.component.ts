@@ -6,12 +6,11 @@ import {BaseComponent} from "../../../base/components/base-component/base.compon
   templateUrl: './unlock-question.component.html',
 })
 export class UnlockQuestionComponent extends BaseComponent {
-  header = 'Student Login';
-  constructor(
+  header = 'Unlock Question';
+  actionCode = 'UNLOCK';
 
-  ) {
+  constructor() {
     super();
-    this.header = 'Unlock Question'
   }
 
 

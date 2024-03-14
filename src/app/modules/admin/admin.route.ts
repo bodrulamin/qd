@@ -10,6 +10,10 @@ export const adminRoutes: Routes = [
   {
     path: "home", canActivate: [adminAuthGuard], component: AppLayoutComponent, children: [
       {
+        path: '',
+        loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+      },
+      {
         path: 'exam-configuration',
         loadChildren: () => import('./exam-configuration/exam-config.module').then(m => m.ExamConfigModule)
       },

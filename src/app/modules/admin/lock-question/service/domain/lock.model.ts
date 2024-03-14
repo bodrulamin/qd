@@ -2,7 +2,7 @@ export class ExamSearchModel {
   examLevel: string;
   session: string;
   year: string;
-  subjectCode:string
+  subjectCode: string
 }
 
 export class ExamModel {
@@ -17,12 +17,20 @@ export class ExamModel {
   year: string
 }
 
-export class ScheduleModel    {
+export class ScheduleModel {
   id: number
   examDate: Date
   examStartsAt: Date
   examEndsAt: Date
   quizPwd: string
+}
+
+export class LockModel {
+  quesId: number;
+  isLock: boolean;
+  password: string;
+
+
 }
 
 
