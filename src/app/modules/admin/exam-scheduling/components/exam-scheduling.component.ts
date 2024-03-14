@@ -4,7 +4,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ExamSchedulingService} from "../service/exam-scheduling.service";
 import {MessageService} from "primeng/api";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
-import { ScheduleModel} from "../service/domain/exam-scheduling.model";
+import {ScheduleModel} from "../service/domain/exam-scheduling.model";
 
 @Component({
   selector: 'app-exam-scheduling',
@@ -103,7 +103,7 @@ export class ExamSchedulingComponent extends BaseComponent {
 
     this.ExamSchedulingService.saveSchedule([schedule]).subscribe(apiResponse => {
       if (apiResponse.result) {
-
+        this.messageService.add({summary: 'Saved', detail: "Exam Schedule Updated", severity: 'success'});
       }
 
     });
@@ -113,8 +113,8 @@ export class ExamSchedulingComponent extends BaseComponent {
     let schedule = new ScheduleModel();
     schedule.id = e.id;
     schedule.examDate = e.examDate;
-    schedule.examStartsAt = this.changeDate(e.examStartsAt, schedule.examDate);
-    schedule.examEndsAt = this.changeDate(e.examEndsAt, schedule.examDate);
+    schedule.examStartsAt = e.examStartsAt ?  this.changeDate(e.examStartsAt, schedule.examDate) : null;
+    schedule.examEndsAt = e.examEndsAt ?  this.changeDate(e.examEndsAt, schedule.examDate):null;
     schedule.quizPwd = e.quizPwd;
 
     return schedule;
