@@ -73,7 +73,7 @@ export class AuthInterceptor implements HttpInterceptor {
           severity: 'error'
         });
         // Pass the error to the caller of the request
-        return of(new HttpResponse({ status: 200, body: 'Error skipped' }));;
+        return throwError(error);
       })
     );
   }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseComponent } from './components/base-component/base.component';
+import {ToastModule} from "primeng/toast";
 
 
 
@@ -9,7 +10,8 @@ import { BaseComponent } from './components/base-component/base.component';
     BaseComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    ToastModule
   ]
 })
 export class BaseModule { }

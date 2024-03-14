@@ -12,23 +12,25 @@ import {InputTextModule} from "primeng/inputtext";
 import {DialogModule} from "primeng/dialog";
 import {FileUploadModule} from "primeng/fileupload";
 import {PdfViewerModule} from "ng2-pdf-viewer";
+import {BadgeModule} from "primeng/badge";
 
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(editQuestionRoute),
-    ReactiveFormsModule,
-    FormsModule,
-    CommonModule,
-    ButtonModule,
-    SplitterModule,
-    EditorModule,
-    CardModule,
-    InputTextModule,
-    DialogModule,
-    FileUploadModule,
-    PdfViewerModule,
-  ],
+    imports: [
+        RouterModule.forChild(editQuestionRoute),
+        ReactiveFormsModule,
+        FormsModule,
+        CommonModule,
+        ButtonModule,
+        SplitterModule,
+        EditorModule,
+        CardModule,
+        InputTextModule,
+        DialogModule,
+        FileUploadModule,
+        PdfViewerModule,
+        BadgeModule,
+    ],
   declarations: [
     EditQuestionComponent
   ]

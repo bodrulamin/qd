@@ -32,6 +32,7 @@ export class EditQuestionComponent extends BaseComponent {
   newQuestionDialogVisible: boolean = false;
   pdfBlobMap = new Map();
   thumbnailBlobMap = new Map();
+  firstTimeCall: boolean = true;
 
   constructor(
     private confirmationService: ConfirmationService,
@@ -46,6 +47,7 @@ export class EditQuestionComponent extends BaseComponent {
   }
 
   ngOnInit() {
+    this.layoutService.hideSideMenu();
 
     this.activatedRoute.queryParams.subscribe(params => {
       this.id = params['id'];
@@ -89,6 +91,9 @@ export class EditQuestionComponent extends BaseComponent {
         if (!deleteModel.quesDetailsId) {
           this.removeItemFromList(i);
         }
+
+        if (!deleteModel.quesId) return;
+
         this.subscribers.deleteQuestionsubs = this.editQuestionService.deleteQuetion(deleteModel).subscribe(apiResponse => {
           if (apiResponse.result) {
             this.messageService.add({severity: 'info', summary: 'Confirmed', detail: 'Question Deleted'});
@@ -151,14 +156,39 @@ export class EditQuestionComponent extends BaseComponent {
       return;
     }
 
-    if (!this.questionMaster.id) {
-      this.saveQuestion(this.questionMaster, this.selectedIndex)
+    if (!this.questionMaster.id && this.firstTimeCall) {
+      this.firstTimeCall = false;
+      this.saveFirstQuestion(this.questionMaster, this.selectedIndex);
     }
     if (this.selectedIndex < 0) return;
     if (!this.autoSave) return;
-    this.saveQuestion(this.questionMaster, this.selectedIndex)
+    this.saveQuestion(this.questionMaster, this.selectedIndex);
   }
 
+  saveFirstQuestion(master: QuestionModel, i: number, file?: File) {
+    let formData = new FormData();
+
+    master.quesDetail = this.questionDetails[i];
+    if (file) {
+      master.quesDetail.isFile = true;
+      formData.append('file', file);
+    }
+
+    let data = JSON.stringify(master);
+    formData.append('data', data);
+
+    this.editQuestionService.addQuestion(formData).subscribe(apiResponse => {
+      if (apiResponse.result) {
+        let data = apiResponse.data;
+        this.setupSavedData(data, i);
+        this.autoSave = true;
+        this.firstTimeCall = false
+      }
+    }, error => {
+      this.firstTimeCall = true;
+      console.log(error)
+    });
+  }
   saveQuestion(master: QuestionModel, i: number, file?: File) {
     let formData = new FormData();
 
@@ -170,12 +200,16 @@ export class EditQuestionComponent extends BaseComponent {
 
     let data = JSON.stringify(master);
     formData.append('data', data);
-    this.autoSave = false;
 
     this.editQuestionService.addQuestion(formData).subscribe(apiResponse => {
       if (apiResponse.result) {
         let data = apiResponse.data;
         this.setupSavedData(data, i);
+        this.autoSave = true;
+      }
+    }, error => {
+      if (this.questionMaster.id) {
+        this.autoSave = true;
       }
     });
   }
@@ -238,7 +272,6 @@ export class EditQuestionComponent extends BaseComponent {
     } else {
       this.generateHtmlThumbnails(i);
     }
-    this.autoSave = true;
   }
 
   generateHtmlThumbnails(i: number) {
@@ -283,5 +316,13 @@ export class EditQuestionComponent extends BaseComponent {
 
   hasDuplicate(arr: any[], field: string): boolean {
     return arr.some((obj, index) => arr.findIndex(innerObj => innerObj[field] === obj[field]) !== index);
+  }
+
+  onBlurSequence($event: FocusEvent) {
+    this.autoSaveQuestion();
+  }
+
+  onBlurMarks($event: FocusEvent) {
+    this.autoSaveQuestion();
   }
 }

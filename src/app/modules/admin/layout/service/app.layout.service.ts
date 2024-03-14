@@ -73,6 +73,11 @@ export class LayoutService {
       config.colorScheme !== this._config.colorScheme
     );
   }
+
+  hideSideMenu(){
+    this.state.staticMenuDesktopInactive = true;
+  }
+
   fullScreenToggle(){
     this.fullScreen = !this.fullScreen;
       this.state.staticMenuDesktopInactive = this.fullScreen;
