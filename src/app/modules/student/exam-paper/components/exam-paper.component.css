@@ -1,0 +1,10 @@
+.info{
+  background-color: #dcd7da;
+  color: #050000;
+  margin: 5px;
+  height:min-content;
+  text-align:center;
+  display: inline;
+  padding:3px;
+  border-radius: 10px ;
+}

@@ -1,1 +1,123 @@
-<p>exam-paper works!</p>
+<div #thumbview></div>
+<div class="h-screen w-screen">
+
+  <div class="h-3rem">
+
+    <div class="flex flex-row w-full">
+      <div class="flex flex-grow-1 justify-content-center align-items-center">
+        <div class="info">
+          Exam Level: {{examInfo.examLevel}}
+        </div>
+        <div class="info">
+
+          Session: {{examInfo.session}}
+        </div>
+        <div class="info">
+
+          SubjectName: {{examInfo.subjectName + ' (' + examInfo.subjectCode + ')'}}
+        </div>
+        <div class="info">
+
+          Start Time: {{examInfo.startTime}}
+        </div>
+        <div class="info">
+
+          End Time: {{examInfo.endTime}}
+        </div>
+
+
+      </div>
+      <div class="flex flex-grow-0 right-0 p-2 mr-5">
+        <p-button label='Save Answer' (onClick)="manualSave()"></p-button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="flex flex-row h-full">
+
+    <!-----------------------Resources------------------->
+    <div class="card w-1 m-2 p-2 h-full" style="background-color:#f8f6f6">
+      <div class="mb-5 w-full"
+           *ngFor="let item of questionDetails; index as i;">
+        <div class="card" [ngClass]="{'border border-2 border-blue-400': selectedIndex === i}"
+             (click)="selectQuestion(i)"
+             [style]="{overflow:'clip',padding:0}">
+          <div class="relative">
+            <div
+              class="top-0 left-0 font-bold align-items-center justify-content-center w-full">
+              <div class="flex justify-content-between align-items-start">
+                <div class="m-2">
+                  <p-badge [severity]="i===selectedIndex ? 'info':'warning'"
+                           [value]='item.seqNo.toString()'></p-badge>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <div class="h-10rem">
+            <img *ngIf="thumbnailBlobMap.get(item.id)" style="width:100%; overflow:clip "
+                 src="{{thumbnailBlobMap.get(item.id)}}"
+                 alt="thumbnail">
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full p-2 h-full">
+      <p-splitter [panelSizes]="[50, 50]" [style]="{height:'100%'}" (onResizeEnd)="updatePdfSize()">
+
+        <ng-template pTemplate>
+          <!-----------------------Question------------------->
+          <div id="question" class="h-full w-full">
+            <div  *ngIf="!questionDetail.isFile" class="overflow-scroll h-full p-5">
+              <div id="question-view" [innerHTML]="questionDetail.quesDesc"></div>
+            </div>
+
+            <pdf-viewer [zoom]="1" *ngIf="questionDetail.isFile" class="h-full w-full" #pdfView
+                        [src]="pdfBlobMap.get(questionDetail.id)"
+                        [render-text]="false"
+                        [original-size]="false"
+            ></pdf-viewer>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate>
+          <p-splitter [panelSizes]="[60, 40]" layout="vertical">
+
+            <ng-template pTemplate>
+              <!-----------------------Answer------------------->
+              <div class="overflow-scroll">
+                <div id="answer" class="h-3">
+
+                  <p-editor #editor [(ngModel)]="answer.answerDesc"
+                            (focusout)="autoSaveAnser()"
+                            [style]="{ height: '40vh', width:'auto'}"
+                            (onTextChange)="onTextChange($event,editor)"></p-editor>
+
+                </div>
+              </div>
+
+            </ng-template>
+
+            <ng-template pTemplate>
+              <!-----------------------Excel------------------->
+              <div id="excel" class="h-3">Excel</div>
+
+            </ng-template>
+
+          </p-splitter>
+        </ng-template>
+      </p-splitter>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+

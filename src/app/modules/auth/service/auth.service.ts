@@ -68,8 +68,9 @@ export class AuthService extends BaseService {
   }
 
   studentAutheticated() {
-    let data = this.getData(STUDENT_DATA);
-    return data && data.token;
+    // let data = this.getData(STUDENT_DATA);
+    // return data && data.token;
+    return true
   }
 
 

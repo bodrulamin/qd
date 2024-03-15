@@ -21,9 +21,9 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Get the token from the AuthService
     const token = this.authService.getToken();
-
     // If a token exists, add it to the request headers
     let contentType = 'application/json';
+
     let headers: any = {
       Authorization: `Bearer ${token}`,
       'Content-Type': contentType
@@ -33,7 +33,6 @@ export class AuthInterceptor implements HttpInterceptor {
         Authorization: `Bearer ${token}`
       };
     }
-    if (token) {
       if (request.url.includes('get-exam-question-details-file')) {
         request = request.clone({
           setHeaders: headers, responseType: 'arraybuffer'
@@ -43,8 +42,6 @@ export class AuthInterceptor implements HttpInterceptor {
           setHeaders: headers
         });
       }
-
-    }
 
     // Continue with the request
     return next.handle(request).pipe(
@@ -68,7 +65,7 @@ export class AuthInterceptor implements HttpInterceptor {
           this.authService.adminLogout();
           this.authService.studentLogout();
         }
-        if (error.status === 412){
+        if (error.status === 412) {
           summery = ''
           severity = 'warn';
         }

@@ -1,0 +1,50 @@
+<div class="flex justify-content-center mt-5">
+  <div class="card w-10">
+    <div class="flex justify-content-center">
+
+    <div class="w-full">
+      <p-table [value]=[1] >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="text-align: center" colspan="4">Exam Information</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
+          <tr>
+            <td style="text-align:center">Exam</td>
+            <td>{{examInfo.examName}}</td>
+            <td>Session</td>
+            <td>{{examInfo.session}}</td>
+
+          </tr>
+          <tr>
+            <td>Exam Level</td>
+            <td>{{examInfo.examLevel}}</td>
+            <td>Subject</td>
+            <td>{{examInfo.subjectName + ' (' + examInfo.subjectCode +')'}}</td>
+          </tr>
+
+        </ng-template>
+      </p-table>
+    </div>
+
+    </div>
+
+    <h1>Instruction</h1>
+    <p>{{examInfo.examInstruction}}</p>
+
+    <div>
+      <p-button label="Start Exam" (onClick)="showQuizPasswordInputDialog = true;"></p-button>
+    </div>
+
+
+  </div>
+
+</div>
+
+<p-dialog [header]="'Insert Quiz Password'" [modal]="true" [(visible)]="showQuizPasswordInputDialog">
+  <div class="flex flex-column flex-wrap">
+    <input class="mb-2" pInputText [(ngModel)]="quizPassword" placeholder="Password">
+    <p-button [label]="'Start Exam'" (onClick)="startExam()"></p-button>
+  </div>
+</p-dialog>

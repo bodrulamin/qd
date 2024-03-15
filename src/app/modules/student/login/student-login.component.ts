@@ -25,9 +25,9 @@ export class StudentLoginComponent extends BaseComponent {
   onLogin(credential: LoginModel) {
     this.authService.studentLogin(credential.username, credential.password).subscribe(apiResponse => {
       if (apiResponse.result) {
-        this.authService.saveData(STUDENT_DATA, apiResponse.data)
-        this.messageService.add({severity: 'success', summary: 'Success', detail: 'Login Successful !'});
-        this.route.navigate(['home'], {relativeTo: this.activatedRoute})
+        if (apiResponse.data.isExamSubjectFoundToAllow) {
+          this.route.navigate(['instruction'], {state: apiResponse.data, relativeTo: this.activatedRoute})
+        }
       }
     });
 

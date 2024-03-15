@@ -19,7 +19,7 @@
                 <div class="flex flex-column align-items-center justify-content-center">
                   <div class="mb-5 w-full"
                        *ngFor="let item of questionDetails; index as i;">
-                    <div class="card border border-1 border-black-alpha-10" (click)="selectQuestion(i)"
+                    <div class="card"   [ngClass]="{'border border-2 border-blue-400': selectedIndex === i}"  (click)="selectQuestion(i)"
                          [style]="{overflow:'clip',padding:0}">
                       <div class="relative">
                         <div
