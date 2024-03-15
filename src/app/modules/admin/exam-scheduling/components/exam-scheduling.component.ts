@@ -118,8 +118,6 @@ export class ExamSchedulingComponent extends BaseComponent {
     schedule.examStartsAt = e.examStartsAt ?  this.changeDate(e.examStartsAt, schedule.examDate) : null;
     schedule.examEndsAt = e.examEndsAt ?  this.changeDate(e.examEndsAt, schedule.examDate):null;
     schedule.quizPwd = e.quizPwd;
-    schedule.examDate.setHours(0);
-    schedule.examDate.setMinutes(0,0,0);
 
     schedule.examDate = this.datePipe.transform(schedule.examDate,'yyyy-MM-dd')
 
