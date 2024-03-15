@@ -74,8 +74,6 @@ export class EditQuestionComponent extends BaseComponent {
 
 
   onTextChange($event: EditorTextChangeEvent, editor: Editor) {
-    // console.log($event);
-    // console.log(this.questionDetail.quesDesc);
   }
 
   onQuestionDelete(i: number) {
@@ -147,6 +145,7 @@ export class EditQuestionComponent extends BaseComponent {
 
   autoSaveQuestion() {
     this.messageService.clear();
+    if (this.selectedIndex < 0) return;;
     if (this.hasDuplicate(this.questionDetails, 'seqNo')) {
       this.messageService.add({summary: 'Error', detail: 'Duplicate sequnce found !', severity: 'error'})
       return;
@@ -248,14 +247,15 @@ export class EditQuestionComponent extends BaseComponent {
     })
   }
 
-  private setupExistingQuestion(data) {
+  private async setupExistingQuestion(data) {
     this.questionMaster.id = data.id;
     for (let i = 0; i < data.quesDetailsList.length; i++) {
       this.questionDetails[i] = data.quesDetailsList[i];
       if (this.questionDetails[i].isFile) {
         this.generateFileBlobsFromApi(i, this.questionDetails[i].fileUrl);
       } else {
-        this.generateHtmlThumbnails(i);
+        await this.generateHtmlThumbnails(i);
+        this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = ''
       }
     }
     this.autoSave = true;
@@ -274,15 +274,18 @@ export class EditQuestionComponent extends BaseComponent {
     }
   }
 
-  generateHtmlThumbnails(i: number) {
-    let element = document.getElementById('preview')
-    element.innerHTML = this.questionDetails[i].quesDesc;
+  async generateHtmlThumbnails(i: number) {
+    let element = this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0];
+    this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.questionDetails[i].quesDesc
+    // let element = document.getElementById('preview')
+    // element.innerHTML = this.questionDetails[i].quesDesc;
     if (!this.questionDetails[i].quesDesc) return;
     html2canvas(element).then(canvas => {
       let blobUrl = canvas.toDataURL('image/png');
       this.thumbnailBlobMap.set(this.questionDetails[i].id, blobUrl)
-      element.innerHTML = '';
+
     });
+
   }
 
   async generatePdfThumbnails(i: number) {

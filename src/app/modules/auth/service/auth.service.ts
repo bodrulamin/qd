@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, of} from "rxjs";
 import {Router} from "@angular/router";
-import {USER_LOGIN} from "./auth.endpoint";
+import {STUDENT_LOGIN, USER_LOGIN} from "./auth.endpoint";
 import {ApiResponse} from "../../base/service/domain/api.response";
 import {BaseService} from "../../base/service/base.service";
 
@@ -34,7 +34,7 @@ export class AuthService extends BaseService {
   }
 
   studentLogin(username: string, password: string): Observable<any> {
-    return this.http.post<ApiResponse>(USER_LOGIN, {username: username, password: password});
+    return this.http.post<ApiResponse>(STUDENT_LOGIN, {username: username, password: password});
   }
 
   studentLogout() {
