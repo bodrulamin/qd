@@ -61,16 +61,22 @@ export class AuthInterceptor implements HttpInterceptor {
           503: "Service Unavailable",
           504: "Gateway Timeout",
         };
+        let severity = 'error';
+        let summery = 'error';
 
         if (error.status === 401) {
           this.authService.adminLogout();
           this.authService.studentLogout();
         }
+        if (error.status === 412){
+          summery = ''
+          severity = 'warn';
+        }
         let errorMsg = error.status >= 500 ? htmlErrorMessages[error.status] : error.error.remarks ? error.error.remarks.join(', ') : error.statusText;
         this.messageService.add({
-          summary: 'Error',
+          summary: summery,
           detail: errorMsg,
-          severity: 'error'
+          severity: severity
         });
         // Pass the error to the caller of the request
         return throwError(error);

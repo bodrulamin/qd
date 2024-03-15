@@ -14,41 +14,46 @@
       <p-splitter [panelSizes]="[25, 75]">
         <ng-template pTemplate>
           <div id="left-part" style="width:100%">
-            <p-scrollPanel [style]="{ height: '80vh' , backgroundColor:'#e3e5e7', padding:'20px'}">
+            <p-scrollPanel [style]="{ height: '100vh' , backgroundColor:'#e3e5e7', padding:'20px'}">
               <div class="flex flex-column justify-content-center">
                 <div class="flex flex-column align-items-center justify-content-center">
-                  <div class="mb-5"
+                  <div class="mb-5 w-full"
                        *ngFor="let item of questionDetails; index as i;">
-                    <p-card (click)="selectQuestion(i)">
-                      <ng-template pTemplate="header">
-                        <div class="flex justify-content-between align-items-start">
-                          <div class="m-2">
-                            <p-badge [severity]="i===selectedIndex ? 'info':'warning'"
-                                     [value]='item.seqNo.toString()'></p-badge>
+                    <div class="card border border-1 border-black-alpha-10" (click)="selectQuestion(i)"
+                         [style]="{overflow:'clip',padding:0}">
+                      <div class="relative">
+                        <div
+                          class="top-0 left-0 font-bold align-items-center justify-content-center w-full">
+                          <div class="flex justify-content-between align-items-start">
+                            <div class="m-2">
+                              <p-badge [severity]="i===selectedIndex ? 'info':'warning'"
+                                       [value]='item.seqNo.toString()'></p-badge>
+                            </div>
+                            <div class="">
+                              <p-button icon="pi pi-times" [text]="true" [rounded]="true"
+                                        severity="danger"
+                                        [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
+                            </div>
                           </div>
-                          <div>
-                            <p-button  icon="pi pi-times" [text]="true" [rounded]="true"
-                                      severity="danger"
-                                      [outlined]="true" (click)="onQuestionDelete(i)"></p-button>
-                          </div>
+
                         </div>
 
-                      </ng-template>
-                      <div style="width: 150px; height: 200px">
+                      </div>
+                      <div class="h-20rem">
                         <img *ngIf="thumbnailBlobMap.get(item.id)" style="width:100%; overflow:clip "
                              src="{{thumbnailBlobMap.get(item.id)}}"
                              alt="thumbnail">
                       </div>
 
-
-                    </p-card>
+                    </div>
                   </div>
                 </div>
               </div>
+              <div class="flex justify-content-center p-2">
+                <p-button icon='pi pi-plus' label="Add Question" (onClick)="showAddQuestionDialog()"></p-button>
+              </div>
             </p-scrollPanel>
-            <div class="flex justify-content-center p-2">
-              <p-button icon='pi pi-plus' label="Add Question" (onClick)="showAddQuestionDialog()"></p-button>
-            </div>
+
           </div>
         </ng-template>
         <ng-template pTemplate>
@@ -56,7 +61,7 @@
             <div class="grid formgrid mb-1">
               <div class="col-4 mb-2 lg:mb-0 p-inputgroup">
                 <span class="p-inputgroup-addon">Sequence No.</span>
-                <input type="text" pInputText (blur)="onBlurSequence($event)" [disabled]="selectedIndex<0"
+                <input type="text" pInputText (focusout)="onBlurSequence($event)" [disabled]="selectedIndex<0"
                        [(ngModel)]="questionDetail.seqNo"/>
               </div>
               <div class="col-4 mb-2 lg:mb-0 p-inputgroup">
@@ -72,7 +77,7 @@
               </div>
             </div>
             <p-editor *ngIf="!questionDetail.isFile" #editor [(ngModel)]="questionDetail.quesDesc"
-                      [readonly]="!questionSelected" (onSelectionChange)="autoSaveQuestion()"
+                      [readonly]="!questionSelected" (focusout)="autoSaveQuestion()"
                       [style]="{ height: '80vh', width:'auto'}"
                       (onTextChange)="onTextChange($event,editor)"></p-editor>
 
@@ -87,9 +92,6 @@
         </ng-template>
       </p-splitter>
     </div>
-  </div>
-  <div class="flex right-100">
-    <p-button label="Save"></p-button>
   </div>
 </div>
 <p-dialog header="Input Marks of Question" [modal]="true" [(visible)]="newQuestionDialogVisible">
