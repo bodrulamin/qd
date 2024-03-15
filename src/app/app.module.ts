@@ -9,6 +9,7 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./modules/base/service/http.interceptor";
 import {PdfViewerModule} from "ng2-pdf-viewer";
+import {DatePipe} from "@angular/common";
 
 
 @NgModule({
@@ -22,10 +23,11 @@ import {PdfViewerModule} from "ng2-pdf-viewer";
     ToastModule,
     ConfirmDialogModule,
     HttpClientModule,
-    PdfViewerModule
+    PdfViewerModule,
   ],
   providers: [
     MessageService,
+    DatePipe,
     ConfirmationService,
     {
       provide: HTTP_INTERCEPTORS,

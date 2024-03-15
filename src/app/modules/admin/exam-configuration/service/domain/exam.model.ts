@@ -4,7 +4,7 @@ export class ExamModel {
   session: string;
   year:string;
   examName:string;
-  examDate:Date;
+  examDate:Date | string;
   examPassword:string;
 }
 

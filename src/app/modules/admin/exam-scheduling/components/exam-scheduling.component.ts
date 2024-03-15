@@ -5,6 +5,7 @@ import {ExamSchedulingService} from "../service/exam-scheduling.service";
 import {MessageService} from "primeng/api";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
 import {ScheduleModel} from "../service/domain/exam-scheduling.model";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-exam-scheduling',
@@ -30,7 +31,8 @@ export class ExamSchedulingComponent extends BaseComponent {
     private activatedRoute: ActivatedRoute,
     public messageService: MessageService,
     private ExamSchedulingService: ExamSchedulingService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private datePipe: DatePipe
   ) {
     super();
     this.generateMinMaxYear();
@@ -117,10 +119,13 @@ export class ExamSchedulingComponent extends BaseComponent {
     schedule.examEndsAt = e.examEndsAt ?  this.changeDate(e.examEndsAt, schedule.examDate):null;
     schedule.quizPwd = e.quizPwd;
 
+    schedule.examDate = this.datePipe.transform(schedule.examDate,'yyyy-MM-dd')
+
     return schedule;
   }
 
-  changeDate(dateToChange: Date, newDate: Date): Date {
+  changeDate(dateToChange: Date, newDate: Date | string): Date {
+    newDate = new Date(newDate);
     return new Date(
       newDate.getFullYear(),
       newDate.getMonth(),

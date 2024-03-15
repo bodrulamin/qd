@@ -18,11 +18,11 @@ export class ExamModel {
 }
 
 export class ScheduleModel    {
-  id: number
-  examDate: Date
-  examStartsAt: Date
-  examEndsAt: Date
-  quizPwd: string
+  id: number;
+  examDate: Date | string;
+  examStartsAt: Date;
+  examEndsAt: Date;
+  quizPwd: string;
 }
 
 
