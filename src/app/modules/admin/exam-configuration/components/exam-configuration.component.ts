@@ -2,9 +2,10 @@ import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
 import {TableLazyLoadEvent} from "primeng/table";
-import {ExamSearchModel} from "../service/domain/exam.model";
+import {ExamModel, ExamSearchModel} from "../service/domain/exam.model";
 import {ExamConfgurationService} from "../service/exam-confguration.service";
 import {ConfirmationService, MessageService} from "primeng/api";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-create-exam',
@@ -42,6 +43,7 @@ export class ExamConfigurationComponent extends BaseComponent {
     private examConfgurationService: ExamConfgurationService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
+    private datePipe:DatePipe
   ) {
     super();
     this.setupActionMenu();
@@ -64,16 +66,18 @@ export class ExamConfigurationComponent extends BaseComponent {
 
   submit() {
     if (this.formInvalid()) return;
+    let exam:ExamModel = this.createExamForm.value;
+    exam.examDate = this.datePipe.transform(exam.examDate,'yyyy-MM-dd')
     if (this.editMode) {
-      this.examConfgurationService.addExam(this.createExamForm.value).subscribe(apiResponse => {
+      this.examConfgurationService.addExam(exam).subscribe(apiResponse => {
         if (apiResponse.result) {
           this.messageService.add({summary:'Successful !',detail:'Exam Edited Successfully',severity:'success'})
           this.fetchExamList(this.urlSearchParam);
         }
       })
     } else {
-      delete this.createExamForm.value['id'];
-      this.examConfgurationService.addExam(this.createExamForm.value).subscribe(apiResponse => {
+      delete exam['id'];
+      this.examConfgurationService.addExam(exam).subscribe(apiResponse => {
         if (apiResponse.result) {
           this.messageService.add({summary:'Successful !',detail:'Exam Created Successfully',severity:'success'})
           this.fetchExamList(this.urlSearchParam);
