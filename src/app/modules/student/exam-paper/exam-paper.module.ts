@@ -9,26 +9,34 @@ import {EditorModule} from "primeng/editor";
 import {FormsModule} from "@angular/forms";
 import {ButtonModule} from "primeng/button";
 import {TableModule} from "primeng/table";
+import {SpreadSheetsModule} from "@grapecity/spread-sheets-angular";
+import {AngularSplitModule} from "angular-split";
+import { ScientificCalculatorComponent } from './components/scientific-calculator/scientific-calculator.component';
+import {DialogModule} from "primeng/dialog";
 
 
 @NgModule({
   declarations: [
-    ExamPaperComponent
+    ExamPaperComponent,
+    ScientificCalculatorComponent
   ],
-    imports: [
-        CommonModule,
-        RouterModule.forChild([
-            {path: '', component: ExamPaperComponent}
-        ]),
-        FormsModule,
-        SplitterModule,
-        BadgeModule,
-        PdfViewerModule,
-        EditorModule,
-        ButtonModule,
-        TableModule,
+  imports: [
+    CommonModule,
+    RouterModule.forChild([
+      {path: '', component: ExamPaperComponent}
+    ]),
+    FormsModule,
+    SplitterModule,
+    BadgeModule,
+    PdfViewerModule,
+    EditorModule,
+    ButtonModule,
+    TableModule,
+    SpreadSheetsModule,
+    AngularSplitModule,
+    DialogModule
 
-    ]
+  ]
 })
 export class ExamPaperModule {
 }

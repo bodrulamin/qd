@@ -1,12 +1,13 @@
 <div #thumbview></div>
 <div class="h-screen w-screen">
 
+  <!-----------------------header------------------->
   <div class="h-3rem">
 
     <div class="flex flex-row w-full">
       <div class="flex flex-grow-1 justify-content-center align-items-center">
         <div class="info">
-          Exam Level: {{examInfo.examLevel}}
+          Exam Level: {{examInfo.examLevelName}}
         </div>
         <div class="info">
 
@@ -14,20 +15,23 @@
         </div>
         <div class="info">
 
-          SubjectName: {{examInfo.subjectName + ' (' + examInfo.subjectCode + ')'}}
+          Subject: {{examInfo.subjectName}}
         </div>
         <div class="info">
 
-          Start Time: {{examInfo.startTime}}
+          Start Time: {{examInfo.examStartsAt | date:'HH:mm'}}
         </div>
         <div class="info">
-
-          End Time: {{examInfo.endTime}}
+          End Time: {{examInfo.examEndsAt  | date:'HH:mm'}}
+        </div>
+        <div class="info">
+          Remaining Time: {{remainingTime}}
         </div>
 
 
       </div>
       <div class="flex flex-grow-0 right-0 p-2 mr-5">
+        <p-button label="" [text]="true" icon="fas fa-calculator" (onClick)="calulatorVisible = true"></p-button>
         <p-button label='Save Answer' (onClick)="manualSave()"></p-button>
 
       </div>
@@ -35,15 +39,17 @@
     </div>
   </div>
 
-  <div class="flex flex-row h-full">
+  <!-----------------------Body------------------->
 
+
+  <div class="flex flex-row h-full">
     <!-----------------------Resources------------------->
-    <div class="card w-1 m-2 p-2 h-full" style="background-color:#f8f6f6">
+    <div class="card w-10rem m-2 p-2 h-full flex-grow-0 overflow-y-scroll" style="background-color:#f8f6f6">
       <div class="mb-5 w-full"
            *ngFor="let item of questionDetails; index as i;">
         <div class="card" [ngClass]="{'border border-2 border-blue-400': selectedIndex === i}"
              (click)="selectQuestion(i)"
-             [style]="{overflow:'clip',padding:0}">
+             [style]="{overflow:'clip',padding:0, width:'100%'}">
           <div class="relative">
             <div
               class="top-0 left-0 font-bold align-items-center justify-content-center w-full">
@@ -66,52 +72,40 @@
         </div>
       </div>
     </div>
+    <div class="flex flex-grow-1 m-2">
+      <as-split direction="horizontal">
+        <as-split-area [size]="50">
+          <div class="card h-full">
+            <div id="question-view" [innerHTML]="questionDetail.quesDesc"></div>
 
-    <div class="w-full p-2 h-full">
-      <p-splitter [panelSizes]="[50, 50]" [style]="{height:'100%'}" (onResizeEnd)="updatePdfSize()">
-
-        <ng-template pTemplate>
-          <!-----------------------Question------------------->
-          <div id="question" class="h-full w-full">
-            <div  *ngIf="!questionDetail.isFile" class="overflow-scroll h-full p-5">
-              <div id="question-view" [innerHTML]="questionDetail.quesDesc"></div>
-            </div>
-
-            <pdf-viewer [zoom]="1" *ngIf="questionDetail.isFile" class="h-full w-full" #pdfView
+            <pdf-viewer [zoom]="1" *ngIf="questionDetail.isFile" class="h-full" #pdfView
                         [src]="pdfBlobMap.get(questionDetail.id)"
                         [render-text]="false"
                         [original-size]="false"
             ></pdf-viewer>
           </div>
-        </ng-template>
 
-        <ng-template pTemplate>
-          <p-splitter [panelSizes]="[60, 40]" layout="vertical">
+        </as-split-area>
+        <as-split-area [size]="50">
+          <as-split direction="vertical">
+            <as-split-area [size]="50">
+              <p-editor #editor [(ngModel)]="answer.answerDesc"
+                        [style]="{ height: '500px', width:'auto'}"
+                        (onTextChange)="onTextChange($event,editor)"></p-editor>
 
-            <ng-template pTemplate>
-              <!-----------------------Answer------------------->
-              <div class="overflow-scroll">
-                <div id="answer" class="h-3">
+            </as-split-area>
+            <as-split-area [size]="50">
+              <gc-spread-sheets [backColor]="'#f5f5f5'" [hostStyle]="hostStyle">
 
-                  <p-editor #editor [(ngModel)]="answer.answerDesc"
-                            (focusout)="autoSaveAnser()"
-                            [style]="{ height: '40vh', width:'auto'}"
-                            (onTextChange)="onTextChange($event,editor)"></p-editor>
+                <gc-worksheet name="Sheet1" [defaultStyle]="gcStyle">
 
-                </div>
-              </div>
+                </gc-worksheet>
+              </gc-spread-sheets>
+            </as-split-area>
+          </as-split>
+        </as-split-area>
+      </as-split>
 
-            </ng-template>
-
-            <ng-template pTemplate>
-              <!-----------------------Excel------------------->
-              <div id="excel" class="h-3">Excel</div>
-
-            </ng-template>
-
-          </p-splitter>
-        </ng-template>
-      </p-splitter>
 
     </div>
 
@@ -119,5 +113,7 @@
 
 </div>
 
-
+<p-dialog header="" [(visible)]="calulatorVisible" [modal]="true" [style]="{ width: '550px' }">
+  <app-scientific-calculator></app-scientific-calculator>
+</p-dialog>
 

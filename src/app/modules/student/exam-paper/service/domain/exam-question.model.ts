@@ -13,6 +13,7 @@ export class ExamQuestionModel {
   id: number;
   examId: number;
   examLevel: string;
+  examLevelName: string;
   session: string;
   year: string;
   subjectId: number;
@@ -24,13 +25,14 @@ export class ExamQuestionModel {
   examEndsAt: Date;
   quizPwd: string;
   quesDetailsList: ExamQuestionDetailModel[];
+  answerVmList: AnswerModel[];
   navigationId: number
 }
 
 
 export class AnswerModel{
   id: number;
-  studentId: number;
+  studentUsername: number;
   enrolmentId: number;
   quesId: number;
   quesSeq: number;
@@ -39,13 +41,14 @@ export class AnswerModel{
 export class ExamInfo {
   isExamSubjectFoundToAllow: boolean;
   quesId: number;
-  studentId: number;
+  studentUsername: number;
   enrollmentId: number;
   examInstruction: string;
   examDate: Date;
-  startTime:string;
-  endTime: string;
+  examStartsAt:string;
+  examEndsAt: string;
   examLevel: string;
+  examLevelName: string;
   session: string;
   year: string;
   subjectCode: string;

@@ -7,9 +7,6 @@
           <h5>Edit Question</h5>
           <p-button [label]="questionInfo.subjectName" (onClick)="questionDetailsDialogVisible=true;"
                     [style]="{padding:'1px'}" [text]="true" severity="secondary"></p-button>
-          <p-button icon="pi pi-info" severity="secondary" (onClick)="questionDetailsDialogVisible=true;"
-                    [style]="{marginTop:'0px', height:'23px', width:'23px'}" [rounded]="true"
-                    [outlined]="true"></p-button>
         </div>
       </div>
       <div class="flex align-items-baseline justify-content-center">
@@ -115,13 +112,13 @@
   </div>
 </div>
 
-<p-dialog header="Input Marks of Question" [modal]="true" [(visible)]="newQuestionDialogVisible">
+<p-dialog *ngIf="newQuestionDialogVisible" header="Input Marks of Question" [modal]="true" [(visible)]="newQuestionDialogVisible">
   <div class="flex flex-column flex-wrap">
     <input class="mb-2" pInputText [(ngModel)]="inputMark" placeholder="Question Mark">
     <p-button label="Add Question" (onClick)="addNewQuestion()"></p-button>
   </div>
 </p-dialog>
-<p-dialog  [modal]="true" [(visible)]="questionDetailsDialogVisible">
+<p-dialog *ngIf="questionDetailsDialogVisible" [modal]="true" [(visible)]="questionDetailsDialogVisible">
   <div class="flex flex-column flex-wrap">
 
       <p-table [value]=[1] styleClass="p-datatable-gridlines">

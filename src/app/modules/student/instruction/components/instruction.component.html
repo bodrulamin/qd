@@ -21,7 +21,7 @@
             <td>Exam Level</td>
             <td>{{examInfo.examLevel}}</td>
             <td>Subject</td>
-            <td>{{examInfo.subjectName + ' (' + examInfo.subjectCode +')'}}</td>
+            <td>{{examInfo.subjectName}}</td>
           </tr>
 
         </ng-template>
@@ -42,9 +42,13 @@
 
 </div>
 
-<p-dialog [header]="'Insert Quiz Password'" [modal]="true" [(visible)]="showQuizPasswordInputDialog">
-  <div class="flex flex-column flex-wrap">
-    <input class="mb-2" pInputText [(ngModel)]="quizPassword" placeholder="Password">
-    <p-button [label]="'Start Exam'" (onClick)="startExam()"></p-button>
-  </div>
+<p-dialog [header]="'Insert Quiz Password'" [modal]="true" [style]="{width:'600px'}" [(visible)]="showQuizPasswordInputDialog">
+    <div class="flex flex-column flex-grow-1 justify-content-end">
+        <input class="mb-2" pInputText [(ngModel)]="quizPassword" placeholder="Password">
+      <div class="flex justify-content-end">
+        <p-button [label]="'Start Exam'" (onClick)="startExam()"></p-button>
+      </div>
+    </div>
+
+
 </p-dialog>

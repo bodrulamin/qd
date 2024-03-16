@@ -9,7 +9,7 @@ import {ExamInfo, ExamQuestionModel} from "../../exam-paper/service/domain/exam-
 export interface StartExam {
   enrollmentId: number;
   quesId: number;
-  studentId: number;
+  studentUsername: number;
   quizPassword: string
 }
 
@@ -41,7 +41,7 @@ export class InstructionComponent extends BaseComponent {
     let startExamModel: StartExam = {
       quesId: this.examInfo.quesId,
       quizPassword: this.quizPassword,
-      studentId: this.examInfo.studentId,
+      studentUsername: this.examInfo.studentUsername,
       enrollmentId: this.examInfo.enrollmentId
 
     };

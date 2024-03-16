@@ -1,19 +1,21 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {BaseComponent} from "../../../base/components/base-component/base.component";
-import html2canvas from 'html2canvas';
 import generatePdfThumbnails from 'pdf-thumbnails-generator';
 import {ExamPaperService} from "../service/exam-paper.service";
 import {AnswerModel, ExamInfo, ExamQuestionDetailModel, ExamQuestionModel} from "../service/domain/exam-question.model";
 import {Router} from "@angular/router";
 import {Editor} from "primeng/editor";
 import {MessageService} from "primeng/api";
+import {SplitterResizeEndEvent} from "primeng/splitter";
+import {AdminService} from "../../../admin/service/admin.service";
+import {start} from "repl";
 
 @Component({
   selector: 'app-exam-paper',
   templateUrl: './exam-paper.component.html',
   styleUrls: ['./exam-paper.component.css']
 })
-export class ExamPaperComponent extends BaseComponent {
+export class ExamPaperComponent extends BaseComponent implements OnInit {
 
   examInfo: ExamInfo = new ExamInfo();
   answer: AnswerModel = new AnswerModel();
@@ -22,7 +24,7 @@ export class ExamPaperComponent extends BaseComponent {
   questionDetails: ExamQuestionDetailModel[] = [];
   answerDetails: AnswerModel[] = [];
   questionMaster: ExamQuestionModel = new ExamQuestionModel();
-  @ViewChild('thumbview', { static: true }) thumbview: ElementRef;
+  @ViewChild('thumbview', {static: true}) thumbview: ElementRef;
 
   @ViewChild("editor") editor!: Editor;
   @ViewChild("pdfView") pdfView!: ElementRef;
@@ -31,20 +33,68 @@ export class ExamPaperComponent extends BaseComponent {
   autoSave: boolean;
   questionDetail: ExamQuestionDetailModel = new ExamQuestionDetailModel();
   questionSelected: boolean = false;
+  hostStyle: any;
+  gcStyle: any;
+  examLevelMap: Map<any, any> = new Map();
+  remainingTime: any;
+  sizes: number[] = [50, 50]; // Initial sizes (50% each)
+  calulatorVisible : boolean = false;
 
-  constructor(private examPaperService: ExamPaperService, private router: Router, private messageService: MessageService) {
+  onDragEnd(sizes: number[]) {
+    this.sizes = sizes;
+  }
+  constructor(
+    private examPaperService: ExamPaperService,
+    private router: Router,
+    private messageService: MessageService,
+    private adminService: AdminService,
+  ) {
     super();
 
     let data: ExamQuestionModel = history.state;
     this.examInfo = history.state
-    console.log(history.state)
+
     if (!data || !data.id) {
-      // this.router.navigate([""])
+      this.router.navigate([""])
     }
+
+    setInterval(()=>{
+      this.remainingTime = this.getTimeDifference(new Date(),this.examInfo.examEndsAt);
+    },1000);
 
     this.setupExistingQuestion(data);
 
     this.questionDetails = data.quesDetailsList;
+  }
+
+
+  ngOnInit() {
+    this.hostStyle = {
+      width: '900px',
+      height: '500px',
+      overflow: 'scroll'
+    };
+  }
+  getTimeDifference(startTime, endTime) {
+    startTime = new Date(startTime);
+    endTime = new Date(endTime);
+    const difference = endTime.getTime() - startTime.getTime(); // Note: getTime() for both start and end time
+    const differenceInSeconds = difference / 1000; // Convert milliseconds to seconds
+    let hours = Math.floor(differenceInSeconds / 3600);
+    if (hours < 0) {
+      hours = 24 + hours;
+    }
+    let remainingSeconds = differenceInSeconds % 3600;
+    let minutes = Math.floor(remainingSeconds / 60);
+    if (minutes < 0) {
+      minutes = 60 + minutes;
+    }
+    let seconds = Math.floor(remainingSeconds % 60);
+    if (seconds < 0) {
+      seconds = 60 + seconds;
+    }
+    const hoursAndMinutesAndSeconds = hours + ":" + (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+    return hoursAndMinutesAndSeconds;
   }
 
   selectQuestion(i) {
@@ -69,6 +119,10 @@ export class ExamPaperComponent extends BaseComponent {
         await this.generateHtmlThumbnails(i);
         // this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = ''
       }
+    }
+
+    for (let i = 0; i < data.answerVmList.length; i++) {
+      this.answerDetails[i] = data.answerVmList[i];
     }
     this.autoSave = true;
   }
@@ -119,7 +173,7 @@ export class ExamPaperComponent extends BaseComponent {
     let answerModel: AnswerModel = new AnswerModel();
     answerModel.quesId = questionMaster.id;
     answerModel.answerDesc = this.answerDetails[i].answerDesc
-    answerModel.studentId = this.examInfo.studentId;
+    answerModel.studentUsername = this.examInfo.studentUsername;
     answerModel.enrolmentId = this.examInfo.enrollmentId;
     answerModel.quesSeq = this.answerDetails[i].quesSeq;
     answerModel.id = this.answerDetails[i].id;
@@ -150,5 +204,10 @@ export class ExamPaperComponent extends BaseComponent {
     this.answer.quesSeq = this.questionDetails[this.selectedIndex].seqNo;
     this.answerDetails[this.selectedIndex] = this.answer;
     this.saveAnser(this.questionMaster, this.selectedIndex);
+  }
+
+  resizeEnd($event: SplitterResizeEndEvent) {
+    console.log($event.sizes)
+    console.log($event)
   }
 }
