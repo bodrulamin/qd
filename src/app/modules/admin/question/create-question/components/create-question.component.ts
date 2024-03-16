@@ -5,6 +5,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LayoutService} from "../../../layout/service/app.layout.service";
 import {CreateQuestionService} from "../service/create-question.service";
 import {MessageService} from "primeng/api";
+import {AdminService} from "../../../service/admin.service";
 
 @Component({
   selector: 'app-create-question',
@@ -32,13 +33,13 @@ export class CreateQuestionComponent extends BaseComponent {
     public layoutService: LayoutService,
     public messageService: MessageService,
     private createQuestionService: CreateQuestionService,
+    private adminService :AdminService,
     private formBuilder: FormBuilder
   ) {
     super();
     this.generateMinMaxYear();
     this.prepareCreateQuestionForm();
     this.fetchConfiguration();
-
   }
 
   private generateMinMaxYear() {
@@ -91,7 +92,7 @@ export class CreateQuestionComponent extends BaseComponent {
   }
 
   private fetchConfiguration() {
-    this.subscribers.confSubs = this.createQuestionService.fetchConfiguration().subscribe(apiResponse => {
+    this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;

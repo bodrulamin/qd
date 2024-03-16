@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from "../../base/service/base.service";
-import {FETCH_CONFIGURATION, FETCH_EXAM_LIST} from "./admin.endpoints";
+import {FETCH_CONFIGURATION} from "./admin.endpoints";
 import {Observable, of} from "rxjs";
 import {ApiResponse} from "../../base/service/domain/api.response";
 

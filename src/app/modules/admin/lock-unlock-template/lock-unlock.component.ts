@@ -5,6 +5,7 @@ import {MessageService} from "primeng/api";
 import {BaseComponent} from "../../base/components/base-component/base.component";
 import {LockModel, ScheduleModel} from "../lock-question/service/domain/lock.model";
 import {Component, Input, OnInit} from "@angular/core";
+import {AdminService} from "../service/admin.service";
 
 @Component({
   selector: 'app-lock-unlock',
@@ -36,6 +37,7 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     public messageService: MessageService,
     private lockQuestionService: LockQuestionService,
+    private adminService: AdminService,
     private formBuilder: FormBuilder
   ) {
     super();
@@ -84,7 +86,7 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
   }
 
   private fetchConfiguration() {
-    this.subscribers.confSubs = this.lockQuestionService.fetchConfiguration().subscribe(apiResponse => {
+    this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;

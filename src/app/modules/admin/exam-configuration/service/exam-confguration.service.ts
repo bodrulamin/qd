@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from "../../../base/service/base.service";
 import {ApiResponse} from "../../../base/service/domain/api.response";
-import {ADD_EXAM, DELETE_EXAM, FETCH_CONFIGURATION, FETCH_EXAM_LIST} from "./exam-configuration.endpoints";
+import {ADD_EXAM, DELETE_EXAM, FETCH_EXAM_LIST} from "./exam-configuration.endpoints";
 import {Observable} from "rxjs";
 import {ExamModel, ExamSearchModel} from "./domain/exam.model";
 
@@ -12,10 +12,6 @@ export class ExamConfgurationService extends BaseService {
 
   constructor() {
     super();
-  }
-
-  fetchConfiguration(): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(FETCH_CONFIGURATION);
   }
 
   addExam(exam: ExamModel): Observable<any> {

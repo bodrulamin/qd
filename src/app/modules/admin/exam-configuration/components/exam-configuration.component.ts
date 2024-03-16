@@ -6,6 +6,7 @@ import {ExamModel, ExamSearchModel} from "../service/domain/exam.model";
 import {ExamConfgurationService} from "../service/exam-confguration.service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {DatePipe} from "@angular/common";
+import {AdminService} from "../../service/admin.service";
 
 @Component({
   selector: 'app-create-exam',
@@ -41,6 +42,7 @@ export class ExamConfigurationComponent extends BaseComponent {
   constructor(
     private formBuilder: FormBuilder,
     private examConfgurationService: ExamConfgurationService,
+    private adminService: AdminService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private datePipe:DatePipe
@@ -108,7 +110,7 @@ export class ExamConfigurationComponent extends BaseComponent {
   }
 
   private fetchConfiguration() {
-    this.subscribers.confSubs = this.examConfgurationService.fetchConfiguration().subscribe(apiResponse => {
+    this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;

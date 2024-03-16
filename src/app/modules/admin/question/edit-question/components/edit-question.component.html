@@ -2,8 +2,16 @@
   <div class="card">
     <div id="preview" style="width:600px; height:600px; z-index:-1; position: absolute; top: 100px; left:100px "></div>
     <div class="flex justify-content-between flex-wrap">
-      <div class="flex align-items-center justify-content-center">
-        <h5>Edit Question</h5></div>
+      <div class="flex flex-grow-1">
+        <div class="flex flex-row gap-2">
+          <h5>Edit Question</h5>
+          <p-button [label]="questionInfo.subjectName" (onClick)="questionDetailsDialogVisible=true;"
+                    [style]="{padding:'1px'}" [text]="true" severity="secondary"></p-button>
+          <p-button icon="pi pi-info" severity="secondary" (onClick)="questionDetailsDialogVisible=true;"
+                    [style]="{marginTop:'0px', height:'23px', width:'23px'}" [rounded]="true"
+                    [outlined]="true"></p-button>
+        </div>
+      </div>
       <div class="flex align-items-baseline justify-content-center">
         <p-button [text]="true" icon="{{layoutService.fullScreen ? 'fas fa-minimize' : 'fas fa-expand'}}"
                   (onClick)="layoutService.fullScreenToggle()"></p-button>
@@ -19,7 +27,8 @@
                 <div class="flex flex-column align-items-center justify-content-center">
                   <div class="mb-5 w-full"
                        *ngFor="let item of questionDetails; index as i;">
-                    <div class="card"   [ngClass]="{'border border-2 border-blue-400': selectedIndex === i}"  (click)="selectQuestion(i)"
+                    <div class="card" [ngClass]="{'border border-2 border-blue-400': selectedIndex === i}"
+                         (click)="selectQuestion(i)"
                          [style]="{overflow:'clip',padding:0}">
                       <div class="relative">
                         <div
@@ -58,26 +67,37 @@
         </ng-template>
         <ng-template pTemplate>
           <div class="col">
-            <div class="grid formgrid mb-1">
-              <div class="col-4 mb-2 lg:mb-0 p-inputgroup">
-                <span class="p-inputgroup-addon">Sequence No.</span>
-                <input type="text" pInputText (focusout)="onBlurSequence($event)" [disabled]="selectedIndex<0"
-                       [(ngModel)]="questionDetail.seqNo"/>
+            <div class="flex flex-row justify-content-between mb-1">
+              <div class="flex flex-row">
+                <div class="p-inputgroup">
+                  <span class="p-inputgroup-addon">Sequence No.</span>
+                  <input type="text" pInputText [disabled]="selectedIndex<0"
+                         [(ngModel)]="questionDetail.seqNo"/>
+                </div>
+                <div class="p-inputgroup">
+                  <span class="p-inputgroup-addon">Marks</span>
+                  <input type="text" pInputText [disabled]="selectedIndex<0"
+                         [(ngModel)]="questionDetail.marks"/>
+                </div>
               </div>
-              <div class="col-4 mb-2 lg:mb-0 p-inputgroup">
-                <span class="p-inputgroup-addon">Marks</span>
-                <input type="text" pInputText (blur)="onBlurMarks($event)" [disabled]="selectedIndex<0"
-                       [(ngModel)]="questionDetail.marks"/>
-              </div>
-              <div class="col-4 mb-2 lg:mb-0">
+
+              <div class="flex justify-content-between align-items-center flex-row gap-2">
                 <p-fileUpload #fileUpload mode="basic" name="demo[]" accept=".pdf" (onUpload)="onUpload($event)"
-                              [maxFileSize]="1000000"
-                              (onSelect)="onFileSelect($event)" [auto]="true" [multiple]="false"
+                              [maxFileSize]="1000" (message)="message()"
+                              [style]="{backgroundColor:'transparent', color:'black'}"
+                              (onSelect)="onFileSelect($event)" (onError)="fileError($event)" [auto]="true"
+                              [multiple]="false"
                               chooseLabel="Attach File"></p-fileUpload>
+
+                <p-button label="Save" [raised]="true" severity="success" icon="pi pi-save"
+                          (onClick)="validateAndSave()"></p-button>
               </div>
+
             </div>
+
+
             <p-editor *ngIf="!questionDetail.isFile" #editor [(ngModel)]="questionDetail.quesDesc"
-                      [readonly]="!questionSelected" (focusout)="autoSaveQuestion()"
+                      [readonly]="!questionSelected"
                       [style]="{ height: '80vh', width:'auto'}"
                       (onTextChange)="onTextChange($event,editor)"></p-editor>
 
@@ -94,10 +114,46 @@
     </div>
   </div>
 </div>
+
 <p-dialog header="Input Marks of Question" [modal]="true" [(visible)]="newQuestionDialogVisible">
   <div class="flex flex-column flex-wrap">
     <input class="mb-2" pInputText [(ngModel)]="inputMark" placeholder="Question Mark">
     <p-button label="Add Question" (onClick)="addNewQuestion()"></p-button>
+  </div>
+</p-dialog>
+<p-dialog  [modal]="true" [(visible)]="questionDetailsDialogVisible">
+  <div class="flex flex-column flex-wrap">
+
+      <p-table [value]=[1] styleClass="p-datatable-gridlines">
+        <ng-template pTemplate="header">
+          <tr>
+            <th [colSpan]="2" style="text-align: center">Question Details</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
+          <tr>
+            <td>Exam Level</td>
+            <td>{{examLevelMap.get(questionInfo.examLevel)}}</td>
+          </tr>
+          <tr>
+            <td>Year</td>
+            <td>{{(questionInfo.year)}}</td>
+          </tr>
+          <tr>
+            <td>Session</td>
+            <td>{{questionInfo.session}}</td>
+          </tr>
+          <tr>
+            <td>Subject</td>
+            <td>{{questionInfo.subjectName}}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    <div class="flex flex-grow-1 align-content-end justify-content-end mt-3">
+      <p-button label="Close" (onClick)="questionDetailsDialogVisible=false;"></p-button>
+
+    </div>
   </div>
 </p-dialog>
 

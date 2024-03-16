@@ -6,6 +6,7 @@ import {LayoutService} from "../../layout/service/app.layout.service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {SubjectCofigService} from "../service/subject-cofig.service";
 import {SubjectModel} from "../service/domain/subject.model";
+import {AdminService} from "../../service/admin.service";
 
 
 @Component({
@@ -31,6 +32,7 @@ export class SubjectConfigurationComponent extends BaseComponent {
     private activatedRoute: ActivatedRoute,
     public layoutService: LayoutService,
     private subjectCofigService: SubjectCofigService,
+    private adminService: AdminService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private formBuilder: FormBuilder
@@ -81,7 +83,7 @@ export class SubjectConfigurationComponent extends BaseComponent {
   }
 
   private fetchConfiguration() {
-    this.subscribers.confSubs = this.subjectCofigService.fetchConfiguration().subscribe(apiResponse => {
+    this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examLevelOptions = apiResponse.data.examLevelList;
         if (this.selectedExamLevel){

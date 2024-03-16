@@ -17,12 +17,25 @@ export class QuestionModel {
   subjectCode: string ='';
   quesDetail: QuestionDetailModel
 }
+
 export class DeleteQuestionModel{
-  isFullQuesDelete: false;
+  isFullQuesDelete: boolean;
   quesDetailsId: number = 0;
   quesId: number = 0
 }
 
+
+export class QuestionInfo {
+  id: number;
+  examId: number;
+  examLevel: 62;
+  session: string;
+  year: string;
+  subjectId: number;
+  subjectCode: string;
+  subjectName: string;
+
+}
 
 
 

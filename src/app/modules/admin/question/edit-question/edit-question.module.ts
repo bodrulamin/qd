@@ -14,6 +14,7 @@ import {FileUploadModule} from "primeng/fileupload";
 import {PdfViewerModule} from "ng2-pdf-viewer";
 import {BadgeModule} from "primeng/badge";
 import {ScrollPanelModule} from "primeng/scrollpanel";
+import {TableModule} from "primeng/table";
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import {ScrollPanelModule} from "primeng/scrollpanel";
         PdfViewerModule,
         BadgeModule,
         ScrollPanelModule,
+        TableModule,
     ],
   declarations: [
     EditQuestionComponent

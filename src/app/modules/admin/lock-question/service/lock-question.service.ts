@@ -16,16 +16,12 @@ export class LockQuestionService extends BaseService {
     super();
   }
 
-  fetchConfiguration(): Observable<ApiResponse> {
-    return this.http.get<ApiResponse>(endpoint.FETCH_CONFIGURATION);
-  }
-
   searchQuestionToLockUnlock(searchModel: ExamSearchModel): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(endpoint.SEARCH_EXAM_QUESTION_FOR_LOCK_UNLOCK,searchModel);
+    return this.http.post<ApiResponse>(endpoint.SEARCH_EXAM_QUESTION_FOR_LOCK_UNLOCK, searchModel);
   }
 
   lockUnlockQuestion(lockModels: LockModel[]): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(endpoint.LOCK_UNLOCK,lockModels);
+    return this.http.post<ApiResponse>(endpoint.LOCK_UNLOCK, lockModels);
   }
 
 }

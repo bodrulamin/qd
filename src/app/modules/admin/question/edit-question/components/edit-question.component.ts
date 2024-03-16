@@ -4,12 +4,13 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {BaseComponent} from "../../../../base/components/base-component/base.component";
 import {LayoutService} from "../../../layout/service/app.layout.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {DeleteQuestionModel, QuestionDetailModel, QuestionModel} from "../service/domain/question.model";
+import {DeleteQuestionModel, QuestionDetailModel, QuestionInfo, QuestionModel} from "../service/domain/question.model";
 import {EditQuestionService} from "../service/edit-question.service";
 import {CreateQuestionService} from "../../create-question/service/create-question.service";
-import {FileSelectEvent, FileUpload, FileUploadEvent} from "primeng/fileupload";
+import {FileSelectEvent, FileUpload, FileUploadErrorEvent, FileUploadEvent} from "primeng/fileupload";
 import html2canvas from 'html2canvas';
 import generatePdfThumbnails from 'pdf-thumbnails-generator';
+import {AdminService} from "../../../service/admin.service";
 
 @Component({
   selector: 'app-edit-question',
@@ -20,6 +21,7 @@ import generatePdfThumbnails from 'pdf-thumbnails-generator';
 export class EditQuestionComponent extends BaseComponent {
   questionDetail: QuestionDetailModel = new QuestionDetailModel();
   questionMaster: QuestionModel = new QuestionModel();
+  questionInfo: QuestionInfo = new QuestionInfo();
   questionDetails: QuestionDetailModel[] = [];
   selectedIndex: number = -1;
   @ViewChild("editor") editor!: Editor;
@@ -34,12 +36,16 @@ export class EditQuestionComponent extends BaseComponent {
   thumbnailBlobMap = new Map();
   firstTimeCall: boolean = true;
   saveStatus: string;
+  subjectMap: Map<any, any> = new Map();
+  examLevelMap: Map<any, any> = new Map();
+  questionDetailsDialogVisible: boolean = false;
 
   constructor(
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private editQuestionService: EditQuestionService,
     private createQuestionService: CreateQuestionService,
+    private adminService: AdminService,
     public layoutService: LayoutService,
     public activatedRoute: ActivatedRoute,
     public router: Router,
@@ -48,15 +54,30 @@ export class EditQuestionComponent extends BaseComponent {
   }
 
   ngOnInit() {
+    this.fetchConfiguration();
     this.layoutService.hideSideMenu();
 
     this.activatedRoute.queryParams.subscribe(params => {
       this.id = params['id'];
+      let fullDelete = params['fullDelete'];
+      if (fullDelete === 'true') {
+        let deleteModel = new DeleteQuestionModel();
+        deleteModel.isFullQuesDelete = true;
+        deleteModel.quesId = this.id;
+        this.subscribers.deleteQuestionsubs = this.editQuestionService.deleteQuetion(deleteModel).subscribe(apiResponse => {
+          if (apiResponse.result) {
+            this.messageService.add({severity: 'info', summary: 'Confirmed', detail: 'Question Deleted'});
+            return;
+          }
+        });
+      }
+
       if (this.id) {
         this.fetchExistingQuestion(this.id);
       } else {
         if (history.state.data) {
           this.questionMaster = history.state.data;
+          this.questionInfo = history.state.data;
           this.subscribers.searchQuesSubs = this.createQuestionService.searchQuestion(this.questionMaster).subscribe(apiResponse => {
             if (apiResponse.result) {
               let data = apiResponse.data;
@@ -144,74 +165,75 @@ export class EditQuestionComponent extends BaseComponent {
     })
   }
 
-  autoSaveQuestion() {
+  validateAndSave() {
     this.messageService.clear();
-    if (this.selectedIndex < 0) return;;
-    if (this.hasDuplicate(this.questionDetails, 'seqNo')) {
-      this.messageService.add({summary: 'Error', detail: 'Duplicate sequnce found !', severity: 'error'})
-      return;
-    }
-    if (this.questionDetail.marks <= 0) {
-      this.messageService.add({summary: 'Error', detail: 'Input valid marks!', severity: 'error'})
-      return;
-    }
+
+    if (!this.validated()) return;
 
     if (!this.questionMaster.id && this.firstTimeCall) {
       this.firstTimeCall = false;
-      this.saveFirstQuestion(this.questionMaster, this.selectedIndex);
+      this.saveQuestion(this.questionMaster, this.selectedIndex);
     }
     if (this.selectedIndex < 0) return;
     if (!this.autoSave) return;
     this.saveQuestion(this.questionMaster, this.selectedIndex);
   }
 
-  saveFirstQuestion(master: QuestionModel, i: number, file?: File) {
+  validated() {
+    if (this.selectedIndex < 0) {
+      let summery = ''
+      let detail = ''
+      if (!this.questionDetails.length) {
+        summery = 'Add Question'
+        detail = 'Please add a question'
+      } else {
+        summery = 'Select Question'
+        detail = 'Please select a question from left pane'
+      }
+      this.messageService.add({summary: summery, detail: detail, severity: 'warn'})
+      return false;
+    }
+    if (this.hasDuplicate(this.questionDetails, 'seqNo')) {
+      this.messageService.add({summary: 'Error', detail: 'Duplicate sequnce found !', severity: 'error'})
+      return false;
+    }
+    if (this.questionDetail.marks <= 0) {
+      this.messageService.add({summary: 'Error', detail: 'Input valid marks!', severity: 'error'})
+      return false;
+    }
+    return true;
+  }
+
+  saveQuestion(master: QuestionModel, i: number, file?: File, showSavedStatus?: boolean) {
     let formData = new FormData();
 
     master.quesDetail = this.questionDetails[i];
     if (file) {
       master.quesDetail.isFile = true;
+      master.quesDetail.quesDesc = '';
       formData.append('file', file);
     }
 
     let data = JSON.stringify(master);
     formData.append('data', data);
 
+    this.saveStatus = this.questionDetails[i].seqNo + ' - Saving ...'
     this.editQuestionService.addQuestion(formData).subscribe(apiResponse => {
       if (apiResponse.result) {
+        this.messageService.add({
+          summary: 'Saved',
+          detail: 'Sequence ' + master.quesDetail.seqNo + ' saved',
+          severity: 'success'
+        })
+        this.saveStatus = 'saved'
         let data = apiResponse.data;
         this.setupSavedData(data, i);
         this.autoSave = true;
         this.firstTimeCall = false
       }
     }, error => {
-      this.firstTimeCall = true;
-      console.log(error)
-    });
-  }
-  saveQuestion(master: QuestionModel, i: number, file?: File) {
-    let formData = new FormData();
-
-    master.quesDetail = this.questionDetails[i];
-    if (file) {
-      master.quesDetail.isFile = true;
-      formData.append('file', file);
-    }
-
-    let data = JSON.stringify(master);
-    formData.append('data', data);
-
-    this.saveStatus = this.questionDetails[i].seqNo +  ' - Saving ...'
-    this.editQuestionService.addQuestion(formData).subscribe(apiResponse => {
-      if (apiResponse.result) {
-        this.saveStatus = 'saved'
-        let data = apiResponse.data;
-        this.setupSavedData(data, i);
-        this.autoSave = true;
-      }
-    }, error => {
-      if (this.questionMaster.id) {
-        this.autoSave = true;
+      if (!this.questionMaster.id) {
+        this.firstTimeCall = true;
       }
     });
   }
@@ -251,7 +273,13 @@ export class EditQuestionComponent extends BaseComponent {
   }
 
   private async setupExistingQuestion(data) {
+    this.questionInfo = data;
     this.questionMaster.id = data.id;
+    this.questionMaster.examLevel = data.examLevel
+    this.questionMaster.session = data.session
+    this.questionMaster.year = data.year
+    this.questionMaster.subjectCode = data.subjectCode
+
     for (let i = 0; i < data.quesDetailsList.length; i++) {
       this.questionDetails[i] = data.quesDetailsList[i];
       if (this.questionDetails[i].isFile) {
@@ -325,10 +353,27 @@ export class EditQuestionComponent extends BaseComponent {
   }
 
   onBlurSequence($event: FocusEvent) {
-    this.autoSaveQuestion();
+    this.validateAndSave();
   }
 
   onBlurMarks($event: FocusEvent) {
-    this.autoSaveQuestion();
+    this.validateAndSave();
+  }
+
+  fileError($event: FileUploadErrorEvent) {
+  }
+
+  message() {
+
+  }
+
+  private fetchConfiguration() {
+    this.subscribers.confSubs = this.adminService.fetchConfiguration().subscribe(apiResponse => {
+      if (apiResponse.result) {
+        apiResponse.data.examLevelList.forEach(e => {
+          this.examLevelMap.set(e.code,e.name);
+        });
+      }
+    })
   }
 }
