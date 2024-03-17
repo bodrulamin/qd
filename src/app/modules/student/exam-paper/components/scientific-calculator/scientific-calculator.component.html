@@ -1,90 +1,93 @@
-<div class="p-1 form-group">
-  <form method="POST" class="alert alert-secondary">
-    <div class="w-100">
-      <div class="row pb-1">
-        <div class="col text-right">
+<div class="p-1 formgrid">
+  <form method="POST">
+    <div class="w-full">
+      <div class="flex flex row pb-1">
+        <div class="text-right">
           <span class="badge badge-info" *ngIf="statusMemory()">Mem: {{valueMemory()}}</span>
-
           <span class="badge badge-success" *ngIf="getOperand()!='';" [innerHTML]="getOperand()"></span>
 
-          <span class="badge badge-warning" *ngIf="getRadians(); else badgeGrads">Rad</span>
-          <ng-template #badgeGrads><span class="badge badge-info">Grad</span></ng-template>
+          <div *ngIf="scientificMode">
+            <p-badge  *ngIf="getRadians(); else badgeGrads" [value]="'Rad'" severity="warning"></p-badge>
+            <ng-template #badgeGrads><p-badge [value]="'Grad'" severity="info"></p-badge></ng-template>
+          </div>
+
 
         </div>
       </div>
-      <div class="row">
-        <div class="col"><input type="text" placeholder="0" #inputField value="{{getFormula()}}" class="form-control text-right"></div>
+      <div class="field">
+        <input type="text" placeholder="0" #inputField value="{{getFormula()}}"  class="text-base text-right text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
       </div>
-      <div class="row pt-2">
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="addBracket('(');">(</button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="addBracket(')');">)</button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="clearMemory();">mc</button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="sumToMemory();">m+</button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="deductToMemory();">m-</button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="readMemory();">mr</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-danger" (click)="clear();">C</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('invert',-1);">&#177;</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('percent',-1);">%</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-xl btn-info" (click)="setOperation('/');">&divide;</button></div>
+      <div class="flex flex-row pt-2">
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="addBracket('(');">(</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="addBracket(')');">)</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="clearMemory();">mc</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="sumToMemory();">m+</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="deductToMemory();">m-</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="readMemory();">mr</button></div>
+        <div class="col flex-grow-1"><button pButton class="p-button-danger w-full" (click)="clear();">C</button></div>
+        <div class="col flex-grow-1"><button pButton class="p-button-secondary w-full" (click)="singleton('invert',-1);">&#177;</button></div>
+        <div class="col flex-grow-1"><button pButton class="p-button-secondary w-full" (click)="singleton('percent',-1);">%</button></div>
+        <div class="col flex-grow-1"><button pButton class="p-button-help w-full" (click)="setOperation('/');">&divide;</button></div>
       </div>
-      <div class="row pt-2">
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else fs"><button class="form-control btn btn-sm btn-secondary" (click)="secondScreen();">2<sup>nd</sup></button></div>
-        <ng-template #fs><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="secondScreen();">1<sup>nd</sup></button></div></ng-template>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('pow',2);">x<sup>2</sup></button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('pow',3);">x<sup>3</sup></button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="setOperation('pow');">x<sup>y</sup></button></div>
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else yx"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('pow_base','e');">e<sup>x</sup></button></div>
-        <ng-template #yx><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="setOperation('yx');">y<sup>x</sup></button></div></ng-template>
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else x2"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('pow_base',10);">10<sup>x</sup></button></div>
-        <ng-template #x2><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="singleton('pow_base',2);">2<sup>x</sup></button></div></ng-template>
-        <div class="col"><button class="form-control btn btn-sm btn-success" (click)="addSymbol('7');">7</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-success" (click)="addSymbol('8');">8</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-success" (click)="addSymbol('9');">9</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-xl btn-info" (click)="setOperation('*');">&times;</button></div>
+      <div class="flex flex-row pt-2">
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else fs"><button pButton class="p-button-secondary w-full" (click)="secondScreen();">2<sup>nd</sup></button></div>
+        <ng-template #fs><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="secondScreen();">1<sup>nd</sup></button></div></ng-template>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="singleton('pow',2);">x<sup>2</sup></button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="singleton('pow',3);">x<sup>3</sup></button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="setOperation('pow');">x<sup>y</sup></button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else yx"><button pButton class="p-button-secondary w-full" (click)="singleton('pow_base','e');">e<sup>x</sup></button></div>
+        <ng-template #yx><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="setOperation('yx');">y<sup>x</sup></button></div></ng-template>
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else x2"><button pButton class="p-button-secondary w-full" (click)="singleton('pow_base',10);">10<sup>x</sup></button></div>
+        <ng-template #x2><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="singleton('pow_base',2);">2<sup>x</sup></button></div></ng-template>
+        <div class="col"><button pButton class="p-button-success w-full" (click)="addSymbol('7');">7</button></div>
+        <div class="col"><button pButton class="p-button-success w-full" (click)="addSymbol('8');">8</button></div>
+        <div class="col"><button pButton class="p-button-success w-full" (click)="addSymbol('9');">9</button></div>
+        <div class="col"><button pButton class="p-button-help w-full" (click)="setOperation('*');">&times;</button></div>
       </div>
-      <div class="row pt-2">
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('div',1);"><sup>1</sup>/<sub>x</sub></button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('sqrt',2);"><sup>2</sup>&radic;x</button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('sqrt3',1/3);"><sup>3</sup>&radic;x</button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="setOperation('sqrt');"><sup>y</sup>&radic;x</button></div>
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else log"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('ln',2.7);">ln</button></div>
-        <ng-template #log><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="setOperation('log');">log<sub>y</sub></button></div></ng-template>
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else log2"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('lg',10);">lg</button></div>
-        <ng-template #log2><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="singleton('lg',2);">log<sub>2</sub></button></div></ng-template>
-        <div class="col"><button class="form-control btn btn-sm btn-success" (click)="addSymbol('4');">4</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-success" (click)="addSymbol('5');">5</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-success" (click)="addSymbol('6');">6</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-xl btn-info" (click)="setOperation('-');">&minus;</button></div>
+      <div class="flex flex-row pt-2">
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="singleton('div',1);"><sup>1</sup>/<sub>x</sub></button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="singleton('sqrt',2);"><sup>2</sup>&radic;x</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="singleton('sqrt3',1/3);"><sup>3</sup>&radic;x</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="setOperation('sqrt');"><sup>y</sup>&radic;x</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else log"><button pButton class="p-button-secondary w-full" (click)="singleton('ln',2.7);">ln</button></div>
+        <ng-template #log><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="setOperation('log');">log<sub>y</sub></button></div></ng-template>
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else log2"><button pButton class="p-button-secondary w-full" (click)="singleton('lg',10);">lg</button></div>
+        <ng-template #log2><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="singleton('lg',2);">log<sub>2</sub></button></div></ng-template>
+        <div class="col"><button pButton class="p-button-success w-full" (click)="addSymbol('4');">4</button></div>
+        <div class="col"><button pButton class="p-button-success w-full" (click)="addSymbol('5');">5</button></div>
+        <div class="col"><button pButton class="p-button-success w-full" (click)="addSymbol('6');">6</button></div>
+        <div class="col"><button pButton class="p-button-help w-full" (click)="setOperation('-');">&minus;</button></div>
       </div>
-      <div class="row pt-2">
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('factorial',1);">x!</button></div>
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else asin"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('sin',1);">sin</button></div>
-        <ng-template #asin><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="singleton('asin',1);">sin<sup>-1</sup></button></div></ng-template>
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else acos"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('cos',1);">cos</button></div>
-        <ng-template #acos><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="singleton('acos',1);">cos<sup>-1</sup></button></div></ng-template>
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else atan"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('tan',1);">tan</button></div>
-        <ng-template #atan><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="singleton('atan',1);">tan<sup>-1</sup></button></div></ng-template>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="addSymbol('2.718281828459045',true);">e</button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('ee',1);" title="Exponencial view of number">EE</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-success" (click)="addSymbol('1');">1</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-success" (click)="addSymbol('2');">2</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-success" (click)="addSymbol('3');">3</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-xl btn-info" (click)="setOperation('+');">&#43;</button></div>
+      <div class="flex flex-row pt-2">
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="singleton('factorial',1);">x!</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else asin"><button pButton class="p-button-secondary w-full" (click)="singleton('sin',1);">sin</button></div>
+        <ng-template #asin><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="singleton('asin',1);">sin<sup>-1</sup></button></div></ng-template>
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else acos"><button pButton class="p-button-secondary w-full" (click)="singleton('cos',1);">cos</button></div>
+        <ng-template #acos><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="singleton('acos',1);">cos<sup>-1</sup></button></div></ng-template>
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else atan"><button pButton class="p-button-secondary w-full" (click)="singleton('tan',1);">tan</button></div>
+        <ng-template #atan><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="singleton('atan',1);">tan<sup>-1</sup></button></div></ng-template>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="addSymbol('2.718281828459045',true);">e</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="singleton('ee',1);" title="Exponencial view of number">EE</button></div>
+        <div class="col"><button pButton class="p-button-success w-full" (click)="addSymbol('1');">1</button></div>
+        <div class="col"><button pButton class="p-button-success w-full" (click)="addSymbol('2');">2</button></div>
+        <div class="col"><button pButton class="p-button-success w-full" (click)="addSymbol('3');">3</button></div>
+        <div class="col"><button pButton class="p-button-help w-full" (click)="setOperation('+');">&#43;</button></div>
       </div>
-      <div class="row pt-2">
-        <div class="col d-none d-lt-flex" *ngIf="getRadians(); else Grads"><button class="form-control btn btn-sm btn-warning" (click)="setRadians();">Rad</button></div>
-        <ng-template #Grads><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="setRadians();">Grad</button></div></ng-template>
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else asinh"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('sinh',1);">sin<sup>h</sup></button></div>
-        <ng-template #asinh><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="singleton('asinh',1);">sinh<sup>-1</sup></button></div></ng-template>
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else acosh"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('cosh',1);">cos<sup>h</sup></button></div>
-        <ng-template #acosh><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="singleton('acosh',1);">cosh<sup>-1</sup></button></div></ng-template>
-        <div class="col d-none d-lt-flex" *ngIf="!getScreen(); else atanh"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('tanh',1);">tan<sup>h</sup></button></div>
-        <ng-template #atanh><div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-info" (click)="singleton('atanh',1);">tanh<sup>-1</sup></button></div></ng-template>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="addSymbol('3.141592653589793',true);">&#x213C;</button></div>
-        <div class="col d-none d-lt-flex"><button class="form-control btn btn-sm btn-secondary" (click)="singleton('rand',1);">Rnd</button></div>
-        <div class="col-2 mycol-2"><button class="form-control btn btn-sm btn-success" (click)="addSymbol('0');">0</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-success"(click)="addSymbol('.');">,</button></div>
-        <div class="col"><button class="form-control btn btn-sm btn-primary" (click)="calculate();">=</button></div>
+      <div class="flex flex-row pt-2">
+        <div class="col flex-grow-1" *ngIf="scientificMode && getRadians(); else Grads"><button pButton class="form-control btn btn-sm btn-warning" (click)="setRadians();">Rad</button></div>
+        <ng-template #Grads><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="setRadians();">Grad</button></div></ng-template>
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else asinh"><button pButton class="p-button-secondary w-full" (click)="singleton('sinh',1);">sin<sup>h</sup></button></div>
+        <ng-template #asinh><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="singleton('asinh',1);">sinh<sup>-1</sup></button></div></ng-template>
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else acosh"><button pButton class="p-button-secondary w-full" (click)="singleton('cosh',1);">cos<sup>h</sup></button></div>
+        <ng-template #acosh><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="singleton('acosh',1);">cosh<sup>-1</sup></button></div></ng-template>
+        <div class="col flex-grow-1" *ngIf="scientificMode && !getScreen(); else atanh"><button pButton class="p-button-secondary w-full" (click)="singleton('tanh',1);">tan<sup>h</sup></button></div>
+        <ng-template #atanh><div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-help w-full" (click)="singleton('atanh',1);">tanh<sup>-1</sup></button></div></ng-template>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="addSymbol('3.141592653589793',true);">&#x213C;</button></div>
+        <div class="col flex-grow-1" *ngIf="scientificMode"><button pButton class="p-button-secondary w-full" (click)="singleton('rand',1);">Rnd</button></div>
+        <div class="col  flex-grow-1"><button pButton class="p-button-success w-full" (click)="addSymbol('00');">00</button></div>
+        <div class="col  flex-grow-1"><button pButton class="p-button-success w-full" (click)="addSymbol('0');">0</button></div>
+        <div class="col  flex-grow-1"><button pButton class="p-button-success w-full"(click)="addSymbol('.');">,</button></div>
+        <div class="col  flex-grow-1"><button pButton class="p-button-primary w-full" (click)="calculate();">=</button></div>
       </div>
     </div>
   </form>

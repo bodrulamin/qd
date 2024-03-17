@@ -1,4 +1,4 @@
-import {Component, HostListener} from '@angular/core';
+import {Component, HostListener, Input} from '@angular/core';
 import {Formula} from "./formula";
 
 @Component({
@@ -10,8 +10,14 @@ export class ScientificCalculatorComponent {
 
 
   formula = new Formula('0');
-
+  scientificMode:boolean = false;
   title = 'Scientific Calculator';
+  @Input('scientificMode') set setMode(data){
+    this.scientificMode = data;
+    if (!data){
+      this.formula.radians = true;
+    }
+  }
 
 
   @HostListener('window:keyup', ['$event'])

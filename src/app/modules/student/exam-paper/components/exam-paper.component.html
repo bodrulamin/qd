@@ -7,23 +7,10 @@
     <div class="flex flex-row w-full">
       <div class="flex flex-grow-1 justify-content-center align-items-center">
         <div class="info">
-          Exam Level: {{examInfo.examLevelName}}
-        </div>
-        <div class="info">
-
-          Session: {{examInfo.session}}
-        </div>
-        <div class="info">
 
           Subject: {{examInfo.subjectName}}
         </div>
-        <div class="info">
 
-          Start Time: {{examInfo.examStartsAt | date:'HH:mm'}}
-        </div>
-        <div class="info">
-          End Time: {{examInfo.examEndsAt  | date:'HH:mm'}}
-        </div>
         <div class="info">
           Remaining Time: {{remainingTime}}
         </div>
@@ -89,7 +76,7 @@
         <as-split-area [size]="50">
           <as-split direction="vertical">
             <as-split-area [size]="50">
-              <p-editor #editor [(ngModel)]="answer.answerDesc"
+              <p-editor (onInit)="onInitEditor($event)" #editor [(ngModel)]="answer.answerDesc"
                         [style]="{ height: '500px', width:'auto'}"
                         (onTextChange)="onTextChange($event,editor)"></p-editor>
 
@@ -113,7 +100,10 @@
 
 </div>
 
-<p-dialog header="" [(visible)]="calulatorVisible" [modal]="true" [style]="{ width: '550px' }">
-  <app-scientific-calculator></app-scientific-calculator>
+<p-dialog [(visible)]="calulatorVisible" [modal]="false" [style]="{width: scientificMode ? '778px' : '300px'}">
+  <ng-template pTemplate="header">
+    <p-toggleButton [(ngModel)]="scientificMode" onLabel="Normal" offLabel="Scientific"></p-toggleButton>
+  </ng-template>
+  <app-scientific-calculator [scientificMode]="scientificMode"></app-scientific-calculator>
 </p-dialog>
 

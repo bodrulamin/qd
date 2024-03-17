@@ -163,6 +163,9 @@ export class Formula {
       }
       this.dotted=true;
     }
+    if ((!this.formula || this.formula === '0') && value ==='00'){
+      value = '0';
+    }
     this.formula+=value;
     this.is_operand = false;
     return this.formula;

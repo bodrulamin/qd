@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ExamPaperComponent} from "./components/exam-paper.component";
 import {RouterModule} from "@angular/router";
-import {SplitterModule} from "primeng/splitter";
 import {BadgeModule} from "primeng/badge";
 import {PdfViewerModule} from "ng2-pdf-viewer";
 import {EditorModule} from "primeng/editor";
@@ -13,6 +12,7 @@ import {SpreadSheetsModule} from "@grapecity/spread-sheets-angular";
 import {AngularSplitModule} from "angular-split";
 import { ScientificCalculatorComponent } from './components/scientific-calculator/scientific-calculator.component';
 import {DialogModule} from "primeng/dialog";
+import {ToggleButtonModule} from "primeng/togglebutton";
 
 
 @NgModule({
@@ -26,7 +26,6 @@ import {DialogModule} from "primeng/dialog";
       {path: '', component: ExamPaperComponent}
     ]),
     FormsModule,
-    SplitterModule,
     BadgeModule,
     PdfViewerModule,
     EditorModule,
@@ -34,7 +33,8 @@ import {DialogModule} from "primeng/dialog";
     TableModule,
     SpreadSheetsModule,
     AngularSplitModule,
-    DialogModule
+    DialogModule,
+    ToggleButtonModule
 
   ]
 })
