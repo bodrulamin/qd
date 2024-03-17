@@ -4,11 +4,8 @@ import generatePdfThumbnails from 'pdf-thumbnails-generator';
 import {ExamPaperService} from "../service/exam-paper.service";
 import {AnswerModel, ExamInfo, ExamQuestionDetailModel, ExamQuestionModel} from "../service/domain/exam-question.model";
 import {Router} from "@angular/router";
-import {Editor, EditorInitEvent} from "primeng/editor";
 import {MessageService} from "primeng/api";
-import {SplitterResizeEndEvent} from "primeng/splitter";
 import {AdminService} from "../../../admin/service/admin.service";
-import Quill from "quill";
 
 @Component({
   selector: 'app-exam-paper',
@@ -26,7 +23,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   questionMaster: ExamQuestionModel = new ExamQuestionModel();
   @ViewChild('thumbview', {static: true}) thumbview: ElementRef;
 
-  @ViewChild("editor", {static: true}) editor!: Editor;
+  // @ViewChild("editor", {static: true}) editor!: Editor;
   @ViewChild("pdfView") pdfView!: ElementRef;
 
   selectedIndex: number = -1;
@@ -37,9 +34,46 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   gcStyle: any;
   examLevelMap: Map<any, any> = new Map();
   remainingTime: any;
+
   sizes: number[] = [50, 50]; // Initial sizes (50% each)
   calulatorVisible: boolean = false;
   scientificMode = false;
+  editorConfig = {
+
+    toolbar: [
+      'heading',
+      '|',
+      'bold',
+      'italic',
+      'underline',
+      'strikethrough',
+      'subscript',
+      'superscript',
+      '|',
+      'bulletedList',
+      'numberedList',
+      'indent',
+      'outdent',
+      '|',
+      'alignment',
+      '|',
+      'link',
+      'unlink',
+      'imageUpload',
+      'insertTable',
+      'table',
+      '|',
+      'undo',
+      'redo',
+      '|',
+      'fontSize',
+      'fontColor',
+      'fontBackgroundColor',
+      'horizontalLine',
+
+    ],
+  };
+  data: any;
 
   onDragEnd(sizes: number[]) {
     this.sizes = sizes;
@@ -57,27 +91,35 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    let data: ExamQuestionModel = history.state;
-    this.examInfo = history.state
+    this.data = [
+      { OrderID: 10248, CustomerID: 'VINET', EmployeeID: 5, ShipCity: 'Reims' },
+      { OrderID: 10249, CustomerID: 'TOMSP', EmployeeID: 6, ShipCity: 'Münster' },
+      { OrderID: 10250, CustomerID: 'HANAR', EmployeeID: 4, ShipCity: 'Lyon' }
+    ];
 
-    if (!data || !data.id) {
-      this.router.navigate([""])
-    }
+    // let data: ExamQuestionModel = history.state;
+    // this.examInfo = history.state
 
-    setInterval(() => {
-      this.remainingTime = this.getTimeDifference(new Date(), this.examInfo.examEndsAt);
-    }, 1000);
+    // if (!data || !data.id) {
+    //   // this.router.navigate([""])
+    // }
 
-    this.setupExistingQuestion(data);
+    // setInterval(() => {
+    //   this.remainingTime = this.getTimeDifference(new Date(), this.examInfo.examEndsAt);
+    // }, 1000);
+    //
+    // this.setupExistingQuestion(data);
+    //
+    // this.questionDetails = data.quesDetailsList;
+    //
+    //
+    // this.hostStyle = {
+    //   width: '900px',
+    //   height: '500px',
+    //   overflow: 'scroll'
+    // };
+    this.questionDetails = [];
 
-    this.questionDetails = data.quesDetailsList;
-
-
-    this.hostStyle = {
-      width: '900px',
-      height: '500px',
-      overflow: 'scroll'
-    };
   }
 
   getTimeDifference(startTime, endTime) {
@@ -109,7 +151,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
     this.questionDetail = this.questionDetails[i];
     this.answer = this.answerDetails[i] || new AnswerModel();
     setTimeout(() => {
-      this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.answer.answerDesc || ''
+      // this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.answer.answerDesc || ''
     }, 1)
 
   }
@@ -166,16 +208,12 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
 
   }
 
-  onTextChange($event: any, editor: Editor) {
-
-  }
-
   autoSaveAnser() {
     // this.saveAnser(this.questionMaster, this.selectedIndex);
   }
 
   private saveAnser(questionMaster: ExamQuestionModel, i: number) {
-    this.testQuill();
+
 
     let answerModel: AnswerModel = new AnswerModel();
     answerModel.quesId = questionMaster.id;
@@ -205,6 +243,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   }
 
   manualSave() {
+    console.log(this.answer)
     if (this.selectedIndex < 0) {
       return;
     }
@@ -213,20 +252,4 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
     this.saveAnser(this.questionMaster, this.selectedIndex);
   }
 
-  resizeEnd($event: SplitterResizeEndEvent) {
-    console.log($event.sizes)
-    console.log($event)
-  }
-
-  onInitEditor($event: EditorInitEvent) {
-
-
-
-
-  }
-
-  private testQuill() {
-    let quill:Quill = this.editor.getQuill();
-    quill.getModule('toolbar')
-  }
 }
