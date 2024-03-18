@@ -2,9 +2,18 @@
 <div class="h-screen w-screen">
 
   <!-----------------------header------------------->
-  <div class="h-3rem">
+  <div class="h-2rem">
 
     <div class="flex flex-row w-full">
+
+      <!-----------------------ExpanColapse Resource------------------->
+      <div class="ml-2 flex flex-grow-0 justify-content-center align-items-center">
+        <div class="justify-content-center align-items-baseline text-center">
+          <p-button [style]="{padding:'4px',fontSize:'12px'}" [text]="true" [label]="showResources ? 'Collapse Resources <<':'Show Resources >>'" (onClick)="showResources = !showResources"></p-button>
+        </div>
+      </div>
+
+      <!-----------------------Exam Status------------------->
       <div class="flex flex-grow-1 justify-content-center align-items-center">
         <div class="info">
 
@@ -19,9 +28,9 @@
 
 
       </div>
-      <div class="flex flex-grow-0 right-0 p-2 mr-5">
-        <p-button label="" [text]="true" icon="fas fa-calculator" (onClick)="calulatorVisible = true"></p-button>
-        <p-button label='Save Answer' (onClick)="manualSave()"></p-button>
+      <div class="flex flex-grow-0 right-0 mr-5 justify-content-center align-items-center">
+        <p-button [style]="{padding:'4px',fontSize:'12px'}"  label="" [text]="true" icon="fas fa-calculator" (onClick)="calulatorVisible = true"></p-button>
+        <p-button [style]="{padding:'4px',fontSize:'12px'}" label='Save Answer' (onClick)="manualSave()"></p-button>
 
       </div>
 
@@ -33,7 +42,7 @@
 
   <div class="flex flex-row h-full">
     <!-----------------------Resources------------------->
-    <div class="card w-10rem m-2 p-2 h-full flex-grow-0 overflow-y-auto" style="background-color:#f8f6f6">
+    <div *ngIf="showResources" class="card w-10rem m-2 p-2 h-full flex-grow-0 flex-shrink-0 overflow-y-auto" style="background-color:#f8f6f6">
       <div class="mb-5 w-full"
            *ngFor="let item of questionDetails; index as i;">
         <div class="card" [ngClass]="{'border border-2 border-blue-400': selectedIndex === i}"
@@ -63,15 +72,15 @@
     </div>
     <div class="flex flex-grow-1 m-2">
       <as-split direction="horizontal">
-        <as-split-area [size]="50">
-          <div id="question-container" class="card h-full">
+        <as-split-area [size]="50" (resize)="updatePdfSize()">
+          <div id="question-container" class="h-full">
             <div id="html-preview"></div>
-            <div id="question-view" [innerHTML]="questionDetail.quesDesc"></div>
+            <div class="card h-full w-full" id="question-view" *ngIf="!questionDetail.isFile" [innerHTML]="questionDetail.quesDesc"></div>
 
             <pdf-viewer [zoom]="1" *ngIf="questionDetail.isFile" class="h-full" #pdfView
                         [src]="pdfBlobMap.get(questionDetail.id)"
                         [render-text]="false"
-                        [original-size]="false"
+                        [original-size]="true"
             ></pdf-viewer>
           </div>
 
@@ -79,8 +88,8 @@
         <as-split-area [size]="50">
           <as-split direction="vertical">
             <as-split-area [size]="50">
-              <editor apiKey="y6iz5y6rybj6vsjuhyvg8c533qvoeq2u5hvdmvddhn00tv0t" [(ngModel)]="answer.answerDesc
-" [init]="{ plugins: 'lists link image table code help wordcount' }"
+              <editor apiKey="y6iz5y6rybj6vsjuhyvg8c533qvoeq2u5hvdmvddhn00tv0t"  [(ngModel)]="answer.answerDesc
+" [init]="{ plugins: 'lists link image table code help wordcount', height:'700px' }"
               ></editor>
 
             </as-split-area>

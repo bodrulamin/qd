@@ -80,7 +80,7 @@
 
               <div class="flex justify-content-between align-items-center flex-row gap-2">
                 <p-fileUpload #fileUpload mode="basic" name="demo[]" accept=".pdf" (onUpload)="onUpload($event)"
-                              [maxFileSize]="1000" (message)="message()"
+                              [maxFileSize]="30000000" (message)="message()"
                               [style]="{backgroundColor:'transparent', color:'black'}"
                               (onSelect)="onFileSelect($event)" (onError)="fileError($event)" [auto]="true"
                               [multiple]="false"

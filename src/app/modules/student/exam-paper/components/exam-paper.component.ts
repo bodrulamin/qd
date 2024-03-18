@@ -36,6 +36,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
 
   calulatorVisible: boolean = false;
   scientificMode = false;
+  showResources:boolean = true;
 
   constructor(
     private examPaperService: ExamPaperService,
