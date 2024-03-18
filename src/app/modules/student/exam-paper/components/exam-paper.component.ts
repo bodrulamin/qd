@@ -6,7 +6,8 @@ import {AnswerModel, ExamInfo, ExamQuestionDetailModel, ExamQuestionModel} from 
 import {Router} from "@angular/router";
 import {MessageService} from "primeng/api";
 import {AdminService} from "../../../admin/service/admin.service";
-
+import html2canvas from "html2canvas";
+declare var luckysheet;
 @Component({
   selector: 'app-exam-paper',
   templateUrl: './exam-paper.component.html',
@@ -21,7 +22,6 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   questionDetails: ExamQuestionDetailModel[] = [];
   answerDetails: AnswerModel[] = [];
   questionMaster: ExamQuestionModel = new ExamQuestionModel();
-  @ViewChild('thumbview', {static: true}) thumbview: ElementRef;
 
   // @ViewChild("editor", {static: true}) editor!: Editor;
   @ViewChild("pdfView") pdfView!: ElementRef;
@@ -30,54 +30,12 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   autoSave: boolean;
   questionDetail: ExamQuestionDetailModel = new ExamQuestionDetailModel();
   questionSelected: boolean = false;
-  hostStyle: any;
-  gcStyle: any;
+
   examLevelMap: Map<any, any> = new Map();
   remainingTime: any;
 
-  sizes: number[] = [50, 50]; // Initial sizes (50% each)
   calulatorVisible: boolean = false;
   scientificMode = false;
-  editorConfig = {
-
-    toolbar: [
-      'heading',
-      '|',
-      'bold',
-      'italic',
-      'underline',
-      'strikethrough',
-      'subscript',
-      'superscript',
-      '|',
-      'bulletedList',
-      'numberedList',
-      'indent',
-      'outdent',
-      '|',
-      'alignment',
-      '|',
-      'link',
-      'unlink',
-      'imageUpload',
-      'insertTable',
-      'table',
-      '|',
-      'undo',
-      'redo',
-      '|',
-      'fontSize',
-      'fontColor',
-      'fontBackgroundColor',
-      'horizontalLine',
-
-    ],
-  };
-  data: any;
-
-  onDragEnd(sizes: number[]) {
-    this.sizes = sizes;
-  }
 
   constructor(
     private examPaperService: ExamPaperService,
@@ -91,35 +49,24 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.data = [
-      { OrderID: 10248, CustomerID: 'VINET', EmployeeID: 5, ShipCity: 'Reims' },
-      { OrderID: 10249, CustomerID: 'TOMSP', EmployeeID: 6, ShipCity: 'Münster' },
-      { OrderID: 10250, CustomerID: 'HANAR', EmployeeID: 4, ShipCity: 'Lyon' }
-    ];
+    let data: ExamQuestionModel = history.state;
+    this.examInfo = history.state
 
-    // let data: ExamQuestionModel = history.state;
-    // this.examInfo = history.state
+    if (!data || !data.id) {
+      this.router.navigate([""])
+    }
 
-    // if (!data || !data.id) {
-    //   // this.router.navigate([""])
-    // }
+    setInterval(() => {
+      this.remainingTime = this.getTimeDifference(new Date(), this.examInfo.examEndsAt);
+    }, 1000);
 
-    // setInterval(() => {
-    //   this.remainingTime = this.getTimeDifference(new Date(), this.examInfo.examEndsAt);
-    // }, 1000);
-    //
-    // this.setupExistingQuestion(data);
-    //
-    // this.questionDetails = data.quesDetailsList;
-    //
-    //
-    // this.hostStyle = {
-    //   width: '900px',
-    //   height: '500px',
-    //   overflow: 'scroll'
-    // };
-    this.questionDetails = [];
+    this.setupExistingQuestion(data);
 
+    this.questionDetails = data.quesDetailsList;
+    var options = {
+      container: 'luckysheet' //luckysheet is the container id
+    }
+    luckysheet.create(options)
   }
 
   getTimeDifference(startTime, endTime) {
@@ -196,15 +143,14 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   }
 
   async generateHtmlThumbnails(i: number) {
-    // console.log(this.thumbview)
-    // let element  = this.thumbview.nativeElement
-    // element.innerHTML = this.questionDetails[i].quesDesc;
-    // if (!this.questionDetails[i].quesDesc) return;
-    // html2canvas(element).then(canvas => {
-    //   let blobUrl = canvas.toDataURL('image/png');
-    //   this.thumbnailBlobMap.set(this.questionDetails[i].id, blobUrl)
-    //
-    // });
+    let element  = document.getElementById('html-preview');
+    element.innerHTML = this.questionDetails[i].quesDesc;
+    if (!this.questionDetails[i].quesDesc) return;
+    html2canvas(element).then(canvas => {
+      let blobUrl = canvas.toDataURL('image/png');
+      this.thumbnailBlobMap.set(this.questionDetails[i].id, blobUrl)
+      element.innerHTML = '';
+    });
 
   }
 

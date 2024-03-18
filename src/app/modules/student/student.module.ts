@@ -9,22 +9,24 @@ import {InstructionComponent} from "./instruction/components/instruction.compone
 import {TableModule} from "primeng/table";
 import {DialogModule} from "primeng/dialog";
 import {InputTextModule} from "primeng/inputtext";
+import {PasswordModule} from "primeng/password";
 
 @NgModule({
   declarations: [
     StudentLoginComponent,
     InstructionComponent
   ],
-  imports: [
-    RouterModule.forChild(sudentRoutes),
-    FormsModule,
-    AuthModule,
-    ButtonModule,
-    TableModule,
-    DialogModule,
-    InputTextModule,
+    imports: [
+        RouterModule.forChild(sudentRoutes),
+        FormsModule,
+        AuthModule,
+        ButtonModule,
+        TableModule,
+        DialogModule,
+        InputTextModule,
+        PasswordModule,
 
-  ],
+    ],
   providers: [],
   bootstrap: []
 })
