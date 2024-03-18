@@ -9,3 +9,12 @@
   padding:3px;
   border-radius: 10px ;
 }
+/* Hide the header part of Lucky Sheet */
+.luckysheet_info_detail {
+  display: none!important;
+}
+
+/* Expand the sheet part to fill the container */
+.luckysheet-grid-container {
+  height: 100%;
+}
