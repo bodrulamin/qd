@@ -9,7 +9,7 @@
       <!-----------------------ExpanColapse Resource------------------->
       <div class="ml-2 flex flex-grow-0 justify-content-center align-items-center">
         <div class="justify-content-center align-items-baseline text-center">
-          <p-button [style]="{padding:'4px',fontSize:'12px'}" [text]="true" [label]="showResources ? 'Collapse Resources <<':'Show Resources >>'" (onClick)="showResources = !showResources"></p-button>
+          <p-button size="small" [text]="true" [label]="showResources ? 'Collapse Resources <<':'Show Resources >>'" (onClick)="showResources = !showResources"></p-button>
         </div>
       </div>
 
@@ -29,8 +29,8 @@
 
       </div>
       <div class="flex flex-grow-0 right-0 mr-5 justify-content-center align-items-center">
-        <p-button [style]="{padding:'4px',fontSize:'12px'}"  label="" [text]="true" icon="fas fa-calculator" (onClick)="calulatorVisible = true"></p-button>
-        <p-button [style]="{padding:'4px',fontSize:'12px'}" label='Save Answer' (onClick)="manualSave()"></p-button>
+        <p-button size="small" label="" [text]="true" icon="fas fa-calculator" (onClick)="calulatorVisible = true"></p-button>
+        <p-button size="small" label='Save Answer' (onClick)="manualSave()"></p-button>
 
       </div>
 
@@ -72,9 +72,12 @@
     </div>
     <div class="flex flex-grow-1 m-2">
       <as-split direction="horizontal">
-        <as-split-area [size]="50" (resize)="updatePdfSize()">
+        <as-split-area [size]="50">
           <div id="question-container" class="h-full">
             <div id="html-preview"></div>
+            <div>
+<!--              <p-button icon="pi pi-check" (onClick)="pinMe()"></p-button>-->
+            </div>
             <div class="card h-full w-full" id="question-view" *ngIf="!questionDetail.isFile" [innerHTML]="questionDetail.quesDesc"></div>
 
             <pdf-viewer [zoom]="1" *ngIf="questionDetail.isFile" class="h-full" #pdfView

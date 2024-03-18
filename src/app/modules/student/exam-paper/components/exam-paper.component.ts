@@ -199,4 +199,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
     this.saveAnser(this.questionMaster, this.selectedIndex);
   }
 
+  pinMe() {
+
+  }
 }
