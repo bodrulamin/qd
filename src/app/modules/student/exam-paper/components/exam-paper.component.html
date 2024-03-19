@@ -75,31 +75,73 @@
     <div class="flex flex-grow-1 m-2">
       <as-split direction="horizontal">
         <as-split-area [size]="50">
+          <div id="html-preview"></div>
 
-<!--          <as-split *ngIf="pinnedItems.length" direction="vertical">-->
+<!--          <div class="h-full">-->
 
-<!--            <as-split-area [size]="50/pinnedItems.length" *ngFor="let z of pinnedItems">-->
-<!--              <div>this is pinned {{z}}-->
-<!--                <p-button (onClick)="pinnedItems.splice(0,1)" icon="pi pi-pin"></p-button>-->
-<!--              </div>-->
-<!--            </as-split-area>-->
-<!--          </as-split>-->
-          <div id="question-container" class="h-full">
-            <div id="html-preview"></div>
-            <div>
-              <!--              <p-button icon="pi pi-check" (onClick)="pinMe()"></p-button>-->
-            </div>
-            <div class="card h-full w-full" id="question-view" *ngIf="!questionDetail.isFile"
-                 [innerHTML]="questionDetail.quesDesc"></div>
+            <as-split direction="vertical">
 
-            <pdf-viewer [zoom]="1" *ngIf="questionDetail.isFile" class="h-full" #pdfView
-                        [src]="pdfBlobMap.get(questionDetail.id)"
-                        [render-text]="false"
-                        [original-size]="true"
-            ></pdf-viewer>
-          </div>
+              <as-split-area>
+                <div id="question-container" class="h-full relative">
+                  <div class="absolute w-full" style="z-index: 22">
+                    <div
+                      class="top-0 w-full">
+                        <div class="m-2 flex justify-content-between">
+                          <p-badge [severity]="'info'"
+                                   [value]='questionDetail.seqNo.toString()'></p-badge>
+                          <p-button [text]="true" (onClick)="pinnedItems.push(questionDetail)"><i class="fas fa-thumbtack -rotate-90"></i></p-button>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="card h-full w-full" id="question-view" *ngIf="!questionDetail.isFile"
+                       [innerHTML]="questionDetail.quesDesc"></div>
+
+                  <pdf-viewer [zoom]="1" *ngIf="questionDetail.isFile" class="h-full" #pdfView
+                              [src]="pdfBlobMap.get(questionDetail.id)"
+                              [render-text]="false"
+                              [original-size]="true">
+
+                  </pdf-viewer>
+                </div>
+              </as-split-area>
+
+              <as-split-area [size]="50/pinnedItems.length" *ngFor="let question of pinnedItems">
+                <div class="h-full relative">
+                  <div class="absolute w-full" style="z-index: 22">
+                    <div
+                      class="top-0 w-full">
+                      <div class="m-2 flex justify-content-between">
+                        <p-badge [severity]="'warning'"
+                                 [value]='question.seqNo.toString()'></p-badge>
+                        <p-button severity="secondary" [text]="true" (onClick)="pinnedItems.splice(0,1)"><i class="fas fa-thumbtack"></i></p-button>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="card w-full absolute " style="z-index: 0" *ngIf="!question.isFile"
+                       [innerHTML]="question.quesDesc"></div>
+
+                  <pdf-viewer [zoom]="1" *ngIf="question.isFile" class="h-full" #pdfView
+                              [src]="pdfBlobMap.get(question.id)"
+                              [render-text]="false"
+                              [original-size]="true">
+
+                  </pdf-viewer>
+                </div>
+              </as-split-area>
+
+
+
+            </as-split>
+
+<!--          </div>-->
+
 
         </as-split-area>
+
+
+        <!--       ------------------Right Pane------------------------>
         <as-split-area [size]="50">
           <as-split direction="vertical">
             <as-split-area [size]="40">

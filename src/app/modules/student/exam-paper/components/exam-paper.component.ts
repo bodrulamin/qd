@@ -38,7 +38,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   calulatorVisible: boolean = false;
   scientificMode = false;
   showResources:boolean = true;
-  pinnedItems = [1,2,3];
+  pinnedItems :ExamQuestionDetailModel[] = [];
 
   constructor(
     private examPaperService: ExamPaperService,
