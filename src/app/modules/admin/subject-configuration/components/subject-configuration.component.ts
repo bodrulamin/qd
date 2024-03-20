@@ -26,6 +26,7 @@ export class SubjectConfigurationComponent extends BaseComponent {
   editMode = false;
   subjectList: any;
   selectedExamLevel = '';
+  examLevelMap: Map<any,any> = new Map<any, any>();
 
   constructor(
     private router: Router,
@@ -89,6 +90,9 @@ export class SubjectConfigurationComponent extends BaseComponent {
         if (this.selectedExamLevel){
           this.onExamLevelChange(this.selectedExamLevel);
         }
+        apiResponse.data.examLevelList.forEach(e => {
+          this.examLevelMap.set(e.code,e.name);
+        });
       }
     })
   }

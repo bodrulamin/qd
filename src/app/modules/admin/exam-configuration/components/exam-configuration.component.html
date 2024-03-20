@@ -59,7 +59,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
               <tr>
-                <td>{{  e.examLevel  }}</td>
+                <td>{{ examLevelMap.get( e.examLevel)  }}</td>
                 <td>{{ e.session  }}</td>
                 <td>{{ e.year     }}</td>
                 <td>{{ e.examName   }}</td>

@@ -88,7 +88,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   private showLuckySheet() {
     var options = {
       container: 'luckysheet',
-      showtoolbar: false,
+      showtoolbar: true,
       showinfobar: false,
       showtoolbarConfig: {
         undoRedo: true, //Undo redo
@@ -286,5 +286,12 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
       }
     },10)
 
+  }
+
+
+  removePinItem(questionDetail: ExamQuestionDetailModel){
+    this.pinnedItems.forEach( (item, index) => {
+      if(item === questionDetail) this.pinnedItems.splice(index,1);
+    });
   }
 }

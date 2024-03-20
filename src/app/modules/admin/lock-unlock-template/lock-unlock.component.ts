@@ -112,15 +112,20 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
       return lockModel;
     });
 
-    this.lockQuestionService.lockUnlockQuestion(lockModels).subscribe(apiResponse => {
-      if (apiResponse.result) {
-        this.examList = [];
-        if (this.isLock) {
-          this.messageService.add({summary: 'Locked', detail: 'Exam Questions are locked!', severity: 'success'});
-        } else {
-          this.messageService.add({summary: 'Uhocked', detail: 'Exam Questions are unlocked!', severity: 'success'});
+    this.lockQuestionService.lockUnlockQuestion(lockModels).subscribe({
+      next: (apiResponse) => {
+        if (apiResponse.result) {
+          this.examList = [];
+          if (this.isLock) {
+            this.messageService.add({summary: 'Locked', detail: 'Exam Questions are locked!', severity: 'success'});
+          } else {
+            this.messageService.add({summary: 'Uhocked', detail: 'Exam Questions are unlocked!', severity: 'success'});
 
+          }
+          this.searchExams();
         }
+      },
+      error: (err) => {
         this.searchExams();
       }
     });
@@ -145,6 +150,8 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
         this.searchExams();
 
       }
+    }, error => {
+      this.searchExams();
     });
   }
 }

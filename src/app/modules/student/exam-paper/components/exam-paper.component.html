@@ -29,10 +29,12 @@
 
         </div>
         <div class="flex flex-grow-0 right-0 mr-5 justify-content-center align-items-center">
-          <p-button size="small" label="" pTooltip="Toggle Sheet" tooltipPosition="bottom" [text]="true" icon="fas fa-table"
+          <p-button size="small" label="" pTooltip="Toggle Sheet" tooltipPosition="bottom" [text]="true"
+                    icon="fas fa-table"
                     (onClick)="toggleSheet()"></p-button>
 
-          <p-button size="small" pTooltip="Calculator" tooltipPosition="bottom" label="" [text]="true" icon="fas fa-calculator"
+          <p-button size="small" pTooltip="Calculator" tooltipPosition="bottom" label="" [text]="true"
+                    icon="fas fa-calculator"
                     (onClick)="calulatorVisible = true"></p-button>
 
           <p-button size="small" label='Save Answer' (onClick)="manualSave()"></p-button>
@@ -100,8 +102,11 @@
                       <div class="m-2 flex justify-content-between">
                         <p-badge [style]="{marginTop:'5px'}" [severity]="'info'"
                                  [value]='questionDetail.seqNo.toString()'></p-badge>
-                        <p-button [text]="true" (onClick)="pinnedItems.push(questionDetail)"><i
-                          class="fas fa-thumbtack -rotate-90"></i></p-button>
+                        <p-button [text]="true"
+                                  (onClick)="pinnedItems.includes(questionDetail) ? removePinItem(questionDetail) : pinnedItems.push(questionDetail)">
+                          <i
+                            [ngClass]="pinnedItems.includes(questionDetail) ? 'fas fa-thumbtack' :'fas fa-thumbtack -rotate-90'"></i>
+                        </p-button>
                       </div>
 
                     </div>
@@ -122,7 +127,7 @@
               </as-split-area>
 
               <!--            --------pinned questions----------------->
-              <as-split-area [size]="50/pinnedItems.length" *ngFor="let question of pinnedItems">
+              <as-split-area [size]="50/pinnedItems.length" *ngFor="let question of pinnedItems; index as i">
                 <div class="h-full relative">
                   <div class="absolute w-full" style="z-index: 22">
                     <div
@@ -130,7 +135,7 @@
                       <div class="m-2 flex justify-content-between">
                         <p-badge [style]="{marginTop:'5px'}" [severity]="'warning'"
                                  [value]='question.seqNo.toString()'></p-badge>
-                        <p-button severity="secondary" [text]="true" (onClick)="pinnedItems.splice(0,1)"><i
+                        <p-button severity="secondary" [text]="true" (onClick)="pinnedItems.splice(i,1)"><i
                           class="fas fa-thumbtack"></i></p-button>
                       </div>
 
@@ -160,22 +165,27 @@
           <!--------------------Right Pane------------------------>
           <as-split-area [size]="50">
             <as-split direction="vertical">
-              <as-split-area [size]="sheetVisible?40:100">
-                <editor (onPaste)="onPaste($event)"
-                        [disabled]="selectedIndex < 0"
-                        [(ngModel)]="answer.answerDesc"
-                        class="h-full"
-                        [init]="{
+              <as-split-area [size]="sheetVisible?60:100">
+                <div class="flex flex-column h-full w-full">
+                  <div class="flex flex-grow-0 surface-0 border-round-top p-3"> Answer for Question {{questionDetail.seqNo}}</div>
+                  <div class="flex flex-grow-1 w-full">
+                    <editor (onPaste)="onPaste($event)"
+                            [disabled]="selectedIndex < 0"
+                            [(ngModel)]="answer.answerDesc"
+                            class="h-full -mt-1 w-full"
+                            [init]="{
                       license_key: 'gpl',promotion:false, plugins: 'table lists' ,
                        menubar: '',
                        height: '100%',
+                       width: '100%',
                        toolbar: 'undo redo styles bold italic underline fontsize table alignleft aligncenter alignright alignjustify lists'}"
-                ></editor>
-
+                    ></editor>
+                  </div>
+                </div>
               </as-split-area>
-              <as-split-area [size]="sheetVisible?60:0">
+              <as-split-area [size]="sheetVisible?40:0">
                 <div *ngIf="sheetVisible" class="flex flex-column flex-grow-1 h-full">
-                  <div id="luckysheet" style="width:100%;height:100%;"></div>
+                  <div id="luckysheet" style="top:0;left:0;width:100%;height:100%;"></div>
                 </div>
               </as-split-area>
             </as-split>

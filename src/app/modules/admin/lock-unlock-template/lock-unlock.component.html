@@ -53,7 +53,7 @@
                 <p-password [feedback]="false" [toggleMask]="true" [(ngModel)]="e.lockPassword"></p-password>
               </td>
               <td>
-                <p-button [text]="true" [label]="e.isLock ? 'Unlock':'Lock'" (onClick)="lockUnlock(e)"></p-button>
+                <p-button [text]="true" [severity]="e.isLock ? '':'warning'" [label]="e.isLock ? 'Unlock':'Lock'" (onClick)="lockUnlock(e)"></p-button>
               </td>
             </tr>
           </ng-template>

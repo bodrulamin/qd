@@ -38,6 +38,7 @@ export class ExamConfigurationComponent extends BaseComponent {
   actionMenu = [];
   selectedPassword = '';
   activeRowIndex: any;
+  examLevelMap: Map<any,any> = new Map<any, any>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -115,6 +116,11 @@ export class ExamConfigurationComponent extends BaseComponent {
         this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;
         this.yearOptions = apiResponse.data.examYearList;
+
+        apiResponse.data.examLevelList.forEach(e => {
+          this.examLevelMap.set(e.code,e.name);
+        });
+
       }
     })
   }
