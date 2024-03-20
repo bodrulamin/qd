@@ -11,6 +11,7 @@ import {ScientificCalculatorComponent} from './components/scientific-calculator/
 import {DialogModule} from "primeng/dialog";
 import {ToggleButtonModule} from "primeng/togglebutton";
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import {TooltipModule} from "primeng/tooltip";
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
     DialogModule,
     ToggleButtonModule,
     EditorModule,
+    TooltipModule,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }

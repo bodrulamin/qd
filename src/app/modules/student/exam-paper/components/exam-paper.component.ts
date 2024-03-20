@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {BaseComponent} from "../../../base/components/base-component/base.component";
 import generatePdfThumbnails from 'pdf-thumbnails-generator';
 import {ExamPaperService} from "../service/exam-paper.service";
@@ -8,13 +8,15 @@ import {MessageService} from "primeng/api";
 import {AdminService} from "../../../admin/service/admin.service";
 import html2canvas from "html2canvas";
 import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
+
 declare var luckysheet;
+
 @Component({
   selector: 'app-exam-paper',
   templateUrl: './exam-paper.component.html',
   styleUrls: ['./exam-paper.component.css']
 })
-export class ExamPaperComponent extends BaseComponent implements OnInit {
+export class ExamPaperComponent extends BaseComponent implements OnInit, AfterViewInit {
 
   examInfo: ExamInfo = new ExamInfo();
   answer: AnswerModel = new AnswerModel();
@@ -37,9 +39,10 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
 
   calulatorVisible: boolean = false;
   scientificMode = false;
-  showResources:boolean = true;
-  pinnedItems :ExamQuestionDetailModel[] = [];
+  showResources: boolean = true;
+  pinnedItems: ExamQuestionDetailModel[] = [];
   examOver: boolean = false;
+  sheetVisible: boolean = true;
 
   constructor(
     private examPaperService: ExamPaperService,
@@ -52,6 +55,12 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
 
   }
 
+  ngAfterViewInit() {
+    if (this.sheetVisible) {
+      this.showLuckySheet();
+    }
+  }
+
   ngOnInit() {
     let data: ExamQuestionModel = history.state;
     this.examInfo = history.state
@@ -62,7 +71,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
 
     let remainingTimeInterval = setInterval(() => {
       this.remainingTime = this.getTimeDifference(new Date(), this.examInfo.examEndsAt);
-      if (new Date(this.examInfo.examEndsAt).getTime() < new Date().getTime() ){
+      if (new Date(this.examInfo.examEndsAt).getTime() < new Date().getTime()) {
         this.examOver = true;
         this.remainingTime = '00:00:00';
         clearInterval(remainingTimeInterval);
@@ -73,12 +82,16 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
     this.setupExistingQuestion(data);
 
     this.questionDetails = data.quesDetailsList;
+
+  }
+
+  private showLuckySheet() {
     var options = {
       container: 'luckysheet',
       showtoolbar: false,
-      showinfobar:false,
-      showtoolbarConfig:{
-      undoRedo: true, //Undo redo
+      showinfobar: false,
+      showtoolbarConfig: {
+        undoRedo: true, //Undo redo
         paintFormat: false, //Format brush
         currencyFormat: false, //currency format
         percentageFormat: true, //Percentage format
@@ -99,8 +112,8 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
         verticalAlignMode: false, //'Vertical alignment'
         textWrapMode: false, //'Wrap mode'
         textRotateMode: false, //'Text Rotation Mode'
-        image:false, // 'Insert picture'
-        link:false, // 'Insert link'
+        image: false, // 'Insert picture'
+        link: false, // 'Insert link'
         chart: false, //'chart' (the icon is hidden, but if the chart plugin is configured, you can still create a new chart by right click)
         postil: false, //'comment'
         pivotTable: false, //'PivotTable'
@@ -112,12 +125,11 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
         splitColumn: false, //'Split column'
         screenshot: false, //'screenshot'
         findAndReplace: false, //'Find and Replace'
-        protection:false, // 'Worksheet protection'
-        print:false, // 'Print'
-    }
+        protection: false, // 'Worksheet protection'
+        print: false, // 'Print'
+      }
     }
     luckysheet.create(options)
-
   }
 
   getTimeDifference(startTime, endTime) {
@@ -194,7 +206,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   }
 
   async generateHtmlThumbnails(i: number) {
-    let element  = document.getElementById('html-preview');
+    let element = document.getElementById('html-preview');
     element.innerHTML = this.questionDetails[i].quesDesc;
     if (!this.questionDetails[i].quesDesc) return;
     html2canvas(element).then(canvas => {
@@ -254,8 +266,8 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   }
 
   onPaste($event: EventObj<ClipboardEvent>) {
-    let a:string = $event.event.clipboardData.getData('text');
-    if (a.includes('luckysheet_copy_action_table')){
+    let a: string = $event.event.clipboardData.getData('text');
+    if (a.includes('luckysheet_copy_action_table')) {
       $event.event.preventDefault();
       $event.editor.insertContent(a)
     }
@@ -264,5 +276,15 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
 
   onCloseExamOverDialog() {
     this.router.navigate(['']);
+  }
+
+  toggleSheet() {
+    this.sheetVisible = !this.sheetVisible;
+    setTimeout(()=>{
+      if (this.sheetVisible) {
+        this.showLuckySheet();
+      }
+    },10)
+
   }
 }
