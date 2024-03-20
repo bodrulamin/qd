@@ -58,6 +58,11 @@
                   <p-badge [severity]="i===selectedIndex ? 'info':'warning'"
                            [value]='item.seqNo.toString()'></p-badge>
                 </div>
+                <div *ngIf="pinnedItems.includes(item)" class="m-2">
+                  <i class="fas fa-thumbtack"></i>
+
+                </div>
+
               </div>
 
             </div>
@@ -115,7 +120,7 @@
                   <div
                     class="top-0 w-full">
                     <div class="m-2 flex justify-content-between">
-                      <p-badge  [style]="{marginTop:'5px'}"  [severity]="'warning'"
+                      <p-badge [style]="{marginTop:'5px'}" [severity]="'warning'"
                                [value]='question.seqNo.toString()'></p-badge>
                       <p-button severity="secondary" [text]="true" (onClick)="pinnedItems.splice(0,1)"><i
                         class="fas fa-thumbtack"></i></p-button>
@@ -148,10 +153,10 @@
         <as-split-area [size]="50">
           <as-split direction="vertical">
             <as-split-area [size]="40">
-              <editor apiKey="y6iz5y6rybj6vsjuhyvg8c533qvoeq2u5hvdmvddhn00tv0t" (onPaste)="onPaste($event)"
+              <editor (onPaste)="onPaste($event)"
                       [disabled]="selectedIndex < 0"
                       [(ngModel)]="answer.answerDesc"
-                      [init]="{ plugins: 'table lists' , menubar: '', toolbar: 'undo redo styles bold italic underline fontsize table alignleft aligncenter alignright alignjustify lists'}"
+                      [init]="{license_key: 'gpl',promotion:false, plugins: 'table lists' , menubar: '', toolbar: 'undo redo styles bold italic underline fontsize table alignleft aligncenter alignright alignjustify lists'}"
               ></editor>
 
             </as-split-area>
@@ -176,6 +181,12 @@
     <p-toggleButton [(ngModel)]="scientificMode" onLabel="Normal" offLabel="Scientific"></p-toggleButton>
   </ng-template>
   <app-scientific-calculator [scientificMode]="scientificMode"></app-scientific-calculator>
+</p-dialog>
+
+
+<p-dialog [(visible)]="examOver" header="Exam Time Over !"  [modal]="true"  (onHide)="onCloseExamOverDialog()" >
+  <p> Exam Time is over</p>
+
 </p-dialog>
 
 

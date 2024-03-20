@@ -1,37 +1,71 @@
 <div class="flex justify-content-center mt-5">
   <div class="card w-10">
-    <div class="flex justify-content-center">
+    <div class="flex  flex-column md:flex-row lg:flex-row">
 
-    <div class="w-full">
-      <p-table [value]=[1] >
-        <ng-template pTemplate="header">
-          <tr>
-            <th style="text-align: center" colspan="4">Exam Information</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
-          <tr>
-            <td style="text-align:center">Exam</td>
-            <td>{{examInfo.examName}}</td>
-            <td>Session</td>
-            <td>{{examInfo.session}}</td>
+      <div class="flex flex-grow-1">
+        <p-table styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines" class="w-full p-3" [value]=[1]>
+          <ng-template pTemplate="header">
+            <tr>
+              <th [colSpan]="2" style="text-align: center">Exam Information</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
+            <tr>
+              <td>Exam Level</td>
+              <td>{{ examInfo.examLevelName }}</td>
 
-          </tr>
-          <tr>
-            <td>Exam Level</td>
-            <td>{{examInfo.examLevel}}</td>
-            <td>Subject</td>
-            <td>{{examInfo.subjectName}}</td>
-          </tr>
+            </tr>
+            <tr>
+              <td>Exam Name</td>
+              <td>{{ examInfo.examName }}</td>
+            </tr>
+            <tr>
+              <td>Session</td>
+              <td>{{ examInfo.session }}</td>
+            </tr>
 
-        </ng-template>
-      </p-table>
-    </div>
+            <tr>
+              <td>Subject</td>
+              <td>{{ examInfo.subjectName }}</td>
+            </tr>
+
+          </ng-template>
+        </p-table>
+      </div>
+      <div class="flex flex-grow-1">
+        <p-table styleClass="p-datatable-striped p-datatable-sm p-datatable-gridlines " class="w-full p-3" [value]=[1]>
+          <ng-template pTemplate="header">
+            <tr>
+              <th [colSpan]="2" style="text-align: center">Student Information</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
+            <tr>
+              <td>Student ID</td>
+              <td>{{ examInfo.studentUsername }}</td>
+            </tr>
+            <tr>
+              <td>Student Name</td>
+              <td>{{ examInfo.studentName }}</td>
+            </tr>
+            <tr>
+              <td>Student Reg. No.</td>
+              <td>{{ examInfo.studentRegNo }}</td>
+
+            </tr>
+            <tr>
+              <td>Student Roll No.</td>
+              <td>{{ examInfo.studentRollNo }}</td>
+            </tr>
+
+          </ng-template>
+        </p-table>
+      </div>
 
     </div>
 
     <h1>Instruction</h1>
-    <p>{{examInfo.examInstruction}}</p>
+    <p>{{ examInfo.examInstruction }}</p>
 
     <div>
       <p-button label="Start Exam" (onClick)="showQuizPasswordInputDialog = true;"></p-button>
@@ -43,11 +77,12 @@
 </div>
 
 <p-dialog [header]="'Insert Quiz Password'" [modal]="true" [(visible)]="showQuizPasswordInputDialog">
-    <div class="flex flex-column flex-grow-1 justify-content-end">
-      <p-password class="mb-2 w-full" [(ngModel)]="quizPassword"  [feedback]="false" [toggleMask]="true" placeholder="Password"></p-password>
-      <div class="flex justify-content-end">
-        <p-button [label]="'Start Exam'" (onClick)="startExam()"></p-button>
-      </div>
+  <div class="flex flex-column flex-grow-1 justify-content-end">
+    <p-password class="mb-2 w-full" [(ngModel)]="quizPassword" [feedback]="false" [toggleMask]="true"
+                placeholder="Password"></p-password>
+    <div class="flex justify-content-end">
+      <p-button [label]="'Start Exam'" (onClick)="startExam()"></p-button>
     </div>
+  </div>
 
 </p-dialog>

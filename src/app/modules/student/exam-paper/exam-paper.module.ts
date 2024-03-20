@@ -6,14 +6,11 @@ import {BadgeModule} from "primeng/badge";
 import {PdfViewerModule} from "ng2-pdf-viewer";
 import {FormsModule} from "@angular/forms";
 import {ButtonModule} from "primeng/button";
-import {TableModule} from "primeng/table";
 import {AngularSplitModule} from "angular-split";
 import {ScientificCalculatorComponent} from './components/scientific-calculator/scientific-calculator.component';
 import {DialogModule} from "primeng/dialog";
 import {ToggleButtonModule} from "primeng/togglebutton";
-import {CKEditorModule} from "@ckeditor/ckeditor5-angular";
-import {EditorModule} from '@tinymce/tinymce-angular';
-import {SpreadSheetsModule} from "@grapecity/spread-sheets-angular";
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 
 @NgModule({
@@ -30,13 +27,13 @@ import {SpreadSheetsModule} from "@grapecity/spread-sheets-angular";
     BadgeModule,
     PdfViewerModule,
     ButtonModule,
-    TableModule,
     AngularSplitModule,
     DialogModule,
     ToggleButtonModule,
-    CKEditorModule,
     EditorModule,
-    SpreadSheetsModule
+  ],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
   ]
 })
 export class ExamPaperModule {

@@ -39,6 +39,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
   scientificMode = false;
   showResources:boolean = true;
   pinnedItems :ExamQuestionDetailModel[] = [];
+  examOver: boolean = false;
 
   constructor(
     private examPaperService: ExamPaperService,
@@ -59,8 +60,14 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
       this.router.navigate([""])
     }
 
-    setInterval(() => {
+    let remainingTimeInterval = setInterval(() => {
       this.remainingTime = this.getTimeDifference(new Date(), this.examInfo.examEndsAt);
+      if (new Date(this.examInfo.examEndsAt).getTime() < new Date().getTime() ){
+        this.examOver = true;
+        this.remainingTime = '00:00:00';
+        clearInterval(remainingTimeInterval);
+
+      }
     }, 1000);
 
     this.setupExistingQuestion(data);
@@ -253,5 +260,9 @@ export class ExamPaperComponent extends BaseComponent implements OnInit {
       $event.editor.insertContent(a)
     }
 
+  }
+
+  onCloseExamOverDialog() {
+    this.router.navigate(['']);
   }
 }

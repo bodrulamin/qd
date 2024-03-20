@@ -33,7 +33,6 @@
           <ng-template pTemplate="header">
             <tr>
               <th>Subject</th>
-              <th>Code</th>
               <th>Date</th>
               <th>Start Time</th>
               <th>End Time</th>
@@ -44,14 +43,13 @@
           <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
             <tr>
               <td>{{  e.subjectName  }}</td>
-              <td>{{ e.subjectCode  }}</td>
               <td>
                 <p-calendar [(ngModel)]="e.examDate" placeholder="Date" appendTo="body"
                               dateFormat="dd-M-yy" [showIcon]="true"></p-calendar>
               </td>
               <td><p-calendar id="startAt" name="startAt" [(ngModel)]="e.examStartsAt" placeholder="Start Time"  appendTo="body"
                               dateFormat="dd-M-yy" [timeOnly]="true"></p-calendar></td>
-              <td><p-calendar id="endsAt" name="endsAt" [(ngModel)]="e.examEndsAt" placeholder="End Time" appendTo="body"
+              <td><p-calendar [class]="e.invalidEndDate ? 'ng-invalid ng-dirty':''" id="endsAt" (ngModelChange)="e.invalidEndDate = false;" name="endsAt" [(ngModel)]="e.examEndsAt" placeholder="End Time" appendTo="body"
                               dateFormat="dd-M-yy" [timeOnly]="true"></p-calendar></td>
               <td><p-password [(ngModel)]="e.quizPwd" [feedback]="false" [toggleMask]="true"></p-password></td>
               <td class="justify-content-center">

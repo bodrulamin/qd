@@ -21,7 +21,7 @@ export class LoginComponent extends BaseComponent {
   loginForm: FormGroup;
   @Output() onLoginClicked: EventEmitter<LoginModel> = new EventEmitter<LoginModel>();
   @Input() header: string;
-  @Input() usernameTitle: string = 'User Name';
+  @Input() usernameTitle: string = 'Username';
   @Input() passwordTitle: string = 'Password';
   private credential: LoginModel = new LoginModel();
   required_field = {};

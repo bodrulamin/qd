@@ -55,6 +55,9 @@ export class ExamInfo {
   subjectName: string;
   examName:string;
   navigationId: number
+  studentName: string;
+  studentRegNo: string;
+  studentRollNo: string;
 }
 
 

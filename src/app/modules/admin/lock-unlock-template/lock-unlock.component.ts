@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LockQuestionService} from "../lock-question/service/lock-question.service";
 import {MessageService} from "primeng/api";
 import {BaseComponent} from "../../base/components/base-component/base.component";
-import {LockModel, ScheduleModel} from "../lock-question/service/domain/lock.model";
+import {LockModel} from "../lock-question/service/domain/lock.model";
 import {Component, Input, OnInit} from "@angular/core";
 import {AdminService} from "../service/admin.service";
 
@@ -30,7 +30,7 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
   examList: any[] = [];
   lockPassword: string;
   inputPasswordDialogVisible: boolean = false;
-  isLock: boolean = false;
+  isLock: boolean;
 
   constructor(
     private router: Router,
@@ -43,11 +43,9 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
     super();
     this.prepareCreateQuestionForm();
     this.fetchConfiguration();
-    this.isLock = this.actionCode === 'LOCK'
   }
 
   ngOnInit() {
-    this.isLock = this.actionCode === 'LOCK'
 
   }
 
@@ -105,9 +103,7 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
   }
 
 
-  lockUnlock() {
-
-
+  batchLockUnlock() {
     let lockModels = this.examList.map(e => {
       let lockModel = new LockModel();
       lockModel.quesId = e.id;
@@ -125,10 +121,30 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
           this.messageService.add({summary: 'Uhocked', detail: 'Exam Questions are unlocked!', severity: 'success'});
 
         }
+        this.searchExams();
       }
     });
     this.inputPasswordDialogVisible = false;
   }
 
 
+  lockUnlock(e: any) {
+    let lockModel = new LockModel();
+    lockModel.quesId = e.id;
+    lockModel.isLock = !e.isLock;
+    lockModel.password = e.lockPassword;
+
+    this.lockQuestionService.lockUnlockQuestion([lockModel]).subscribe(apiResponse => {
+      if (apiResponse.result) {
+        this.examList = [];
+        if (lockModel.isLock) {
+          this.messageService.add({summary: 'Locked', detail: 'Exam Question is locked!', severity: 'success'});
+        } else {
+          this.messageService.add({summary: 'Uhocked', detail: 'Exam Question is unlocked!', severity: 'success'});
+        }
+        this.searchExams();
+
+      }
+    });
+  }
 }

@@ -13,7 +13,7 @@
     </button>
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-        <button (click)="profileClicked($event)" [pTooltip]="'Logout'" class="p-link layout-topbar-button">
+        <button (click)="profileClicked($event)" [pTooltip]="'Logout'" tooltipPosition="left" class="p-link layout-topbar-button">
           <i class="fas fa-sign-out-alt"></i><span>Logout</span>
         </button>
 

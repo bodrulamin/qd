@@ -26,6 +26,7 @@ export class ExamSchedulingComponent extends BaseComponent {
     year: 'Year',
   };
   examList: any[] = [];
+  invalidEndDate: boolean = true;
 
   constructor(
     private router: Router,
@@ -103,7 +104,12 @@ export class ExamSchedulingComponent extends BaseComponent {
   }
 
   save(e: any) {
+
     let schedule = this.prepareSchedule(e);
+    if (!this.dateValidated(schedule)){
+      e.invalidEndDate = true;
+      return;
+    }
 
     this.ExamSchedulingService.saveSchedule([schedule]).subscribe(apiResponse => {
       if (apiResponse.result) {
@@ -113,15 +119,26 @@ export class ExamSchedulingComponent extends BaseComponent {
     });
   }
 
+  private dateValidated(schedule: ScheduleModel) {
+    let startDate = new Date(schedule.examStartsAt)
+    let endDate = new Date(schedule.examEndsAt)
+    let startTimeIsLessThanEndTime =  startDate.getTime() < endDate.getTime();
+    if (!startTimeIsLessThanEndTime){
+      this.messageService.add({summary:'Invalid Time', detail:'Start Time cannot be greater than End Time',severity:'error'});
+    }
+
+    return startTimeIsLessThanEndTime;
+  }
+
   private prepareSchedule(e: any) {
     let schedule = new ScheduleModel();
     schedule.id = e.id;
     schedule.examDate = e.examDate;
-    schedule.examStartsAt = e.examStartsAt ?  this.changeDate(e.examStartsAt, schedule.examDate) : null;
-    schedule.examEndsAt = e.examEndsAt ?  this.changeDate(e.examEndsAt, schedule.examDate):null;
+    schedule.examStartsAt = e.examStartsAt ? this.changeDate(e.examStartsAt, schedule.examDate) : null;
+    schedule.examEndsAt = e.examEndsAt ? this.changeDate(e.examEndsAt, schedule.examDate) : null;
     schedule.quizPwd = e.quizPwd;
 
-    schedule.examDate = this.datePipe.transform(schedule.examDate,'yyyy-MM-dd')
+    schedule.examDate = this.datePipe.transform(schedule.examDate, 'yyyy-MM-dd')
 
     return schedule;
   }

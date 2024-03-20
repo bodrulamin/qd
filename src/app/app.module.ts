@@ -8,9 +8,7 @@ import {ToastModule} from "primeng/toast";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./modules/base/service/http.interceptor";
-import {PdfViewerModule} from "ng2-pdf-viewer";
 import {DatePipe} from "@angular/common";
-
 
 @NgModule({
   declarations: [
@@ -23,7 +21,6 @@ import {DatePipe} from "@angular/common";
     ToastModule,
     ConfirmDialogModule,
     HttpClientModule,
-    PdfViewerModule,
   ],
   providers: [
     MessageService,
@@ -40,4 +37,3 @@ import {DatePipe} from "@angular/common";
 })
 export class AppModule {
 }
-// platformBrowserDynamic().bootstrapModule(AppModule);
