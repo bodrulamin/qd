@@ -17,6 +17,7 @@ import { AppSidebarComponent } from "./app.sidebar.component";
 import { AppLayoutComponent } from "./app.layout.component";
 import {CommonModule} from "@angular/common";
 import {ToggleButtonModule} from "primeng/togglebutton";
+import {TooltipModule} from "primeng/tooltip";
 
 @NgModule({
     declarations: [
@@ -39,7 +40,8 @@ import {ToggleButtonModule} from "primeng/togglebutton";
         RippleModule,
         RouterModule,
         AppConfigModule,
-        ToggleButtonModule
+        ToggleButtonModule,
+        TooltipModule
     ],
     exports: [AppLayoutComponent]
 })
