@@ -107,7 +107,7 @@
                     </div>
                   </div>
                   <div class="h-full w-full surface-0 border-round">
-                    <div class="h-full w-full p-3 pt-5" id="question-view" *ngIf="!questionDetail.isFile"
+                    <div class="h-full w-full p-3 pt-6 " id="question-view" *ngIf="!questionDetail.isFile"
                          [innerHTML]="questionDetail.quesDesc"></div>
                     <pdf-viewer *ngIf="questionDetail.isFile" [zoom]="1" class="h-full" #pdfView
                                 [src]="pdfBlobMap.get(questionDetail.id)"
@@ -137,7 +137,7 @@
                     </div>
                   </div>
                   <div class="h-full w-full surface-0 border-round">
-                    <div class="h-full w-full p-3 pt-5" style="z-index: 0" *ngIf="!question.isFile"
+                    <div class="h-full w-full p-3 pt-6" style="z-index: 0" *ngIf="!question.isFile"
                          [innerHTML]="question.quesDesc"></div>
 
                     <pdf-viewer [zoom]="1" *ngIf="question.isFile" class="h-full" #pdfView
