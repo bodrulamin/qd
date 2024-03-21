@@ -8,6 +8,7 @@ import {MessageService} from "primeng/api";
 import {AdminService} from "../../../admin/service/admin.service";
 import html2canvas from "html2canvas";
 import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
+import {ReviewModel} from "./review/review.component";
 
 declare var luckysheet;
 
@@ -43,6 +44,8 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   pinnedItems: ExamQuestionDetailModel[] = [];
   examOver: boolean = false;
   sheetVisible: boolean = true;
+  reviewDialogVisible: boolean = false;
+
 
   constructor(
     private examPaperService: ExamPaperService,
@@ -280,18 +283,35 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
 
   toggleSheet() {
     this.sheetVisible = !this.sheetVisible;
-    setTimeout(()=>{
+    setTimeout(() => {
       if (this.sheetVisible) {
         this.showLuckySheet();
       }
-    },10)
+    }, 10)
 
   }
 
 
-  removePinItem(questionDetail: ExamQuestionDetailModel){
-    this.pinnedItems.forEach( (item, index) => {
-      if(item === questionDetail) this.pinnedItems.splice(index,1);
+  removePinItem(questionDetail: ExamQuestionDetailModel) {
+    this.pinnedItems.forEach((item, index) => {
+      if (item === questionDetail) this.pinnedItems.splice(index, 1);
     });
+  }
+
+  showReviewDialog() {
+    let reviewModel: ReviewModel = {
+      answers: this.answerDetails,
+      questions: this.questionDetails,
+      thumbnailBlobMap: this.thumbnailBlobMap,
+      pdfBlobMap: this.pdfBlobMap,
+    };
+
+    this.examPaperService.answerDataSubject.next(reviewModel)
+    this.reviewDialogVisible = true;
+
+  }
+
+  submitAnwers() {
+
   }
 }

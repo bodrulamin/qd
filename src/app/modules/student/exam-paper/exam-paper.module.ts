@@ -12,12 +12,15 @@ import {DialogModule} from "primeng/dialog";
 import {ToggleButtonModule} from "primeng/togglebutton";
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import {TooltipModule} from "primeng/tooltip";
+import { ReviewComponent } from './components/review/review.component';
+import {AutoFocusModule} from "primeng/autofocus";
 
 
 @NgModule({
   declarations: [
     ExamPaperComponent,
-    ScientificCalculatorComponent
+    ScientificCalculatorComponent,
+    ReviewComponent
   ],
   imports: [
     CommonModule,
@@ -33,6 +36,7 @@ import {TooltipModule} from "primeng/tooltip";
     ToggleButtonModule,
     EditorModule,
     TooltipModule,
+    AutoFocusModule,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }

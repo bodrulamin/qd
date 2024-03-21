@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {BaseService} from "../../../base/service/base.service";
 import {AnswerModel} from "./domain/exam-question.model";
 import {ApiResponse} from "../../../base/service/domain/api.response";
@@ -11,6 +11,8 @@ import {SUBMIT_ANSWER} from "./exampaper.endpoint";
 })
 export class ExamPaperService extends BaseService {
 
+  answerDataSubject:BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  answerData$ = this.answerDataSubject.asObservable();
   constructor() {
     super();
 
