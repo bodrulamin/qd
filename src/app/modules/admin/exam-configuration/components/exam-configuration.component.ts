@@ -72,7 +72,7 @@ export class ExamConfigurationComponent extends BaseComponent {
     let exam:ExamModel = this.createExamForm.value;
     exam.examDate = this.datePipe.transform(exam.examDate,'yyyy-MM-dd')
     if (this.editMode) {
-      this.examConfgurationService.addExam(exam).subscribe(apiResponse => {
+      this.subscribers.addExamSubs = this.examConfgurationService.addExam(exam).subscribe(apiResponse => {
         if (apiResponse.result) {
           this.messageService.add({summary:'Successful !',detail:'Exam Edited Successfully',severity:'success'})
           this.fetchExamList(this.urlSearchParam);
@@ -80,7 +80,7 @@ export class ExamConfigurationComponent extends BaseComponent {
       })
     } else {
       delete exam['id'];
-      this.examConfgurationService.addExam(exam).subscribe(apiResponse => {
+      this.subscribers.addExamsubs2 = this.examConfgurationService.addExam(exam).subscribe(apiResponse => {
         if (apiResponse.result) {
           this.messageService.add({summary:'Successful !',detail:'Exam Created Successfully',severity:'success'})
           this.fetchExamList(this.urlSearchParam);
@@ -147,7 +147,7 @@ export class ExamConfigurationComponent extends BaseComponent {
     if (!searchModel.session) return;
     if (!searchModel.year) return;
 
-    this.examConfgurationService.fetchExamList(urlSearchParam, searchModel).subscribe(data => {
+   this.subscribers.examConfigSubs = this.examConfgurationService.fetchExamList(urlSearchParam, searchModel).subscribe(data => {
       if (data.result) {
         this.examList = data.data.dataList;
       }
@@ -199,7 +199,7 @@ export class ExamConfigurationComponent extends BaseComponent {
 
   private deleteExamConfig() {
     let e = this.examList[this.activeRowIndex];
-    this.examConfgurationService.deleteExamConfig(e).subscribe(apiResponse => {
+   this.subscribers.examConfigSubs2 = this.examConfgurationService.deleteExamConfig(e).subscribe(apiResponse => {
       this.fetchExamList(this.urlSearchParam)
       if (apiResponse.result) {
         this.messageService.add({

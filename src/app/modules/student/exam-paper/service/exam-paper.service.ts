@@ -23,7 +23,7 @@ export class ExamPaperService extends BaseService {
     return this.http.get<Blob>(FETCH_FILE_BY_URL + this.getHttpParams(urlParam),);
   }
 
-  submitAnswer(answerModel: AnswerModel): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(SUBMIT_ANSWER, answerModel);
+  submitAnswer(answerModels: AnswerModel[]): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(SUBMIT_ANSWER, answerModels);
   }
 }

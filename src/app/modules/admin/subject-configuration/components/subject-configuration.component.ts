@@ -56,7 +56,7 @@ export class SubjectConfigurationComponent extends BaseComponent {
   createSubject() {
     if (this.formInvalid()) return;
     if (this.editMode) {
-      this.subjectCofigService.addSubject(this.createSubjectForm.value).subscribe(apiResponse => {
+      this.subscribers.subjecConfigsubs = this.subjectCofigService.addSubject(this.createSubjectForm.value).subscribe(apiResponse => {
         if (apiResponse.result) {
           this.messageService.add({summary: 'Successful', severity: 'success', detail: 'Subject Edited Successfully'})
           this.fetchConfiguration();

@@ -36,7 +36,7 @@ export class AnswerModel{
   enrolmentId: number;
   quesId: number;
   quesSeq: number;
-  answerDesc: string
+  answerDesc: string = '';
 }
 export class ExamInfo {
   isExamSubjectFoundToAllow: boolean;

@@ -62,7 +62,7 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
     let searchModel = this.examSearchForm.value;
     searchModel.actionCode = this.actionCode;
     if (this.formInvalid()) return;
-    this.lockQuestionService.searchQuestionToLockUnlock(this.examSearchForm.value).subscribe(apiResponse => {
+    this.subscribers.lockQuestionSubs = this.lockQuestionService.searchQuestionToLockUnlock(this.examSearchForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examList = apiResponse.data
         this.examList.forEach(e => {
@@ -112,7 +112,7 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
       return lockModel;
     });
 
-    this.lockQuestionService.lockUnlockQuestion(lockModels).subscribe({
+    this.subscribers.lockQuestionSubs2 = this.lockQuestionService.lockUnlockQuestion(lockModels).subscribe({
       next: (apiResponse) => {
         if (apiResponse.result) {
           this.examList = [];
@@ -139,7 +139,7 @@ export class LockUnlockComponent extends BaseComponent implements OnInit {
     lockModel.isLock = !e.isLock;
     lockModel.password = e.lockPassword;
 
-    this.lockQuestionService.lockUnlockQuestion([lockModel]).subscribe(apiResponse => {
+    this.subscribers.lockQuestionSubs3 =  this.lockQuestionService.lockUnlockQuestion([lockModel]).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examList = [];
         if (lockModel.isLock) {

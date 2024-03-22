@@ -63,7 +63,7 @@ export class ExamSchedulingComponent extends BaseComponent {
 
   searchExams() {
     if (this.formInvalid()) return;
-    this.ExamSchedulingService.searchQuestion(this.examSearchForm.value).subscribe(apiResponse => {
+   this.subscribers.examScheduleSubs = this.ExamSchedulingService.searchQuestion(this.examSearchForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examList = apiResponse.data
         this.examList.forEach(e => {
@@ -111,7 +111,7 @@ export class ExamSchedulingComponent extends BaseComponent {
       return;
     }
 
-    this.ExamSchedulingService.saveSchedule([schedule]).subscribe(apiResponse => {
+    this.subscribers.examScheduleSubs2 = this.ExamSchedulingService.saveSchedule([schedule]).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.messageService.add({summary: 'Saved', detail: "Exam Schedule Updated", severity: 'success'});
       }

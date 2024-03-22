@@ -62,7 +62,7 @@ export class CreateQuestionComponent extends BaseComponent {
 
   searchQuestion() {
     if (this.formInvalid()) return;
-    this.createQuestionService.searchQuestion(this.createQuestionForm.value).subscribe(apiResponse => {
+    this.subscribers.searchQsubs= this.createQuestionService.searchQuestion(this.createQuestionForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
         if (apiResponse.data.isNew) {
           this.messageService.add({summary: 'Creating new question', detail: '', severity: 'success'})

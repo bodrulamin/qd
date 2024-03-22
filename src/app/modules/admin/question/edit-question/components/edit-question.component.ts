@@ -157,7 +157,7 @@ export class EditQuestionComponent extends BaseComponent {
   generateFileBlobsFromApi(i: number, fileUrl: string) {
     let urlParam = new Map();
     urlParam.set('filePath', fileUrl)
-    this.editQuestionService.fetchByFileUrl(urlParam).subscribe(data => {
+    this.subscribers.fetchFileSubs = this.editQuestionService.fetchByFileUrl(urlParam).subscribe(data => {
       var file = new Blob([data], {type: 'application/pdf'});
       let blobUrl = URL.createObjectURL(file);
       this.pdfBlobMap.set(this.questionDetails[i].id, blobUrl)
@@ -218,7 +218,7 @@ export class EditQuestionComponent extends BaseComponent {
     formData.append('data', data);
 
     this.saveStatus = this.questionDetails[i].seqNo + ' - Saving ...'
-    this.editQuestionService.addQuestion(formData).subscribe(apiResponse => {
+    this.subscribers.editQsubs = this.editQuestionService.addQuestion(formData).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.messageService.add({
           summary: 'Saved',

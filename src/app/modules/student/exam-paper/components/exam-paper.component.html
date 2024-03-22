@@ -105,21 +105,21 @@
                       class="top-0 left-0 w-full">
                       <div class="m-2 flex justify-content-between">
                         <p-badge [style]="{marginTop:'5px'}" [severity]="'info'"
-                                 [value]='questionDetail.seqNo.toString()'></p-badge>
+                                 [value]='questionDetails[selectedIndex].seqNo.toString()'></p-badge>
                         <p-button [text]="true"
-                                  (onClick)="pinnedItems.includes(questionDetail) ? removePinItem(questionDetail) : pinnedItems.push(questionDetail)">
+                                  (onClick)="pinnedItems.includes(questionDetails[selectedIndex]) ? removePinItem(questionDetails[selectedIndex]) : pinnedItems.push(questionDetails[selectedIndex])">
                           <i
-                            [ngClass]="pinnedItems.includes(questionDetail) ? 'fas fa-thumbtack' :'fas fa-thumbtack -rotate-90'"></i>
+                            [ngClass]="pinnedItems.includes(questionDetails[selectedIndex]) ? 'fas fa-thumbtack' :'fas fa-thumbtack -rotate-90'"></i>
                         </p-button>
                       </div>
 
                     </div>
                   </div>
                   <div class="h-full w-full surface-0 border-round">
-                    <div class="h-full w-full p-3 pt-6 " id="question-view" *ngIf="!questionDetail.isFile"
-                         [innerHTML]="questionDetail.quesDesc"></div>
-                    <pdf-viewer *ngIf="questionDetail.isFile" [zoom]="1" class="h-full" #pdfView
-                                [src]="pdfBlobMap.get(questionDetail.id)"
+                    <div class="h-full w-full p-3 pt-6 " id="question-view" *ngIf="!questionDetails[selectedIndex].isFile"
+                         [innerHTML]="questionDetails[selectedIndex].quesDesc"></div>
+                    <pdf-viewer *ngIf="questionDetails[selectedIndex].isFile" [zoom]="1" class="h-full" #pdfView
+                                [src]="pdfBlobMap.get(questionDetails[selectedIndex].id)"
                                 [render-text]="false"
                                 [original-size]="true">
 
@@ -173,7 +173,7 @@
                 <div class="flex flex-column h-full w-full">
                   <div *ngIf="selectedIndex > -1" class="flip flex flex-grow-0 surface-0 border-round-top p-2 justify-content-center align-items-center">
                     <div class="flex flex-row justify-content-center align-items-center">
-                      <div>Answer for Question {{questionDetail.seqNo}}</div>
+                      <div>Answer for Question {{questionDetails[selectedIndex].seqNo}}</div>
                       <p-button class="inline p-1" size="small" (onClick)="manualSave()" label="Save" [text]="true"></p-button>
                     </div>
 
@@ -181,7 +181,7 @@
                   <div class="flex flex-grow-1 w-full">
                     <editor (onPaste)="onPaste($event)"
                             [disabled]="selectedIndex < 0"
-                            [(ngModel)]="answer.answerDesc"
+                            [(ngModel)]="answerDetails[selectedIndex].answerDesc"
                             class="h-full -mt-1 w-full"
                             [init]="{
                       license_key: 'gpl',promotion:false, plugins: 'table lists' ,

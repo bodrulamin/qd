@@ -3,12 +3,14 @@ import {BaseComponent} from "../../../base/components/base-component/base.compon
 import generatePdfThumbnails from 'pdf-thumbnails-generator';
 import {ExamPaperService} from "../service/exam-paper.service";
 import {AnswerModel, ExamInfo, ExamQuestionDetailModel, ExamQuestionModel} from "../service/domain/exam-question.model";
-import {Router} from "@angular/router";
+import {NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {MessageService} from "primeng/api";
 import {AdminService} from "../../../admin/service/admin.service";
 import html2canvas from "html2canvas";
 import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
 import {ReviewModel} from "./review/review.component";
+import {BehaviorSubject} from "rxjs";
+import {QuestionDetailModel} from "../../../admin/question/edit-question/service/domain/question.model";
 
 declare var luckysheet;
 
@@ -20,19 +22,18 @@ declare var luckysheet;
 export class ExamPaperComponent extends BaseComponent implements OnInit, AfterViewInit {
 
   examInfo: ExamInfo = new ExamInfo();
-  answer: AnswerModel = new AnswerModel();
   thumbnailBlobMap = new Map();
   pdfBlobMap = new Map();
   questionDetails: ExamQuestionDetailModel[] = [];
   answerDetails: AnswerModel[] = [];
   questionMaster: ExamQuestionModel = new ExamQuestionModel();
 
+
   // @ViewChild("editor", {static: true}) editor!: Editor;
   @ViewChild("pdfView") pdfView!: ElementRef;
 
   selectedIndex: number = -1;
   autoSave: boolean;
-  questionDetail: ExamQuestionDetailModel = new ExamQuestionDetailModel();
   questionSelected: boolean = false;
 
   examLevelMap: Map<any, any> = new Map();
@@ -54,8 +55,6 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
     private adminService: AdminService,
   ) {
     super();
-
-
   }
 
   ngAfterViewInit() {
@@ -81,10 +80,8 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
 
       }
     }, 1000);
-
+    this.selectedIndex = 0;
     this.setupExistingQuestion(data);
-
-    this.questionDetails = data.quesDetailsList;
 
   }
 
@@ -158,31 +155,33 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   selectQuestion(i) {
-    this.answerDetails[this.selectedIndex] = this.answer;
     this.questionSelected = true;
     this.selectedIndex = i;
-    this.questionDetail = this.questionDetails[i];
-    this.answer = this.answerDetails[i] || new AnswerModel();
-    setTimeout(() => {
-      // this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = this.answer.answerDesc || ''
-    }, 1)
-
   }
 
   private async setupExistingQuestion(data: ExamQuestionModel) {
+    this.questionDetails = data.quesDetailsList;
     this.questionMaster.id = data.id;
-    for (let i = 0; i < data.quesDetailsList.length; i++) {
-      this.questionDetails[i] = data.quesDetailsList[i];
+    for (let i = 0; i < this.questionDetails.length; i++) {
+      this.answerDetails[i] = new AnswerModel();
+      // generate empty answers
+      this.answerDetails[i].quesId = this.questionMaster.id;
+      this.answerDetails[i].answerDesc = '<p></p>';
+      this.answerDetails[i].studentUsername = this.examInfo.studentUsername;
+      this.answerDetails[i].enrolmentId = this.examInfo.enrollmentId;
+      this.answerDetails[i].quesSeq = this.questionDetails[i].seqNo;
+
+      let existingAnswer = data.answerVmList.find(a => a.quesSeq === this.questionDetails[i].seqNo);
+      if (existingAnswer) {
+        this.answerDetails[i].answerDesc = existingAnswer.answerDesc;
+        this.answerDetails[i].id = existingAnswer.id;
+      }
+
       if (this.questionDetails[i].isFile) {
         this.generateFileBlobsFromApi(i, this.questionDetails[i].fileUrl);
       } else {
         await this.generateHtmlThumbnails(i);
-        // this.editor.el.nativeElement.getElementsByClassName('ql-editor')[0].innerHTML = ''
       }
-    }
-
-    for (let i = 0; i < data.answerVmList.length; i++) {
-      this.answerDetails[i] = data.answerVmList[i];
     }
     this.autoSave = true;
   }
@@ -221,23 +220,19 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   autoSaveAnser() {
-    // this.saveAnser(this.questionMaster, this.selectedIndex);
+    // this.saveSingleAnswer(this.questionMaster, this.selectedIndex);
   }
 
-  private saveAnser(questionMaster: ExamQuestionModel, i: number) {
+  private saveSingleAnswer(i: number, suppressMessage = false) {
 
-
-    let answerModel: AnswerModel = new AnswerModel();
-    answerModel.quesId = questionMaster.id;
-    answerModel.answerDesc = this.answerDetails[i].answerDesc
-    answerModel.studentUsername = this.examInfo.studentUsername;
-    answerModel.enrolmentId = this.examInfo.enrollmentId;
-    answerModel.quesSeq = this.answerDetails[i].quesSeq;
-    answerModel.id = this.answerDetails[i].id;
-
-    this.examPaperService.submitAnswer(answerModel).subscribe(apiResponse => {
+    return this.examPaperService.submitAnswer([this.answerDetails[i]]).subscribe(apiResponse => {
       if (apiResponse.result) {
-        this.answerDetails[i].id = apiResponse.data.id;
+        let localAns = this.answerDetails.find(a => a.quesSeq == apiResponse.data.quesSeq);
+        if (localAns) {
+          localAns.id = apiResponse.data.id
+        }
+
+        if (suppressMessage) return;
         this.messageService.add({
           summary: 'saved',
           detail: 'Answer Saved for ' + this.answerDetails[i].quesSeq,
@@ -255,13 +250,10 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   manualSave() {
-    console.log(this.answer)
     if (this.selectedIndex < 0) {
       return;
     }
-    this.answer.quesSeq = this.questionDetails[this.selectedIndex].seqNo;
-    this.answerDetails[this.selectedIndex] = this.answer;
-    this.saveAnser(this.questionMaster, this.selectedIndex);
+    this.saveSingleAnswer(this.selectedIndex);
   }
 
   pinMe() {
@@ -312,6 +304,21 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   submitAnwers() {
+    this.examPaperService.submitAnswer(this.answerDetails).subscribe({
+      next: apiResponse => {
+        if (apiResponse.result) {
+          this.messageService.add({summary:'Success',detail:'Answers submitted Successfully',severity:'success'})
+          this.router.navigate(['/'])
+        } else {
+
+        }
+
+      },
+      error: err => {
+
+      }
+    })
+
 
   }
 }

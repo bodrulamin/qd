@@ -25,7 +25,7 @@ export class AdminLoginComponent extends BaseComponent {
   }
 
   onLogin(credential: LoginModel) {
-    this.authService.adminLogin(credential.username, credential.password).subscribe(apiResponse => {
+    this.subscribers.adminLoginsubs = this.authService.adminLogin(credential.username, credential.password).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.authService.saveData(ADMIN_DATA, apiResponse.data)
         this.messageService.add({severity: 'success', summary: 'Success', detail: 'Login Successful !'});
