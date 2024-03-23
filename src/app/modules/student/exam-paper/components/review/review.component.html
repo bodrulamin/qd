@@ -1,74 +1,14 @@
-<div class="flex flex-row h-full overflow-hidden">
-  <div class="card w-10rem h-full m-2 p-2 pb-3 flex flex-grow-0 flex-shrink-0 overflow-y-auto"
-       style="background-color:#f8f6f6">
-    <div class="flex flex-column  flex-grow-1">
-      <div class="mb-5 w-full"
-           *ngFor="let item of questionDetails; index as i;">
-        <div class="card" [ngClass]="{'border border-2 border-blue-400': selectedIndex === i}"
-             (click)="selectQuestion(i)"
-             [style]="{overflow:'clip',padding:0, width:'100%'}">
-          <div class="relative">
-            <div
-              class="top-0 left-0 font-bold align-items-center justify-content-center w-full">
-              <div class="flex justify-content-between align-items-start">
-                <div class="m-2">
-                  <p-badge [severity]="i===selectedIndex ? 'info':'warning'"
-                           [value]='item.seqNo.toString()'></p-badge>
-                </div>
-
-
-              </div>
-
-            </div>
-
-          </div>
-          <div class="h-10rem">
-            <img *ngIf="thumbnailBlobMap.get(item.id)" style="width:100%; overflow:clip;padding:5px "
-                 src="{{thumbnailBlobMap.get(item.id)}}"
-                 alt="thumbnail">
-          </div>
-
-        </div>
-      </div>
-
-    </div>
+<div class="mb-3">
+  <div class="mb-3" *ngFor="let answer of answerDetails; index as i;">
+    <p-fieldset legend="Answer to the Question No. {{answer.quesSeq}}">
+      <p class="m-0" [innerHTML]="answer.answerDesc"></p>
+      <p class="text-red-600" *ngIf="!answer.answerDesc">No Answer found</p>
+    </p-fieldset>
   </div>
-
-  <as-split direction="horizontal">
-    <as-split-area [size]="50">
-      <div id="question-container" class="h-full relative flex-grow-1">
-        <div *ngIf="selectedIndex > -1" class="absolute w-full" style="z-index: 22">
-          <div
-            class="top-0 left-0 w-full">
-            <div class="m-2 flex justify-content-between">
-              <p-badge [style]="{marginTop:'5px'}" [severity]="'info'"
-                       [value]='questionDetail.seqNo.toString()'></p-badge>
-
-            </div>
-
-          </div>
-        </div>
-        <div class="h-full w-full surface-0 border-round">
-          <div class="h-full w-full p-3 pt-6 " id="question-view" *ngIf="!questionDetail.isFile"
-               [innerHTML]="questionDetail.quesDesc"></div>
-          <pdf-viewer *ngIf="questionDetail.isFile" [zoom]="1" class="h-full" #pdfView
-                      [src]="pdfBlobMap.get(questionDetail.id)"
-                      [render-text]="false"
-                      [original-size]="true">
-
-          </pdf-viewer>
-        </div>
-
-
-      </div>
-
-    </as-split-area>
-    <as-split-area [size]="50">
-      <div class="p-2" [innerHTML]="answer.answerDesc"></div>
-
-    </as-split-area>
-  </as-split>
-
-
-
 </div>
+
+
+<div class="flex flex-row flex-grow-1 justify-content-end">
+  <p-button icon="pi pi-check" size="small" label="Submit" (onClick)="submit()"></p-button>
+</div>
+

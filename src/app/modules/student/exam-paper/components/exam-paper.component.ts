@@ -9,10 +9,12 @@ import {AdminService} from "../../../admin/service/admin.service";
 import html2canvas from "html2canvas";
 import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
 import {ReviewModel} from "./review/review.component";
-import {BehaviorSubject} from "rxjs";
-import {QuestionDetailModel} from "../../../admin/question/edit-question/service/domain/question.model";
 
 declare var luckysheet;
+
+export enum SaveAction {
+  saveAll, submit, autoSave
+}
 
 @Component({
   selector: 'app-exam-paper',
@@ -46,6 +48,8 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   examOver: boolean = false;
   sheetVisible: boolean = true;
   reviewDialogVisible: boolean = false;
+  submitAction: SaveAction = SaveAction.submit;
+  saveAction: SaveAction = SaveAction.saveAll;
 
 
   constructor(
@@ -166,7 +170,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
       this.answerDetails[i] = new AnswerModel();
       // generate empty answers
       this.answerDetails[i].quesId = this.questionMaster.id;
-      this.answerDetails[i].answerDesc = '<p></p>';
+      this.answerDetails[i].answerDesc = '';
       this.answerDetails[i].studentUsername = this.examInfo.studentUsername;
       this.answerDetails[i].enrolmentId = this.examInfo.enrollmentId;
       this.answerDetails[i].quesSeq = this.questionDetails[i].seqNo;
@@ -219,22 +223,18 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
 
   }
 
-  autoSaveAnser() {
-    // this.saveSingleAnswer(this.questionMaster, this.selectedIndex);
-  }
-
   private saveSingleAnswer(i: number, suppressMessage = false) {
 
-    return this.examPaperService.submitAnswer([this.answerDetails[i]]).subscribe(apiResponse => {
+    this.subscribers.submitAnsSubs = this.examPaperService.submitAnswer([this.answerDetails[i]]).subscribe(apiResponse => {
       if (apiResponse.result) {
-        let localAns = this.answerDetails.find(a => a.quesSeq == apiResponse.data.quesSeq);
+        let localAns = this.answerDetails.find(a => a.quesSeq == apiResponse.data[0].quesSeq);
         if (localAns) {
-          localAns.id = apiResponse.data.id
+          localAns.id = apiResponse.data[0].id
         }
 
         if (suppressMessage) return;
         this.messageService.add({
-          summary: 'saved',
+          summary: 'Saved',
           detail: 'Answer Saved for ' + this.answerDetails[i].quesSeq,
           severity: 'success'
         });
@@ -243,21 +243,12 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
     })
   }
 
-  updatePdfSize() {
-    if (this.pdfView) {
-      this.pdfView.nativeElement.updateSize();
-    }
-  }
 
   manualSave() {
     if (this.selectedIndex < 0) {
       return;
     }
     this.saveSingleAnswer(this.selectedIndex);
-  }
-
-  pinMe() {
-
   }
 
   onPaste($event: EventObj<ClipboardEvent>) {
@@ -292,10 +283,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
 
   showReviewDialog() {
     let reviewModel: ReviewModel = {
-      answers: this.answerDetails,
-      questions: this.questionDetails,
-      thumbnailBlobMap: this.thumbnailBlobMap,
-      pdfBlobMap: this.pdfBlobMap,
+      answers: this.answerDetails
     };
 
     this.examPaperService.answerDataSubject.next(reviewModel)
@@ -303,12 +291,26 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
 
   }
 
-  submitAnwers() {
+  saveAll(action: SaveAction) {
     this.examPaperService.submitAnswer(this.answerDetails).subscribe({
       next: apiResponse => {
         if (apiResponse.result) {
-          this.messageService.add({summary:'Success',detail:'Answers submitted Successfully',severity:'success'})
-          this.router.navigate(['/'])
+          for (let i = 0; i < apiResponse.data; i++) {
+            let localAns = this.answerDetails.find(a => a.quesSeq == apiResponse.data[i].quesSeq);
+            if (localAns) {
+              localAns.id = apiResponse.data[0].id
+            }
+          }
+
+          if (action == SaveAction.saveAll) {
+            this.messageService.add({summary: 'Success', detail: 'All Answers Saved', severity: 'success'})
+          }
+
+          if (action == SaveAction.submit) {
+            this.messageService.add({summary: 'Success', detail: 'Answers submitted Successfully', severity: 'success'})
+            this.router.navigate(['/'])
+          }
+
         } else {
 
         }

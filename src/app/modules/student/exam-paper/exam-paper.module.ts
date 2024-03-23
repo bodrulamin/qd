@@ -13,7 +13,7 @@ import {ToggleButtonModule} from "primeng/togglebutton";
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import {TooltipModule} from "primeng/tooltip";
 import { ReviewComponent } from './components/review/review.component';
-import {AutoFocusModule} from "primeng/autofocus";
+import {FieldsetModule} from "primeng/fieldset";
 
 
 @NgModule({
@@ -36,7 +36,7 @@ import {AutoFocusModule} from "primeng/autofocus";
     ToggleButtonModule,
     EditorModule,
     TooltipModule,
-    AutoFocusModule,
+    FieldsetModule,
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }

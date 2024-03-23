@@ -38,8 +38,6 @@
                     icon="fas fa-calculator"
                     (onClick)="calulatorVisible = true"></p-button>
 
-          <p-button size="small" label='Review & Submit' (onClick)="showReviewDialog()"></p-button>
-
         </div>
 
       </div>
@@ -50,7 +48,7 @@
     <!-----------------------Body------------------->
     <div class="flex flex-row flex-grow-1 h-full overflow-hidden pb-2">
       <!-----------------------Resources------------------->
-      <div *ngIf="showResources" class="card w-10rem m-2 p-2 flex flex-grow-0 flex-shrink-0 overflow-y-auto"
+      <div *ngIf="showResources" class="card w-10rem m-2 p-2 flex flex-column flex-grow-0 flex-shrink-0 overflow-y-auto"
            style="background-color:#f8f6f6">
         <div class="flex flex-column flex-grow-1">
           <div class="mb-5 w-full"
@@ -85,7 +83,13 @@
             </div>
           </div>
 
+
+
         </div>
+        <div class="flex flex-grow-0 justify-content-end">
+          <p-button size="small" label='Attempt Submit' (onClick)="showReviewDialog()"></p-button>
+        </div>
+
       </div>
 
 
@@ -171,10 +175,10 @@
             <as-split direction="vertical">
               <as-split-area [size]="sheetVisible?60:100">
                 <div class="flex flex-column h-full w-full">
-                  <div *ngIf="selectedIndex > -1" class="flip flex flex-grow-0 surface-0 border-round-top p-2 justify-content-center align-items-center">
-                    <div class="flex flex-row justify-content-center align-items-center">
-                      <div>Answer for Question {{questionDetails[selectedIndex].seqNo}}</div>
-                      <p-button class="inline p-1" size="small" (onClick)="manualSave()" label="Save" [text]="true"></p-button>
+                  <div *ngIf="selectedIndex > -1" class="flip flex flex-grow-0 surface-0 border-round-top p-2 justify-content-start align-items-center">
+                    <div class="flex flex-row justify-content-start align-items-center gap-2">
+                      <div class="pl-2">Answer for Question {{questionDetails[selectedIndex].seqNo}}</div>
+                      <p-button class="inline p-1" severity="success" size="small" (onClick)="manualSave()" label="Save"></p-button>
                     </div>
 
                   </div>
@@ -224,9 +228,8 @@
 
 <p-dialog *ngIf="reviewDialogVisible" [draggable]="false" [style]="{width:'100vw', height : '60vw','max-height':'100vh', 'overflow': 'hidden'}" [(visible)]="reviewDialogVisible" header="Review & Final Submission" [modal]="true" >
   <ng-template pTemplate="content" style="padding:0">
-    <app-review></app-review>
+    <app-review (onSubmit)="saveAll(submitAction)"></app-review>
   </ng-template>
-    <p-button class="absolute bottom-0 right-0 p-3" icon="pi pi-check" size="small"  label="Submit" (onClick)="submitAnwers()" pAutoFocus [autofocus]="true"></p-button>
 </p-dialog>
 
 
