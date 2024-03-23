@@ -1,11 +1,7 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ExamPaperService} from "../../service/exam-paper.service";
-import {AnswerModel} from "../../service/domain/exam-question.model";
-import {QuestionDetailModel} from "../../../../admin/question/edit-question/service/domain/question.model";
+import {AnswerModel, AnswerQueryModel} from "../../service/domain/exam-question.model";
 
-export interface ReviewModel {
-  answers: AnswerModel[];
-}
 
 @Component({
   selector: 'app-review',
@@ -17,22 +13,19 @@ export class ReviewComponent implements OnInit {
   answerDetails: AnswerModel[] = [];
 
   @Output('onSubmit') onSubmit: EventEmitter<any> = new EventEmitter<any>();
-
+  @Input() answerQueryData;
   constructor(
     private examPaperService: ExamPaperService,
   ) {
   }
 
   ngOnInit(): void {
-    this.examPaperService.answerData$.subscribe(
-      {
-        next: (reviewData: ReviewModel) => {
-          this.answerDetails = reviewData.answers;
-        },
-        error: err => {
-        }
+
+    this.examPaperService.getAnswerList(this.answerQueryData).subscribe({
+      next: apiResponse => {
+        this.answerDetails = apiResponse.data;
       }
-    );
+    });
   }
 
   submit() {

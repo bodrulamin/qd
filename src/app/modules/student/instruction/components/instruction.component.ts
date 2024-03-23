@@ -9,7 +9,7 @@ import {ExamInfo, ExamQuestionModel} from "../../exam-paper/service/domain/exam-
 export interface StartExam {
   enrollmentId: number;
   quesId: number;
-  studentUsername: number;
+  studentUsername: string;
   quizPassword: string
 }
 

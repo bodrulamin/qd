@@ -184,7 +184,7 @@
                   </div>
                   <div class="flex flex-grow-1 w-full">
                     <editor (onPaste)="onPaste($event)"
-                            [disabled]="selectedIndex < 0"
+                            [disabled]="selectedIndex < 0" (onChange)="onAnswerChange(selectedIndex)"
                             [(ngModel)]="answerDetails[selectedIndex].answerDesc"
                             class="h-full -mt-1 w-full"
                             [init]="{
@@ -228,7 +228,7 @@
 
 <p-dialog *ngIf="reviewDialogVisible" [draggable]="false" [style]="{width:'100vw', height : '60vw','max-height':'100vh', 'overflow': 'hidden'}" [(visible)]="reviewDialogVisible" header="Review & Final Submission" [modal]="true" >
   <ng-template pTemplate="content" style="padding:0">
-    <app-review (onSubmit)="saveAll(submitAction)"></app-review>
+    <app-review [answerQueryData]="answerQueryData" (onSubmit)="saveAll(submitAction)"></app-review>
   </ng-template>
 </p-dialog>
 

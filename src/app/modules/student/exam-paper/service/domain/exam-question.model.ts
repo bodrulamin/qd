@@ -32,7 +32,7 @@ export class ExamQuestionModel {
 
 export class AnswerModel{
   id: number;
-  studentUsername: number;
+  studentUsername: string;
   enrolmentId: number;
   quesId: number;
   quesSeq: number;
@@ -41,7 +41,7 @@ export class AnswerModel{
 export class ExamInfo {
   isExamSubjectFoundToAllow: boolean;
   quesId: number;
-  studentUsername: number;
+  studentUsername: string;
   enrollmentId: number;
   examInstruction: string;
   examDate: Date;
@@ -58,6 +58,14 @@ export class ExamInfo {
   studentName: string;
   studentRegNo: string;
   studentRollNo: string;
+}
+
+export class AnswerQueryModel{
+  studentUsername: string;
+  enrolmentId: number;
+  quesId: number;
+  quesSeq:0;
+  answerDesc: string
 }
 
 

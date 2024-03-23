@@ -1,19 +1,30 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Injectable, OnInit, ViewChild} from '@angular/core';
 import {BaseComponent} from "../../../base/components/base-component/base.component";
 import generatePdfThumbnails from 'pdf-thumbnails-generator';
 import {ExamPaperService} from "../service/exam-paper.service";
-import {AnswerModel, ExamInfo, ExamQuestionDetailModel, ExamQuestionModel} from "../service/domain/exam-question.model";
-import {NavigationEnd, NavigationStart, Router} from "@angular/router";
+import {
+  AnswerModel,
+  AnswerQueryModel,
+  ExamInfo,
+  ExamQuestionDetailModel,
+  ExamQuestionModel
+} from "../service/domain/exam-question.model";
+import {NavigationEnd, Router} from "@angular/router";
 import {MessageService} from "primeng/api";
 import {AdminService} from "../../../admin/service/admin.service";
 import html2canvas from "html2canvas";
 import {EventObj} from "@tinymce/tinymce-angular/editor/Events";
-import {ReviewModel} from "./review/review.component";
+import {filter} from "rxjs/operators";
 
 declare var luckysheet;
 
 export enum SaveAction {
   saveAll, submit, autoSave
+}
+
+@Injectable({providedIn: 'root'})
+export class NavigationTrackerService {
+  isFirstLoad = true;
 }
 
 @Component({
@@ -35,7 +46,6 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   @ViewChild("pdfView") pdfView!: ElementRef;
 
   selectedIndex: number = -1;
-  autoSave: boolean;
   questionSelected: boolean = false;
 
   examLevelMap: Map<any, any> = new Map();
@@ -50,12 +60,16 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   reviewDialogVisible: boolean = false;
   submitAction: SaveAction = SaveAction.submit;
   saveAction: SaveAction = SaveAction.saveAll;
+  changedIndexSet: Set<number> = new Set<number>();
+  autoSavetriggered: boolean = false;
+  answerQueryData: AnswerQueryModel;
 
 
   constructor(
     private examPaperService: ExamPaperService,
     private router: Router,
     private messageService: MessageService,
+    private navigationTracker: NavigationTrackerService,
     private adminService: AdminService,
   ) {
     super();
@@ -68,6 +82,7 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   ngOnInit() {
+
     let data: ExamQuestionModel = history.state;
     this.examInfo = history.state
 
@@ -187,7 +202,6 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
         await this.generateHtmlThumbnails(i);
       }
     }
-    this.autoSave = true;
   }
 
   generateFileBlobsFromApi(i: number, fileUrl: string) {
@@ -227,10 +241,10 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
 
     this.subscribers.submitAnsSubs = this.examPaperService.submitAnswer([this.answerDetails[i]]).subscribe(apiResponse => {
       if (apiResponse.result) {
-        let localAns = this.answerDetails.find(a => a.quesSeq == apiResponse.data[0].quesSeq);
-        if (localAns) {
-          localAns.id = apiResponse.data[0].id
-        }
+
+        let index = this.answerDetails.findIndex(a => a.quesSeq === apiResponse.data[0].quesSeq);
+        this.answerDetails[index].id = apiResponse.data[0].id
+        console.log('saved ' + this.answerDetails[index].quesSeq);
 
         if (suppressMessage) return;
         this.messageService.add({
@@ -282,24 +296,32 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   showReviewDialog() {
-    let reviewModel: ReviewModel = {
-      answers: this.answerDetails
-    };
+    this.answerQueryData = new AnswerQueryModel();
+    this.answerQueryData.quesId = this.examInfo.quesId;
+    this.answerQueryData.enrolmentId = this.examInfo.enrollmentId;
+    this.answerQueryData.studentUsername = this.examInfo.studentUsername;
+    this.answerQueryData.answerDesc = "";
+    this.answerQueryData.quesSeq = 0;
 
-    this.examPaperService.answerDataSubject.next(reviewModel)
     this.reviewDialogVisible = true;
-
   }
 
   saveAll(action: SaveAction) {
-    this.examPaperService.submitAnswer(this.answerDetails).subscribe({
+
+    let answers = this.answerDetails;
+
+    if (action == SaveAction.autoSave) {
+      answers = Array.from(this.changedIndexSet).map(i => this.answerDetails[i]);
+      console.log('saving... ' + answers.map(a => a.quesSeq));
+      this.changedIndexSet.clear();
+    }
+
+    this.examPaperService.submitAnswer(answers).subscribe({
       next: apiResponse => {
         if (apiResponse.result) {
-          for (let i = 0; i < apiResponse.data; i++) {
-            let localAns = this.answerDetails.find(a => a.quesSeq == apiResponse.data[i].quesSeq);
-            if (localAns) {
-              localAns.id = apiResponse.data[0].id
-            }
+          for (let i = 0; i < apiResponse.data.length; i++) {
+            let index = this.answerDetails.findIndex(a => a.quesSeq === apiResponse.data[i].quesSeq);
+            this.answerDetails[index].id = apiResponse.data[i].id
           }
 
           if (action == SaveAction.saveAll) {
@@ -310,8 +332,9 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
             this.messageService.add({summary: 'Success', detail: 'Answers submitted Successfully', severity: 'success'})
             this.router.navigate(['/'])
           }
-
-        } else {
+          if (action == SaveAction.autoSave) {
+            console.log('saved ' + apiResponse.data.map(a => a.quesSeq))
+          }
 
         }
 
@@ -321,6 +344,29 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
       }
     })
 
+
+  }
+
+  onAnswerChange(selectedIndex: number) {
+    this.changedIndexSet.add(selectedIndex);
+    let answers = Array.from(this.changedIndexSet).map(i => this.answerDetails[i]);
+    console.log('changed ' + answers.map(a => a.quesSeq));
+    this.triggerAutoSave()
+  }
+
+  triggerAutoSave() {
+
+    if (this.autoSavetriggered) return;
+    this.autoSavetriggered = true;
+
+    let seconds = 3;
+    console.log('saving in 3 seconds...')
+    setTimeout(() => {
+      this.autoSavetriggered = false;
+
+      this.saveAll(SaveAction.autoSave);
+
+    }, seconds * 1000);
 
   }
 }
