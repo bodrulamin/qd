@@ -26,6 +26,10 @@ export const adminRoutes: Routes = [
         loadChildren: () => import('./question/create-question/create-question.module').then(m => m.CreateQuestionModule)
       },
       {
+        path: "question-creator",
+        loadChildren: () => import('./question-creator/question-creator.module').then(m => m.QuestionCreatorModule)
+      },
+      {
         path: "edit-question",
         loadChildren: () => import('./question/edit-question/edit-question.module').then(m => m.EditQuestionModule)
       },

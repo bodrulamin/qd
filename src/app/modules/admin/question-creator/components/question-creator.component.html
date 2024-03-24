@@ -1,0 +1,68 @@
+<div class="grid">
+  <div class="col-12 md:col-12">
+    <div class="card p-fluid">
+      <h5>Question Creator</h5>
+
+      <form class="p-5" [formGroup]="questionCreatorSearchForm">
+        <div class="formgrid grid">
+          <div class="field col">
+            <label for="exam-level">Exam Level</label>
+            <p-dropdown id="exam-level" (onChange)="clearExamList($event.value)" (onClear)="onExamLevelClear()"
+                        formControlName="examLevel" [showClear]="true" placeholder="Select Exam Level"
+                        [options]="examLevelOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="session">Session</label>
+            <p-dropdown id="session" (onChange)="clearExamList($event.value)" [showClear]="true"
+                        placeholder="Select Session" formControlName="session"
+                        [options]="sessionOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="year">Year</label>
+            <p-dropdown id="year" (onChange)="clearExamList($event.value)" [showClear]="true" placeholder="Select Year"
+                        formControlName="year"
+                        [options]="yearOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+
+        </div>
+
+        <div class="flex justify-content-end">
+          <p-button icon="pi pi-search" (onClick)="searchQuestionCreator()" label="Find"></p-button>
+        </div>
+      </form>
+
+      <div class="mt-5">
+        <p-table [value]="questionCreatorList">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Subject</th>
+              <th>Assigned Person</th>
+              <th>Status</th>
+              <th colspan="2" ><span class="ml-4">Action</span></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
+            <tr>
+              <td>{{  e.subjectName  }}</td>
+              <td>{{  e.assignedPerson  }}</td>
+              <td>
+                <p-tag [value]="e.status" [severity]="e.status === 'ASSIGNED' ? 'success' : 'warning'"></p-tag>
+              </td>
+              <td class="flex flex-row">
+                <p-button label="{{e.status === 'ASSIGNED' ? 'Reassign':'Assign'}}" [rounded]="true" [text]="true"
+                          (onClick)="onAssignClicked(e)"></p-button>
+                <p-button *ngIf="e.status === 'ASSIGNED'" [severity]="'warning'"  label="Un-Assign" [rounded]="true" [text]="true"
+                          (onClick)="onUnAssignClicked(e)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<p-dialog header="Select to Assign" *ngIf="userLookupVisible" [(visible)]="userLookupVisible" [modal]="true">
+  <app-user-lookup header="Select to Assign" (onSelect)="onUserSelect($event)"></app-user-lookup>
+</p-dialog>
