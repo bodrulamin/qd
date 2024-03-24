@@ -226,9 +226,9 @@
 
 </p-dialog>
 
-<p-dialog *ngIf="reviewDialogVisible" [draggable]="false" [style]="{width:'100vw', height : '60vw','max-height':'100vh', 'overflow': 'hidden'}" [(visible)]="reviewDialogVisible" header="Review & Final Submission" [modal]="true" >
+<p-dialog *ngIf="reviewDialogVisible" [draggable]="false" [closable]="false" [style]="{width:'100vw', height : '60vw','max-height':'100vh', 'overflow': 'hidden'}" [(visible)]="reviewDialogVisible" header="Review & Final Submission" [modal]="true" >
   <ng-template pTemplate="content" style="padding:0">
-    <app-review [answerQueryData]="answerQueryData" (onSubmit)="saveAll(submitAction)"></app-review>
+    <app-review [answerQueryData]="answerQueryData" (onSubmit)="saveAll(submitAction)" (onBack)="reviewDialogVisible = false"></app-review>
   </ng-template>
 </p-dialog>
 

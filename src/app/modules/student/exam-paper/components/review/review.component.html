@@ -2,13 +2,14 @@
   <div class="mb-3" *ngFor="let answer of answerDetails; index as i;">
     <p-fieldset legend="Answer to the Question No. {{answer.quesSeq}}">
       <p class="m-0" [innerHTML]="answer.answerDesc"></p>
-      <p class="text-red-600" *ngIf="!answer.answerDesc">No Answer found</p>
+      <p class="text-red-600" *ngIf="!answer.answerDesc">You did not answered this question.</p>
     </p-fieldset>
   </div>
 </div>
 
 
-<div class="flex flex-row flex-grow-1 justify-content-end">
+<div class="flex flex-row flex-grow-1 justify-content-end gap-2">
+  <p-button icon="pi pi-arrow-left" [outlined]="true" size="small" label="Back" (onClick)="back()"></p-button>
   <p-button icon="pi pi-check" size="small" label="Final Submit" (onClick)="submit()"></p-button>
 </div>
 

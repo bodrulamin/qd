@@ -13,6 +13,7 @@ export class ReviewComponent implements OnInit {
   answerDetails: AnswerModel[] = [];
 
   @Output('onSubmit') onSubmit: EventEmitter<any> = new EventEmitter<any>();
+  @Output('onBack') onBack: EventEmitter<any> = new EventEmitter<any>();
   @Input() answerQueryData;
   constructor(
     private examPaperService: ExamPaperService,
@@ -30,5 +31,10 @@ export class ReviewComponent implements OnInit {
 
   submit() {
     this.onSubmit.emit()
+  }
+
+  back() {
+    this.onBack.emit()
+
   }
 }
