@@ -1,0 +1,41 @@
+<form class="p-5" [formGroup]="userSearchForm">
+  <div class="field">
+    <label for="user-text">Search User</label>
+    <input id="user-text" pInputText formControlName="searchText" class="w-full">
+  </div>
+
+  <div class="flex justify-content-end">
+    <p-button icon="pi pi-search" (onClick)="searchUser()" label="Search"></p-button>
+  </div>
+</form>
+
+<div class="mt-5">
+  <p-table [value]="userList" [(selection)]="selectedUser" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 4rem"></th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Username</th>
+        <th>Gender</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
+      <tr>
+        <td>
+          <p-tableRadioButton [value]="e"></p-tableRadioButton>
+        </td>
+        <td>{{ e.fullName }}</td>
+        <td>{{ e.email }}</td>
+        <td>{{ e.username }}</td>
+        <td>{{ e.gender }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+</div>
+<div class="flex flex-row flex-grow-1 justify-content-end p-3">
+  <p-button  label="Select" (onClick)="onSelectUser()"></p-button>
+</div>
+
+
