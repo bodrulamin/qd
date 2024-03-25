@@ -102,7 +102,6 @@ export class QuestionCreatorComponent extends BaseComponent {
   }
 
   onUserSelect(user: UserModel) {
-    console.log(user);
     this.userLookupVisible = false;
 
     this.assignUser(user);

@@ -49,7 +49,7 @@
                 <p-tag [value]="e.status" [severity]="e.status === 'ASSIGNED' ? 'success' : 'warning'"></p-tag>
               </td>
               <td class="flex flex-row">
-                <p-button label="Assign" [rounded]="true" [text]="true"
+                <p-button label="{{e.status === 'ASSIGNED' ? 'Reassign':'Assign'}}" [rounded]="true" [text]="true"
                           (onClick)="onAssignClicked(e)"></p-button>
                 <p-button *ngIf="e.status === 'ASSIGNED'" [severity]="'warning'"  label="Un-Assign" [rounded]="true" [text]="true"
                           (onClick)="onUnAssignClicked(e)"></p-button>
