@@ -1,0 +1,71 @@
+<div class="grid h-full">
+  <div class="col-12 md:col-12">
+    <div class="card p-fluid">
+      <h5>Students</h5>
+
+      <div class="grid">
+        <div class="col-6">
+          <div class="flex flex-row gap-2">
+            <input pInputText [(ngModel)]="searchText">
+            <p-button label="Search" icon="pi pi-search" (onClick)="searchStudents()"></p-button>
+          </div>
+        </div>
+        <div class="col-6 flex flex-row justify-content-end gap-2">
+
+          <p-button [outlined]="true" label="Upload CSV File" icon="pi pi-upload" (click)="csvFileUpload.click()"></p-button>
+          <p-button [outlined]="true" label="Upload Excel File" icon="pi pi-file-excel" (click)="excelFileUpload.click()"></p-button>
+          <input
+            #csvFileUpload
+            [accept]="'.csv'"
+            type="file"
+            class="file-input"
+            (change)="uploadCsv($event)"
+            hidden="true"
+          />
+          <input
+            #excelFileUpload
+            [accept]="'.xls,.xlsx'"
+            type="file"
+            class="file-input"
+            (change)="uploadExcel($event)"
+            hidden="true"
+          />
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <p-table [value]="studentList">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Username</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Birth Date</th>
+              <th>Gender</th>
+              <th>Mobile</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
+            <tr>
+              <td>{{  e.username  }}</td>
+              <td>{{  e.firstname  }}</td>
+              <td>{{  e.lastname  }}</td>
+              <td>{{  e.email  }}</td>
+              <td>{{  e.dob  }}</td>
+              <td>{{  e.gender  }}</td>
+              <td>{{  e.mobile  }}</td>
+
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>
+<p-dialog header="Upload Status" *ngIf="uploadStatusDialogVisible" [(visible)]="uploadStatusDialogVisible"
+          [modal]="true">
+  <div *ngFor="let s of uploadRemarks">
+    <p>{{s}}</p>
+  </div>
+</p-dialog>
