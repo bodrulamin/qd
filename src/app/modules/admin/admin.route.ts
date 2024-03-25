@@ -1,7 +1,6 @@
 import {Routes} from "@angular/router";
 import {AppLayoutComponent} from "./layout/app.layout.component";
 import {adminAuthGuard} from "../auth/auth-guard/auth.guard";
-import {UploadEnrollmentModule} from "./upload-enrollment/upload.enrollment.module";
 
 export const adminRoutes: Routes = [
   {
@@ -35,7 +34,7 @@ export const adminRoutes: Routes = [
         loadChildren: () => import('./upload-student/upload.student.module').then(m => m.UploadStudentModule)
       },
       {
-        path: "upload-enrolement",
+        path: "upload-enrollment",
         loadChildren: () => import('./upload-enrollment/upload.enrollment.module').then(m => m.UploadEnrollmentModule)
       },
       {

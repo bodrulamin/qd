@@ -359,8 +359,8 @@ export class ExamPaperComponent extends BaseComponent implements OnInit, AfterVi
     if (this.autoSavetriggered) return;
     this.autoSavetriggered = true;
 
-    let seconds = 3;
-    console.log('saving in 3 seconds...')
+    let seconds = 10;
+    console.log('saving in '+ seconds +' seconds...')
     setTimeout(() => {
       this.autoSavetriggered = false;
 
