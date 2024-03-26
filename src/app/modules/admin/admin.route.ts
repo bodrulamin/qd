@@ -30,6 +30,10 @@ export const adminRoutes: Routes = [
         loadChildren: () => import('./question-creator/question-creator.module').then(m => m.QuestionCreatorModule)
       },
       {
+        path: "assign-examiner",
+        loadChildren: () => import('./assign-examiner/assign-examiner.module').then(m => m.AssignExaminerModule)
+      },
+      {
         path: "upload-student",
         loadChildren: () => import('./upload-student/upload.student.module').then(m => m.UploadStudentModule)
       },

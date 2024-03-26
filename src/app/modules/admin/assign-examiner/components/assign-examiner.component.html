@@ -1,0 +1,109 @@
+<div class="grid">
+  <div class="col-12 md:col-12">
+    <div class="card p-fluid">
+      <h5>Examiner Assignment</h5>
+
+      <form class="p-5" [formGroup]="examinerSearchForm">
+        <div class="formgrid grid">
+          <div class="field col">
+            <label for="exam-level">Exam Level</label>
+            <p-dropdown id="exam-level" (onChange)="onExamLevelChange($event.value)" (onClear)="onExamLevelClear()"
+                        formControlName="examLevel" [showClear]="true" placeholder="Select Exam Level"
+                        [options]="examLevelOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="session">Session</label>
+            <p-dropdown id="session" (onChange)="clearExamList($event.value)" [showClear]="true"
+                        placeholder="Select Session" formControlName="session"
+                        [options]="sessionOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="year">Year</label>
+            <p-dropdown id="year" (onChange)="clearExamList($event.value)" [showClear]="true" placeholder="Select Year"
+                        formControlName="year"
+                        [options]="yearOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="subject">Subject</label>
+            <p-dropdown id="subject" [showClear]="true" placeholder="Select Subject" formControlName="subjectCode"
+                        [options]="subjectOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+        </div>
+
+        <div class="flex justify-content-end">
+          <p-button icon="pi pi-search" (onClick)="searchExaminer()" label="Find"></p-button>
+        </div>
+      </form>
+
+      <h6>Total Answer Paper : {{answerPaperCount}}</h6>
+
+      <form class="p-3" [formGroup]="createExaminerForm">
+        <div class="formgrid grid">
+          <div class="field col">
+            <label for="start-sl">Start SL</label>
+            <input id="start-sl" pInputText formControlName="answerPaperSerialStart">
+          </div>
+          <div class="field col">
+            <label for="end-sl">End SL</label>
+            <input id="end-sl" pInputText formControlName="answerPaperSerialEnd">
+          </div>
+
+        </div>
+        <div class="formgrid grid">
+          <div class="field col">
+            <label for="user-name">Assigned Person</label>
+
+            <div class="p-inputgroup" (click)="usernameClicked($event)">
+              <input id="user-name" type="text" formControlName="assignedUsername" readonly  pInputText placeholder="" />
+              <button type="button" (click)="userLookupVisible=true" pButton icon="pi pi-search" styleClass="p-button-warn"></button>
+            </div>
+          </div>
+
+          <div class="field col">
+            <label for="privLevelCode">Examiner Type</label>
+            <p-dropdown id="privLevelCode" [showClear]="true" placeholder="Select Examiner Type"
+                        formControlName="privLevelCode"
+                        [options]="privLevelCodeOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+        </div>
+
+        <div class="flex justify-content-end">
+          <p-button label="{{createExaminerForm.controls['id'].value ? 'Update':'Add'}}" (onClick)="addExaminer()"></p-button>
+        </div>
+
+
+      </form>
+
+
+      <div class="mt-5">
+        <p-table [value]="examinerList">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Start SL</th>
+              <th>End SL</th>
+              <th>Assigned Person</th>
+              <th>Action</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
+            <tr>
+              <td>{{e.answerPaperSerialStart}}</td>
+              <td>{{e.answerPaperSerialEnd}}</td>
+              <td>{{e.assignedUsername}}</td>
+              <td>
+                <p-menu #menu [model]="actionMenu" [popup]="true" appendTo="body"></p-menu>
+                <p-button type="button" [text]="true" (click)="activeRowIndex = rowIndex;menu.toggle($event)"
+                          icon="pi pi-ellipsis-v"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<p-dialog header="Select to Assign" *ngIf="userLookupVisible" [(visible)]="userLookupVisible" [modal]="true">
+  <app-user-lookup header="Select to Assign" (onSelect)="onUserSelect($event)"></app-user-lookup>
+</p-dialog>
