@@ -34,12 +34,12 @@ export class UserLookupComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.searchUser();
   }
 
   private prepareCreateQuestionForm() {
     this.userSearchForm = this.formBuilder.group({
-      searchText: [null, Validators.required],
+      searchText: [''],
     });
   }
 

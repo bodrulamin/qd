@@ -62,8 +62,8 @@ export class ExamConfigurationComponent extends BaseComponent {
       session: [null, Validators.required],
       year: [null, [Validators.required]],
       examName: [null, Validators.required],
-      examDate: [null, Validators.required],
-      password: [null, Validators.required],
+      examDate: [new Date(), Validators.required],
+      password: ['', Validators.required],
     });
   }
 
