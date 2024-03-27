@@ -1,7 +1,8 @@
 <form class="p-5" [formGroup]="userSearchForm">
-  <div class="field">
+  <div class="field" >
     <label for="user-text">Search User</label>
-    <input id="user-text" pInputText formControlName="searchText" class="w-full">
+    <input (keydown.enter)="searchUser()" id="user-text" pInputText formControlName="searchText"
+           placeholder="Search User by Name, Email, Username, Gender" class="w-full">
   </div>
 
   <div class="flex justify-content-end">
@@ -34,8 +35,8 @@
   </p-table>
 
 </div>
-<div class="flex flex-row flex-grow-1 justify-content-end p-3">
-  <p-button  label="Select" (onClick)="onSelectUser()"></p-button>
+<div class="flex flex-row flex-grow-1 justify-content-end p-5">
+  <p-button label="OK" (onClick)="onSelectUser()"></p-button>
 </div>
 
 
