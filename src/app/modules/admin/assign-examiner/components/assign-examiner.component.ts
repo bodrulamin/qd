@@ -120,6 +120,8 @@ export class AssignExaminerComponent extends BaseComponent {
 
 
   searchExaminer() {
+    this.examinerList = [];
+    this.answerPaperCount = 0;
     if (this.formInvalid()) return;
     this.subscribers.searchExaminersubs = this.assignExaminerService.searchExaminer(this.examinerSearchForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
