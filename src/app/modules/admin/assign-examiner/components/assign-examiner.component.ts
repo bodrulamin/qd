@@ -40,6 +40,10 @@ export class AssignExaminerComponent extends BaseComponent {
   actionMenu = [];
   activeRowIndex: any;
   editMode: boolean = false;
+  assignDetailDialogVisible: boolean = false;
+  currentAssignDetail: AssignExaminerModel;
+  examLevelMap: Map<any, any> = new Map();
+  subjectMap: Map<any, any> = new Map();
 
   constructor(
     private router: Router,
@@ -152,6 +156,13 @@ export class AssignExaminerComponent extends BaseComponent {
         this.sessionOptions = apiResponse.data.examSessionList;
         this.yearOptions = apiResponse.data.examYearList;
         this.privLevelCodeOptions = apiResponse.data.privLevelList;
+        apiResponse.data.examLevelList.forEach(e => {
+          this.examLevelMap.set(e.code, e.name);
+          e.subList.forEach(s => {
+            this.subjectMap.set(s.code, s.name);
+          })
+        });
+
       }
     })
   }
@@ -159,11 +170,19 @@ export class AssignExaminerComponent extends BaseComponent {
   onExamLevelChange(examLevel: any) {
     this.examinerSearchForm.controls['subjectCode'].setValue(null)
     this.subjectOptions = examLevel ? this.examLevelOptions.find(l => l.code === examLevel).subList : [];
+    this.clearExaminerData();
+  }
+
+  clearExaminerData() {
+    this.examinerList = [];
+    this.answerPaperCount = 0;
+    this.prepareCreateExaminerForm();
   }
 
   onExamLevelClear() {
     this.examinerSearchForm.controls['subjectCode'].setValue(null)
     this.subjectOptions = []
+    this.clearExaminerData();
   }
 
   clearExamList(examLevel: any) {
@@ -215,5 +234,9 @@ export class AssignExaminerComponent extends BaseComponent {
 
   usernameClicked($event: MouseEvent) {
     this.userLookupVisible = true
+  }
+
+  onClearExaminerCreateForm() {
+    this.prepareCreateExaminerForm();
   }
 }

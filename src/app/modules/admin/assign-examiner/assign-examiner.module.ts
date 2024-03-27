@@ -11,6 +11,9 @@ import {DialogModule} from "primeng/dialog";
 import {UserLookupTemplateModule} from "../user-lookup-template/user-lookup-template.module";
 import {MenuModule} from "primeng/menu";
 import {InputTextModule} from "primeng/inputtext";
+import {KeyFilterModule} from "primeng/keyfilter";
+import {TagModule} from "primeng/tag";
+import {BadgeModule} from "primeng/badge";
 
 @NgModule({
   imports: [
@@ -25,6 +28,8 @@ import {InputTextModule} from "primeng/inputtext";
     UserLookupTemplateModule,
     MenuModule,
     InputTextModule,
+    KeyFilterModule,
+    BadgeModule,
   ],
   declarations: [
     AssignExaminerComponent,
