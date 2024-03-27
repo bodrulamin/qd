@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {SEARCH_QUESTION} from "./create-question.endpoints";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {BaseService} from "../../../../base/service/base.service";
 import {ApiResponse} from "../../../../base/service/domain/api.response";
 import {SearchQuestionModel} from "./domain/search-question.model";
@@ -14,6 +14,16 @@ export class CreateQuestionService extends BaseService {
   constructor() {
     super();
   }
+  searchModel = new BehaviorSubject(new SearchQuestionModel());
+  lastSearchModel = this.searchModel.asObservable();
+
+  setLastSearchData(value: any) {
+    this.searchModel.next(value);
+  }
+  getLastSearchModel(){
+    return this.lastSearchModel;
+  }
+
 
 
   searchQuestion(searchModel: SearchQuestionModel): Observable<ApiResponse> {

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as endpoint from "./assign-examiner.endpoints";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {BaseService} from "../../../base/service/base.service";
 import {ApiResponse} from "../../../base/service/domain/api.response";
 import {ExaminerSearchModel} from "./domain/assign-examiner.model";
@@ -15,6 +15,15 @@ export class AssignExaminerService extends BaseService {
     super();
   }
 
+  searchModel = new BehaviorSubject(new ExaminerSearchModel());
+  lastSearchModel = this.searchModel.asObservable();
+
+  setLastSearchData(value: any) {
+    this.searchModel.next(value);
+  }
+  getLastSearchModel(){
+    return this.lastSearchModel;
+  }
 
   searchExaminer(searchModel: ExaminerSearchModel): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(endpoint.SEARCH_EXAMINERS,searchModel);

@@ -59,6 +59,7 @@ export class AssignExaminerComponent extends BaseComponent {
     this.prepareCreateExaminerForm();
     this.fetchConfiguration();
     this.setupActionMenu();
+
   }
 
   private setupActionMenu() {
@@ -127,6 +128,7 @@ export class AssignExaminerComponent extends BaseComponent {
     this.examinerList = [];
     this.answerPaperCount = 0;
     if (this.formInvalid()) return;
+    this.assignExaminerService.setLastSearchData(this.examinerSearchForm.value)
     this.subscribers.searchExaminersubs = this.assignExaminerService.searchExaminer(this.examinerSearchForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examinerList = apiResponse.data.assignList
@@ -162,7 +164,14 @@ export class AssignExaminerComponent extends BaseComponent {
             this.subjectMap.set(s.code, s.name);
           })
         });
+        this.assignExaminerService.getLastSearchModel().subscribe(
+          {
+            next: data => {
+              this.examinerSearchForm.patchValue(data);
+              this.subjectOptions = data.examLevel ? this.examLevelOptions.find(l => l.code === data.examLevel).subList : [];
 
+            }
+          });
       }
     })
   }

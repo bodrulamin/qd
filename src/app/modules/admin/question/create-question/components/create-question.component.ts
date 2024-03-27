@@ -62,6 +62,7 @@ export class CreateQuestionComponent extends BaseComponent {
 
   searchQuestion() {
     if (this.formInvalid()) return;
+    this.createQuestionService.setLastSearchData(this.createQuestionForm.value);
     this.subscribers.searchQsubs= this.createQuestionService.searchQuestion(this.createQuestionForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
         if (apiResponse.data.isNew) {
@@ -97,6 +98,14 @@ export class CreateQuestionComponent extends BaseComponent {
         this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;
         this.yearOptions = apiResponse.data.examYearList;
+        this.createQuestionService.getLastSearchModel().subscribe(
+          {
+            next: data => {
+              this.createQuestionForm.patchValue(data);
+              this.subjectOptions = data.examLevel ? this.examLevelOptions.find(l => l.code === data.examLevel).subList : [];
+
+            }
+          });
       }
     })
   }

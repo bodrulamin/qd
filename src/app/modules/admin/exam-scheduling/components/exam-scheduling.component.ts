@@ -32,7 +32,7 @@ export class ExamSchedulingComponent extends BaseComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public messageService: MessageService,
-    private ExamSchedulingService: ExamSchedulingService,
+    private examSchedulingService: ExamSchedulingService,
     private adminService: AdminService,
     private formBuilder: FormBuilder,
     private datePipe: DatePipe
@@ -41,7 +41,7 @@ export class ExamSchedulingComponent extends BaseComponent {
     this.generateMinMaxYear();
     this.prepareCreateQuestionForm();
     this.fetchConfiguration();
-
+    this.examSchedulingService.getLastSearchModel().subscribe({next: data => this.examSearchForm.patchValue(data)})
   }
 
   private generateMinMaxYear() {
@@ -63,7 +63,8 @@ export class ExamSchedulingComponent extends BaseComponent {
 
   searchExams() {
     if (this.formInvalid()) return;
-   this.subscribers.examScheduleSubs = this.ExamSchedulingService.searchQuestion(this.examSearchForm.value).subscribe(apiResponse => {
+    this.examSchedulingService.setLastSearchData(this.examSearchForm.value);
+    this.subscribers.examScheduleSubs = this.examSchedulingService.searchQuestion(this.examSearchForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.examList = apiResponse.data
         this.examList.forEach(e => {
@@ -106,12 +107,12 @@ export class ExamSchedulingComponent extends BaseComponent {
   save(e: any) {
 
     let schedule = this.prepareSchedule(e);
-    if (!this.dateValidated(schedule)){
+    if (!this.dateValidated(schedule)) {
       e.invalidEndDate = true;
       return;
     }
 
-    this.subscribers.examScheduleSubs2 = this.ExamSchedulingService.saveSchedule([schedule]).subscribe(apiResponse => {
+    this.subscribers.examScheduleSubs2 = this.examSchedulingService.saveSchedule([schedule]).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.messageService.add({summary: 'Saved', detail: "Exam Schedule Updated", severity: 'success'});
       }
@@ -122,9 +123,13 @@ export class ExamSchedulingComponent extends BaseComponent {
   private dateValidated(schedule: ScheduleModel) {
     let startDate = new Date(schedule.examStartsAt)
     let endDate = new Date(schedule.examEndsAt)
-    let startTimeIsLessThanEndTime =  startDate.getTime() < endDate.getTime();
-    if (!startTimeIsLessThanEndTime){
-      this.messageService.add({summary:'Invalid Time', detail:'Start Time cannot be greater than End Time',severity:'error'});
+    let startTimeIsLessThanEndTime = startDate.getTime() < endDate.getTime();
+    if (!startTimeIsLessThanEndTime) {
+      this.messageService.add({
+        summary: 'Invalid Time',
+        detail: 'Start Time cannot be greater than End Time',
+        severity: 'error'
+      });
     }
 
     return startTimeIsLessThanEndTime;
