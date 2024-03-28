@@ -103,7 +103,6 @@ export class CreateQuestionComponent extends BaseComponent {
             next: data => {
               this.createQuestionForm.patchValue(data);
               this.subjectOptions = data.examLevel ? this.examLevelOptions.find(l => l.code === data.examLevel).subList : [];
-
             }
           });
       }
