@@ -68,4 +68,15 @@ export class UploadStudentComponent extends BaseComponent {
       }
     });
   }
+
+
+  deleteStudent(e: any) {
+    this.uploadStudentService.deleteStudent({id: e.id}).subscribe({
+      next: apiResponse => {
+        this.searchStudents();
+        this.messageService.add({severity: 'success', summary: 'Success', detail: apiResponse.remarks.join(", ")})
+      }
+    })
+
+  }
 }

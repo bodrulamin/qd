@@ -119,7 +119,7 @@ export class AssignExaminerComponent extends BaseComponent {
       year: [null, [Validators.required]],
       privLevelCode: [null, [Validators.required]],
       assignedUserId: [null, [Validators.required]],
-      assignedUsername: [''],
+      fullName: [''],
     });
   }
 
@@ -207,7 +207,7 @@ export class AssignExaminerComponent extends BaseComponent {
   onUserSelect(user: UserModel) {
     this.userLookupVisible = false;
     this.createExaminerForm.controls['assignedUserId'].setValue(user.id);
-    this.createExaminerForm.controls['assignedUsername'].setValue(user.email);
+    this.createExaminerForm.controls['fullName'].setValue(user.fullName);
   }
 
   private updateExaminer() {
@@ -225,14 +225,12 @@ export class AssignExaminerComponent extends BaseComponent {
 
   private deleteExaminerAssignment() {
     let e = this.examinerList[this.activeRowIndex];
-    this.subscribers.examConfigSubs2 = this.assignExaminerService.deleteExaminerAssignment(e).subscribe(apiResponse => {
+    this.subscribers.examConfigSubs2 = this.assignExaminerService.deleteExaminerAssignment({id:e.id}).subscribe(apiResponse => {
       this.searchExaminer();
       if (apiResponse.result) {
-        this.messageService.add({
-          summary: 'Deleted !',
-          detail: 'Examiner Assignment Deleted !',
-          severity: 'info'
-        })
+        if (apiResponse.result) {
+          this.messageService.add({severity: 'success', summary: 'Success', detail: apiResponse.remarks.join(", ")})
+        }
       }
     })
   }

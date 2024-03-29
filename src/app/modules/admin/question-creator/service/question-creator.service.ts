@@ -18,14 +18,16 @@ export class QuestionCreatorService extends BaseService {
 
 
   searchQuestionCreator(searchModel: CreatorSearchModel): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(endpoint.SEARCH_QUESTION_CREATORS,searchModel);
+    return this.http.post<ApiResponse>(endpoint.SEARCH_QUESTION_CREATORS, searchModel);
   }
+
   assignQuestionCreator(searchModel: CreatorSearchModel): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(endpoint.ASSIGN_QUESTION_CREATOR,searchModel);
+    return this.http.post<ApiResponse>(endpoint.ASSIGN_QUESTION_CREATOR, searchModel);
   }
-  // saveSchedule(schedules: ScheduleModel[]): Observable<ApiResponse> {
-  //   return this.http.post<ApiResponse>(endpoint.UPDATE_SCHEDULE,schedules);
-  // }
+
+  deleteQuestionCreator(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(endpoint.DELETE_QUESTION_CREATOR, data);
+  }
 
 
 }

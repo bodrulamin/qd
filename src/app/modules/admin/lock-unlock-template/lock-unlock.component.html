@@ -39,6 +39,7 @@
               <th>Date</th>
               <th>Start Time</th>
               <th>End Time</th>
+              <th>Lock Status</th>
               <th>Password</th>
               <th class="text-center">Action</th>
             </tr>
@@ -49,6 +50,7 @@
               <td>{{ e.examDate | date:'dd-MMM-yy' }}</td>
               <td>{{ e.examStartsAt | date:'HH:mm' }}</td>
               <td>{{ e.examEndsAt | date:'HH:mm' }}</td>
+              <td><i class="pi pi-eye" [pTooltip]="'HOE: ' + e.hoeLockStatus + '\nController: ' + e.controllerLockStatus" tooltipPosition="left"></i></td>
               <td>
                 <p-password [feedback]="false" [toggleMask]="true" [(ngModel)]="e.lockPassword"></p-password>
               </td>

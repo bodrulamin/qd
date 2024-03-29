@@ -9,20 +9,22 @@ import {CalendarModule} from "primeng/calendar";
 import {InputTextModule} from "primeng/inputtext";
 import {PasswordModule} from "primeng/password";
 import {DialogModule} from "primeng/dialog";
+import {TooltipModule} from "primeng/tooltip";
 
 @NgModule({
-  imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    CommonModule,
-    DropdownModule,
-    ButtonModule,
-    TableModule,
-    CalendarModule,
-    InputTextModule,
-    PasswordModule,
-    DialogModule
-  ],
+    imports: [
+        ReactiveFormsModule,
+        FormsModule,
+        CommonModule,
+        DropdownModule,
+        ButtonModule,
+        TableModule,
+        CalendarModule,
+        InputTextModule,
+        PasswordModule,
+        DialogModule,
+        TooltipModule
+    ],
   exports: [
     LockUnlockComponent
   ],

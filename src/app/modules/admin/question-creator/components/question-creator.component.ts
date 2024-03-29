@@ -91,12 +91,14 @@ export class QuestionCreatorComponent extends BaseComponent {
     this.userLookupVisible = true;
   }
 
-  onUnAssignClicked(creatorModel: QuestionCreatorModel) {
-    this.selectedCreator = creatorModel;
-    delete this.selectedCreator.userId;
-    this.questionCreatorService.assignQuestionCreator(this.selectedCreator).subscribe({
+  onUnAssignClicked(e: any) {
+    this.questionCreatorService.deleteQuestionCreator({id: e.id}).subscribe({
       next: apiResponse => {
         this.searchQuestionCreator();
+        if (apiResponse.result) {
+          this.messageService.add({severity: 'success', summary: 'Success', detail: apiResponse.remarks.join(", ")})
+        }
+
       }
     })
   }

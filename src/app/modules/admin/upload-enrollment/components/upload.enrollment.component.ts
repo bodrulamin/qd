@@ -70,4 +70,14 @@ export class UploadEnrollmentComponent extends BaseComponent {
       }
     });
   }
+
+  deleteEnrollment(e: any) {
+    this.uploadEnrollmentService.deleteStudentEnrollment({id: e.id}).subscribe({
+      next: apiResponse => {
+        this.searchEnrolledStudents();
+        this.messageService.add({severity: 'success', summary: 'Success', detail: apiResponse.remarks.join(", ")})
+      }
+    })
+
+  }
 }

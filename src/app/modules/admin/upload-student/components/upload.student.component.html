@@ -44,6 +44,8 @@
               <th>Birth Date</th>
               <th>Gender</th>
               <th>Mobile</th>
+              <th>Action</th>
+
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
@@ -55,6 +57,7 @@
               <td>{{  e.dob  }}</td>
               <td>{{  e.gender  }}</td>
               <td>{{  e.mobile  }}</td>
+              <td><p-button [outlined]="true" label="Delete" (onClick)="deleteStudent(e)"></p-button> </td>
 
             </tr>
           </ng-template>

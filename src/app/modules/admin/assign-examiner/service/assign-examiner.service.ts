@@ -4,6 +4,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {BaseService} from "../../../base/service/base.service";
 import {ApiResponse} from "../../../base/service/domain/api.response";
 import {ExaminerSearchModel} from "./domain/assign-examiner.model";
+import {DELETE_EXAMINER} from "./assign-examiner.endpoints";
 
 
 @Injectable({
@@ -32,8 +33,8 @@ export class AssignExaminerService extends BaseService {
     return this.http.post<ApiResponse>(endpoint.ASSIGN_EXAMINER,searchModel);
   }
 
-  deleteExaminerAssignment(searchModel: ExaminerSearchModel): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(endpoint.ASSIGN_EXAMINER,searchModel);
+  deleteExaminerAssignment(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(endpoint.DELETE_EXAMINER,data);
   }
 
 }

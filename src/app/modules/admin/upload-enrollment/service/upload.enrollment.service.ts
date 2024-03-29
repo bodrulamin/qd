@@ -5,7 +5,7 @@ import {BaseService} from "../../../base/service/base.service";
 import {ApiResponse} from "../../../base/service/domain/api.response";
 import {StudentSearchModel} from "./domain/upload.enrollment.model";
 import {SAVE_QUESTION} from "../../question/edit-question/service/edit-question.endpoints";
-import {UPLOAD_STUDENT_ENROLLMENT} from "./upload.student.endpoints";
+import {DELETE_STUDENT_ENROLLMENT, UPLOAD_STUDENT_ENROLLMENT} from "./upload.student.endpoints";
 
 
 @Injectable({
@@ -24,6 +24,9 @@ export class UploadEnrollmentService extends BaseService {
 
   uploadStudentEnrollment(formData: FormData): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(UPLOAD_STUDENT_ENROLLMENT, formData);
+  }
+  deleteStudentEnrollment(data: any): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(DELETE_STUDENT_ENROLLMENT, data);
   }
 
 

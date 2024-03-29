@@ -44,6 +44,7 @@
               <th>Session</th>
               <th>Year</th>
               <th>Subject Name</th>
+              <th>Action</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
@@ -55,6 +56,7 @@
               <td>{{  e.session  }}</td>
               <td>{{  e.year  }}</td>
               <td>{{  e.subjectName  }}</td>
+              <td><p-button [outlined]="true" label="Delete" (onClick)="deleteEnrollment(e)"></p-button> </td>
 
             </tr>
           </ng-template>
