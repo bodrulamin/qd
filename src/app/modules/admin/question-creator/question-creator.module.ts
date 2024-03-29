@@ -15,18 +15,19 @@ import {DialogModule} from "primeng/dialog";
 import {UserLookupTemplateModule} from "../user-lookup-template/user-lookup-template.module";
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(questionCreatorRoutes),
-    ReactiveFormsModule,
-    FormsModule,
-    CommonModule,
-    ButtonModule,
-    TableModule,
-    DropdownModule,
-    TagModule,
-    DialogModule,
-    UserLookupTemplateModule,
-  ],
+    imports: [
+        RouterModule.forChild(questionCreatorRoutes),
+        ReactiveFormsModule,
+        FormsModule,
+        CommonModule,
+        ButtonModule,
+        TableModule,
+        DropdownModule,
+        TagModule,
+        DialogModule,
+        UserLookupTemplateModule,
+        CalendarModule,
+    ],
   declarations: [
     QuestionCreatorComponent,
   ]

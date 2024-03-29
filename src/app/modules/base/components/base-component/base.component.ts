@@ -78,5 +78,10 @@ export class BaseComponent implements OnDestroy {
     return requiredErrorMessage;
   }
 
+  showApiRemarks(apiResponse){
+    this.msgService.add({severity: 'success', summary: 'Success', detail: apiResponse.remarks.join(", ")})
+
+  }
+
 
 }

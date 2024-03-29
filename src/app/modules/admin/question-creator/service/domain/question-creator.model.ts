@@ -16,6 +16,7 @@ export class QuestionCreatorModel {
   subjectName: string;
   userId: number;
   year: string
+  allowDateUpto: any;
 }
 
 export class AssignCreatorModel {

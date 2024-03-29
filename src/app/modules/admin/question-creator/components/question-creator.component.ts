@@ -25,7 +25,8 @@ export class QuestionCreatorComponent extends BaseComponent {
   };
   questionCreatorList: QuestionCreatorModel[] = [];
   userLookupVisible: boolean = false;
-  selectedCreator: QuestionCreatorModel;
+  selectedIndex: number = -1;
+
 
   constructor(
     private router: Router,
@@ -54,6 +55,11 @@ export class QuestionCreatorComponent extends BaseComponent {
     this.subscribers.examScheduleSubs = this.questionCreatorService.searchQuestionCreator(this.questionCreatorSearchForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.questionCreatorList = apiResponse.data
+        this.questionCreatorList.forEach(e=>{
+          if (e.allowDateUpto){
+            e.allowDateUpto = new Date(e.allowDateUpto);
+          }
+        })
       }
     });
 
@@ -86,36 +92,52 @@ export class QuestionCreatorComponent extends BaseComponent {
   }
 
 
-  onAssignClicked(creatorModel: QuestionCreatorModel) {
-    this.selectedCreator = creatorModel;
-    this.userLookupVisible = true;
-  }
 
   onUnAssignClicked(e: any) {
     this.questionCreatorService.deleteQuestionCreator({id: e.id}).subscribe({
       next: apiResponse => {
         this.searchQuestionCreator();
         if (apiResponse.result) {
-          this.messageService.add({severity: 'success', summary: 'Success', detail: apiResponse.remarks.join(", ")})
+          this.showApiRemarks(apiResponse);
         }
 
       }
     })
   }
 
-  onUserSelect(user: UserModel) {
-    this.userLookupVisible = false;
-
-    this.assignUser(user);
+  onAssignPersonClick(index: any) {
+    this.selectedIndex = index;
+    this.userLookupVisible = true;
   }
 
-  private assignUser(user: UserModel) {
-    this.selectedCreator.userId = user.id;
+  onUserSelect(user: UserModel) {
+    this.userLookupVisible = false;
+    this.questionCreatorList[this.selectedIndex].userId = user.id;
+    this.questionCreatorList[this.selectedIndex].assignedPerson = user.fullName;
 
-    this.questionCreatorService.assignQuestionCreator(this.selectedCreator).subscribe({
+  }
+
+  onAssignClicked(e:any) {
+    if(!this.validated(e)) return;
+    this.questionCreatorService.assignQuestionCreator(e).subscribe({
       next: apiResponse => {
         this.searchQuestionCreator();
+        if (apiResponse.result){
+          this.showApiRemarks(apiResponse)
+        }
       }
     })
+  }
+
+  private validated(e) {
+    if(!e.allowDateUpto) {
+      this.messageService.add({summary:'Error',detail:'Input Date allowed upto', severity:'error'})
+      return false;
+    }
+    if (!e.userId){
+      this.messageService.add({summary:'Error',detail:'Select Assigned Person', severity:'error'})
+      return false;
+    }
+    return true;
   }
 }

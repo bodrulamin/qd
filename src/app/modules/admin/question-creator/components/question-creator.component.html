@@ -37,21 +37,31 @@
             <tr>
               <th>Subject</th>
               <th>Assigned Person</th>
+              <th>Allowed Date upto</th>
               <th>Status</th>
-              <th colspan="2" ><span class="ml-4">Action</span></th>
+              <th colspan="2"><span class="ml-4">Action</span></th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-e let-rowIndex="rowIndex">
             <tr>
               <td>{{  e.subjectName  }}</td>
-              <td>{{  e.assignedPerson  }}</td>
+              <td class="flex">
+                <p-button [text]="true" iconPos="right" label="{{e.assignedPerson || 'Select'}}"
+                          (onClick)="onAssignPersonClick(rowIndex)"></p-button>
+              </td>
+
+              <td>
+                <p-calendar [(ngModel)]="e.allowDateUpto" placeholder="Date" appendTo="body"
+                            dateFormat="dd-M-yy" ></p-calendar>
+              </td>
               <td>
                 <p-tag [value]="e.status" [severity]="e.status === 'ASSIGNED' ? 'success' : 'warning'"></p-tag>
               </td>
               <td class="flex flex-row">
                 <p-button label="{{e.status === 'ASSIGNED' ? 'Reassign':'Assign'}}" [rounded]="true" [text]="true"
                           (onClick)="onAssignClicked(e)"></p-button>
-                <p-button *ngIf="e.status === 'ASSIGNED'" [severity]="'warning'"  label="Un-Assign" [rounded]="true" [text]="true"
+                <p-button *ngIf="e.status === 'ASSIGNED'" [severity]="'warning'" label="Un-Assign" [rounded]="true"
+                          [text]="true"
                           (onClick)="onUnAssignClicked(e)"></p-button>
               </td>
             </tr>

@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {UploadStudentService} from "../service/upload.student.service";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
 import {StudentSearchModel} from "../service/domain/upload.student.model";
 
@@ -21,6 +21,7 @@ export class UploadStudentComponent extends BaseComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public messageService: MessageService,
+    private confirmationService:ConfirmationService,
     private uploadStudentService: UploadStudentService,
   ) {
     super();
@@ -71,12 +72,25 @@ export class UploadStudentComponent extends BaseComponent {
 
 
   deleteStudent(e: any) {
-    this.uploadStudentService.deleteStudent({id: e.id}).subscribe({
-      next: apiResponse => {
-        this.searchStudents();
-        this.messageService.add({severity: 'success', summary: 'Success', detail: apiResponse.remarks.join(", ")})
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to delete this student? this can not be undone!',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+
+        this.uploadStudentService.deleteStudent({id: e.id}).subscribe({
+          next: apiResponse => {
+            this.searchStudents();
+            this.messageService.add({severity: 'success', summary: 'Success', detail: apiResponse.remarks.join(", ")})
+          }
+        })
+      },
+      reject: (type) => {
+
       }
-    })
+    });
+
+
 
   }
 }

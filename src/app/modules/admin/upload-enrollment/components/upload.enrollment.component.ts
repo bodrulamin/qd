@@ -1,11 +1,9 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
 import {UploadEnrollmentService} from "../service/upload.enrollment.service";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
 import {StudentSearchModel, UploadEnrollmentModel} from "../service/domain/upload.enrollment.model";
-import {AdminService} from "../../service/admin.service";
 
 @Component({
   selector: 'app-upload-enrollment',
@@ -23,6 +21,7 @@ export class UploadEnrollmentComponent extends BaseComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     public messageService: MessageService,
+    private confirmationService:ConfirmationService,
     private uploadEnrollmentService: UploadEnrollmentService,
   ) {
     super();
@@ -72,12 +71,25 @@ export class UploadEnrollmentComponent extends BaseComponent {
   }
 
   deleteEnrollment(e: any) {
-    this.uploadEnrollmentService.deleteStudentEnrollment({id: e.id}).subscribe({
-      next: apiResponse => {
-        this.searchEnrolledStudents();
-        this.messageService.add({severity: 'success', summary: 'Success', detail: apiResponse.remarks.join(", ")})
+
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to delete this enrollment? this can not be undone!',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.uploadEnrollmentService.deleteStudentEnrollment({id: e.id}).subscribe({
+          next: apiResponse => {
+            this.searchEnrolledStudents();
+            this.messageService.add({severity: 'success', summary: 'Success', detail: apiResponse.remarks.join(", ")})
+          }
+        })
+      },
+      reject: (type) => {
+
       }
-    })
+    });
+
+
 
   }
 }
