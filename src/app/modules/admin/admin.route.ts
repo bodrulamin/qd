@@ -34,6 +34,10 @@ export const adminRoutes: Routes = [
         loadChildren: () => import('./assign-examiner/assign-examiner.module').then(m => m.AssignExaminerModule)
       },
       {
+        path: "answer-paper-assessment",
+        loadChildren: () => import('./answer-paper-assessment/answer-paper-assessment.module').then(m => m.AnswerPaperAssessmentModule)
+      },
+      {
         path: "upload-student",
         loadChildren: () => import('./upload-student/upload.student.module').then(m => m.UploadStudentModule)
       },

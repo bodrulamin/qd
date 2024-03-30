@@ -4,9 +4,10 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {QuestionCreatorService} from "../service/question-creator.service";
 import {MessageService} from "primeng/api";
 import {BaseComponent} from "../../../base/components/base-component/base.component";
-import {AssignCreatorModel, QuestionCreatorModel} from "../service/domain/question-creator.model";
+import {QuestionCreatorModel} from "../service/domain/question-creator.model";
 import {AdminService} from "../../service/admin.service";
 import {UserModel} from "../../user-lookup-template/service/domain/usre.lookup.model";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-question-creator',
@@ -34,6 +35,7 @@ export class QuestionCreatorComponent extends BaseComponent {
     public messageService: MessageService,
     private questionCreatorService: QuestionCreatorService,
     private adminService: AdminService,
+    private datePipe:DatePipe,
     private formBuilder: FormBuilder,
   ) {
     super();
@@ -52,6 +54,7 @@ export class QuestionCreatorComponent extends BaseComponent {
 
   searchQuestionCreator() {
     if (this.formInvalid()) return;
+    this.questionCreatorService.setLastSearchData(this.questionCreatorSearchForm.value)
     this.subscribers.examScheduleSubs = this.questionCreatorService.searchQuestionCreator(this.questionCreatorSearchForm.value).subscribe(apiResponse => {
       if (apiResponse.result) {
         this.questionCreatorList = apiResponse.data
@@ -78,6 +81,16 @@ export class QuestionCreatorComponent extends BaseComponent {
         this.examLevelOptions = apiResponse.data.examLevelList;
         this.sessionOptions = apiResponse.data.examSessionList;
         this.yearOptions = apiResponse.data.examYearList;
+
+        this.questionCreatorService.getLastSearchModel().subscribe(
+          {
+            next: data => {
+              this.questionCreatorSearchForm.patchValue(data);
+              // this.subjectOptions = data.examLevel ? this.examLevelOptions.find(l => l.code === data.examLevel).subList : [];
+
+            }
+          });
+
       }
     })
   }
@@ -119,6 +132,7 @@ export class QuestionCreatorComponent extends BaseComponent {
 
   onAssignClicked(e:any) {
     if(!this.validated(e)) return;
+    e.allowDateUpto = this.datePipe.transform(e.allowDateUpto,'yyyy-MM-dd')
     this.questionCreatorService.assignQuestionCreator(e).subscribe({
       next: apiResponse => {
         this.searchQuestionCreator();

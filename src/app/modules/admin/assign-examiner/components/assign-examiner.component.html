@@ -55,7 +55,7 @@
               <label for="user-name">Assigned Person</label>
 
               <div class="p-inputgroup" (click)="usernameClicked($event)">
-                <input id="user-name" type="text" formControlName="fullName" readonly pInputText
+                <input id="user-name" type="text" formControlName="assignedUsername" readonly pInputText
                        placeholder=""/>
                 <button type="button" (click)="userLookupVisible=true" pButton icon="pi pi-search"
                         styleClass="p-button-warn"></button>
@@ -88,7 +88,7 @@
                 <th>End to</th>
                 <th>Assigned Person</th>
                 <th>Examiner Type</th>
-                <th>View</th>
+                <th>Details</th>
                 <th>Action</th>
               </tr>
             </ng-template>
@@ -96,7 +96,7 @@
               <tr>
                 <td>{{ e.answerPaperSerialStart }}</td>
                 <td>{{ e.answerPaperSerialEnd }}</td>
-                <td>{{ e.fullName }}</td>
+                <td>{{ e.assignedUsername }}</td>
                 <td>{{ e.privLevelCode }}</td>
                 <td><p-button icon="pi pi-eye" [text]="true" (onClick)="currentAssignDetail = e; assignDetailDialogVisible=true"></p-button></td>
                 <td>

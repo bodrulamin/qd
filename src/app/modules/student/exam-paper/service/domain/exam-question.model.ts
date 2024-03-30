@@ -27,6 +27,7 @@ export class ExamQuestionModel {
   quesDetailsList: ExamQuestionDetailModel[];
   answerVmList: AnswerModel[];
   navigationId: number
+  assignmentId: number;
 }
 
 

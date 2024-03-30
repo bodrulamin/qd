@@ -1,0 +1,42 @@
+<div class="grid">
+  <div class="col-12 md:col-12">
+    <div class="card p-fluid">
+      <h5>Answer Paper Assesment</h5>
+
+      <form class="p-5" [formGroup]="answerPapaerSearchForm">
+        <div class="formgrid grid">
+          <div class="field col">
+            <label for="exam-level">Exam Level</label>
+            <p-dropdown id="exam-level" (onChange)="onExamLevelChange($event.value)" (onClear)="onExamLevelClear()"
+                        formControlName="examLevel" [showClear]="true" placeholder="Select Exam Level"
+                        [options]="examLevelOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="session">Session</label>
+            <p-dropdown id="session" (onChange)="clearExaminerData()" [showClear]="true"
+                        placeholder="Select Session" formControlName="session"
+                        [options]="sessionOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="year">Year</label>
+            <p-dropdown id="year" (onChange)="clearExaminerData()" [showClear]="true" placeholder="Select Year"
+                        formControlName="year"
+                        [options]="yearOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+          <div class="field col">
+            <label for="subject">Subject</label>
+            <p-dropdown id="subject" (onChange)="clearExaminerData()" [showClear]="true" placeholder="Select Subject" formControlName="subjectCode"
+                        [options]="subjectOptions" optionLabel="name" optionValue="code"></p-dropdown>
+          </div>
+        </div>
+
+        <div class="flex justify-content-end">
+          <p-button icon="pi pi-search" (onClick)="searchAnswerPapers()" label="Find"></p-button>
+        </div>
+      </form>
+
+
+
+    </div>
+  </div>
+</div>

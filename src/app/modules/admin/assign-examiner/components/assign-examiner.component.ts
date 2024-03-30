@@ -119,7 +119,7 @@ export class AssignExaminerComponent extends BaseComponent {
       year: [null, [Validators.required]],
       privLevelCode: [null, [Validators.required]],
       assignedUserId: [null, [Validators.required]],
-      fullName: [''],
+      assignedUsername: [''],
     });
   }
 
@@ -207,7 +207,7 @@ export class AssignExaminerComponent extends BaseComponent {
   onUserSelect(user: UserModel) {
     this.userLookupVisible = false;
     this.createExaminerForm.controls['assignedUserId'].setValue(user.id);
-    this.createExaminerForm.controls['fullName'].setValue(user.fullName);
+    this.createExaminerForm.controls['assignedUsername'].setValue(user.fullName);
   }
 
   private updateExaminer() {
